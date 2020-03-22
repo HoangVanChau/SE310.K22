@@ -1,30 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Coding\\HRM\\branches\\Back-end\\HRM\\HRM\\HRM.csproj": {}
+    "/Users/metajet/HK8/SE310.K22/HRM/HRM/HRM.csproj": {}
   },
   "projects": {
-    "D:\\Coding\\HRM\\branches\\Back-end\\HRM\\HRM\\HRM.csproj": {
+    "/Users/metajet/HK8/SE310.K22/HRM/HRM/HRM.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Coding\\HRM\\branches\\Back-end\\HRM\\HRM\\HRM.csproj",
+        "projectUniqueName": "/Users/metajet/HK8/SE310.K22/HRM/HRM/HRM.csproj",
         "projectName": "HRM",
-        "projectPath": "D:\\Coding\\HRM\\branches\\Back-end\\HRM\\HRM\\HRM.csproj",
-        "packagesPath": "C:\\Users\\MR-BOO\\.nuget\\packages\\",
-        "outputPath": "D:\\Coding\\HRM\\branches\\Back-end\\HRM\\HRM\\obj\\",
+        "projectPath": "/Users/metajet/HK8/SE310.K22/HRM/HRM/HRM.csproj",
+        "packagesPath": "/Users/metajet/.nuget/packages/",
+        "outputPath": "/Users/metajet/HK8/SE310.K22/HRM/HRM/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\MR-BOO\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/metajet/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,6 +39,14 @@
             "JWT": {
               "target": "Package",
               "version": "[6.1.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.0-preview.2.20120.8, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.10.2, )"
             },
             "MongoDB.Driver.Core": {
               "target": "Package",
@@ -72,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.200/RuntimeIdentifierGraph.json"
         }
       }
     }
