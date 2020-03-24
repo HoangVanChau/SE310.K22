@@ -1,49 +1,42 @@
-/*!
-
- =========================================================
- * Vue Light Bootstrap Dashboard - v2.0.0 (Bootstrap 4)
- =========================================================
-
- * Product Page: http://www.creative-tim.com/product/light-bootstrap-dashboard
- * Copyright 2019 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard/blob/master/LICENSE.md)
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
- */
 import Vue from 'vue'
-import VueRouter from 'vue-router'
-import App from './App.vue'
 
-// LightBootstrap plugin
-import LightBootstrap from './light-bootstrap-main'
+import Cookies from 'js-cookie'
 
-// router setup
-import routes from './routes/routes'
+import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
-import './registerServiceWorker'
-// plugin setup
-Vue.use(VueRouter)
-Vue.use(LightBootstrap)
+import Element from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
-// configure router
-const router = new VueRouter({
-  routes, // short for routes: routes
-  linkActiveClass: 'nav-item active',
-  scrollBehavior: (to) => {
-    if (to.hash) {
-      return {selector: to.hash}
-    } else {
-      return { x: 0, y: 0 }
-    }
-  }
+import '@/styles/index.scss' // global css
+
+import App from './App'
+import router from './router'
+import store from './store'
+
+import i18n from './lang' // Internationalization
+import './icons' // icon
+import './errorLog' // error log
+import './permission' // permission control
+import './mock' // simulation data
+
+import * as filters from './filters' // global filters
+
+Vue.use(Element, {
+  size: Cookies.get('size') || 'medium', // set element-ui default size
+  i18n: (key, value) => i18n.t(key, value)
 })
 
-/* eslint-disable no-new */
+// register global utility filters.
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
+Vue.config.productionTip = false
+
 new Vue({
   el: '#app',
-  render: h => h(App),
-  router
+  router,
+  store,
+  i18n,
+  render: h => h(App)
 })
