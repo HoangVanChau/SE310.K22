@@ -9,7 +9,7 @@ namespace HRM.Models.Base
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
+        public ObjectId Id { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<DateTime> ModifyDate { get; set; }
 
