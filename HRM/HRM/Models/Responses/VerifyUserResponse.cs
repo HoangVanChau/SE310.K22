@@ -13,6 +13,6 @@ namespace HRM.Models
         public String Email { get; set; }
         public String PhoneNumber { get; set; }
         public Address Address { get; set; }
-        public List<String> Roles { get; set; }
+        public String Role { get; set; }
     }
 }

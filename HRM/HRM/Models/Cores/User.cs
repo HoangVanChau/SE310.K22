@@ -15,6 +15,6 @@ namespace HRM.Models.Cores
         public Address Address { get; set; }
         public DateTime DateOfBirth { get; set; }
         public String HashPassword { get; set; }
-        public List<String> Roles { get; set; }
+        public String Role { get; set; }
     }
 }

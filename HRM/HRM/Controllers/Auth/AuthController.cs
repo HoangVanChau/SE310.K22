@@ -7,24 +7,13 @@ using HRM.Repositories.User;
 using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Net;
-using HRM.Constants;
 using HRM.Extensions;
-using HRM.Models.Cores;
-using HRM.Models.Requests;
-using HRM.Repositories.User;
-using HRM.Services.Auth;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HRM.Controllers.Auth
 {
     [ApiController]
     [Route("[controller]")]
-    public class AuthController
+    public class AuthController: ControllerBase
     {
         private readonly IAuthService _authService;
         private readonly IUserRepository _userRepo;
@@ -36,7 +25,7 @@ namespace HRM.Controllers.Auth
         }
 
         [HttpPost]
-        [Route("/auth/login")]
+        [Route("/api/auth/login")]
         public JsonResult Login([FromBody] AuthRequest authRequest)
         {
             var user = _userRepo.FindUserByUserName(authRequest.UserName);
@@ -59,7 +48,7 @@ namespace HRM.Controllers.Auth
                         Code = HttpStatusCode.OK,
                         Data = new AuthResponse()
                         {
-                            AccessToken = _authService.GenerateAccessToken(user.UserId, user.Roles),
+                            AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
                             RefreshToken = _authService.GenerateRefreshToken(user.UserId)
                         },
                         Error = null,
@@ -79,12 +68,12 @@ namespace HRM.Controllers.Auth
             }
         }
         
-        [Authorize(Roles = Role.Auth)]
+        [Authorize(Roles = Roles.Member)]
         [HttpGet]
-        [Route("/auth/verify")]
+        [Route("/api/auth/verify")]
         public JsonResult VerifyToken([FromHeader] string token)
         {
-            var userId = 
+            var userId = User.Identity.GetId();
             var user = _userRepo.FindUserByUserId(userId);
             return new JsonResult(new BaseResponse<VerifyUserResponse>()
             {
@@ -97,7 +86,7 @@ namespace HRM.Controllers.Auth
                     EmployeeId = user.EmployeeId,
                     FullName = user.FullName,
                     PhoneNumber = user.PhoneNumber,
-                    Roles = user.Roles,
+                    Role = user.Role,
                     UserName = user.UserName
                 },
                 Message = "Thành công!",

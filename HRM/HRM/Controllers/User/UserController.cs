@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRM.Controllers.User
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UserController: ControllerBase
@@ -28,12 +27,10 @@ namespace HRM.Controllers.User
             _authService = authService;
         }
         
-        [AllowAnonymous]
         [HttpPost]
         [Route("/api/user/register")]
         public JsonResult Register([FromBody] UserRegisterRequest registerData)
         {
-            var firstRoles = Role.FirstMemberRoles();
             var newUserId = Guid.NewGuid().ToString();
             var newUser = new Models.Cores.User
             {
@@ -41,7 +38,7 @@ namespace HRM.Controllers.User
                 FullName = registerData.FullName,
                 Email = registerData.Email,
                 HashPassword = _authService.HashPassword(registerData.Password),
-                Roles = firstRoles,
+                Role = Roles.Member,
                 PhoneNumber = registerData.PhoneNumber,
                 UserName = registerData.UserName,
                 DateOfBirth = DateTime.ParseExact(registerData.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture)
@@ -51,7 +48,7 @@ namespace HRM.Controllers.User
             
             var responseData = new Dictionary<String, Object>();
             responseData.Add("user", newUser.WithoutPassword());
-            responseData.Add("accessToken", _authService.GenerateAccessToken(newUser.UserId, newUser.Roles));
+            responseData.Add("accessToken", _authService.GenerateAccessToken(newUser.UserId, newUser.Role));
             responseData.Add("refreshToken", _authService.GenerateRefreshToken(newUser.UserId));
             
             return new JsonResult(new BaseResponse<Object>()
@@ -62,8 +59,16 @@ namespace HRM.Controllers.User
                 Error = null
             });
         }
+        
+        [Authorize(Roles = Roles.Member)]
+        [HttpGet]
+        [Route("/api/test/memberrole")]
+        public JsonResult TestMemberRole()
+        {
+            return new JsonResult(true);
+        }
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Roles.SuperAdmin)]
         [HttpGet]
         [Route("/api/GetAllUsers")]
         public JsonResult GetAllUsers()
@@ -71,20 +76,5 @@ namespace HRM.Controllers.User
             return new JsonResult(_userRepo.GetAllDocument());
         }
         
-        [Authorize(Roles = Role.OwnInfoModify)]
-        [HttpGet]
-        [Route("/api/OwnInfoModify")]
-        public JsonResult TestOwnInfoModify()
-        {
-            return new JsonResult(User.Identity.GetId());
-        }
-        
-        [Authorize(Roles = Role.OwnInfoRead)]
-        [HttpGet]
-        [Route("/api/OwnInfoRead")]
-        public JsonResult OwnInfoRead()
-        {
-            return new JsonResult(User.Identity.GetId());
-        }
     }
 }

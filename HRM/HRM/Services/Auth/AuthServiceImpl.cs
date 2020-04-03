@@ -21,17 +21,14 @@ namespace HRM.Services.Auth
             _authSetting = authSetting;
         }
 
-        public string GenerateAccessToken(string userId, List<String> roles)
+        public string GenerateAccessToken(string userId, String role)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_authSetting.SecretCode);
             var listClaim = new List<Claim>();
             
             listClaim.Add(new Claim(ClaimTypes.Name, userId));
-            roles.ForEach(role =>
-            {
-                listClaim.Add(new Claim(ClaimTypes.Role, role));
-            });
+            listClaim.Add(new Claim(ClaimTypes.Role, role));
             
             var tokenDescriptor = new SecurityTokenDescriptor
             {
