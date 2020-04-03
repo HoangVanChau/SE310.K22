@@ -1,9 +1,23 @@
 using System;
 using System.Net;
+using HRM.Constants;
 using HRM.Models;
 using HRM.Models.Cores;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Net;
+using HRM.Constants;
+using HRM.Extensions;
+using HRM.Models.Cores;
+using HRM.Models.Requests;
+using HRM.Repositories.User;
+using HRM.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRM.Controllers.Auth
@@ -45,7 +59,7 @@ namespace HRM.Controllers.Auth
                         Code = HttpStatusCode.OK,
                         Data = new AuthResponse()
                         {
-                            AccessToken = _authService.GenerateAccessToken(user.UserId),
+                            AccessToken = _authService.GenerateAccessToken(user.UserId, user.Roles),
                             RefreshToken = _authService.GenerateRefreshToken(user.UserId)
                         },
                         Error = null,
@@ -65,41 +79,30 @@ namespace HRM.Controllers.Auth
             }
         }
         
+        [Authorize(Roles = Role.Auth)]
         [HttpGet]
         [Route("/auth/verify")]
         public JsonResult VerifyToken([FromHeader] string token)
         {
-            var userId = _authService.VerifyToken(token);
-            if (userId != null)
+            var userId = 
+            var user = _userRepo.FindUserByUserId(userId);
+            return new JsonResult(new BaseResponse<VerifyUserResponse>()
             {
-                var user = _userRepo.FindUserByUserId(userId);
-                return new JsonResult(new BaseResponse<VerifyUserResponse>()
+                Code = HttpStatusCode.OK,
+                Data = new VerifyUserResponse()
                 {
-                    Code = HttpStatusCode.OK,
-                    Data = new VerifyUserResponse()
-                    {
-                        UserId = user.UserId,
-                        Address = user.Address,
-                        Email = user.Email,
-                        EmployeeId = user.EmployeeId,
-                        FullName = user.FullName,
-                        PhoneNumber = user.PhoneNumber,
-                        Roles = user.Roles,
-                        UserName = user.UserName
-                    },
-                    Message = "Thành công!",
-                    Error = null
-                });
-            } else
-            {
-                return new JsonResult(new BaseResponse<Object>()
-                {
-                    Code = HttpStatusCode.Unauthorized,
-                    Message = "Lỗi xác thực Token",
-                    Data = null,
-                    Error = "Unauthorized"
-                });
-            }
+                    UserId = user.UserId,
+                    Address = user.Address,
+                    Email = user.Email,
+                    EmployeeId = user.EmployeeId,
+                    FullName = user.FullName,
+                    PhoneNumber = user.PhoneNumber,
+                    Roles = user.Roles,
+                    UserName = user.UserName
+                },
+                Message = "Thành công!",
+                Error = null
+            });
         }
     }
 }
