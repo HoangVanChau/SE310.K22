@@ -8,6 +8,8 @@ using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRM.Extensions;
+using HRM.Models.Base;
+using HRM.Models.Requests;
 
 namespace HRM.Controllers.Auth
 {
@@ -63,6 +65,47 @@ namespace HRM.Controllers.Auth
                         Message = "Mật khẩu không đúng. Vui lòng thử lại!",
                         Data = null,
                         Error = "Wrong password"
+                    });
+                }
+            }
+        }
+        
+        [HttpPost]
+        [Route("/api/auth/refresh")]
+        public JsonResult RefreshToken([FromBody] RefreshTokenRequest requestData)
+        {
+            var payLoad = _authService.VerifyToken(requestData.RefreshToken);
+            if (payLoad == null)
+            {
+                return new JsonResult(null)
+                {
+                    StatusCode = (int)HttpStatusCode.Unauthorized
+                };
+            }
+            else
+            {
+                var userId = payLoad["unique_name"].ToString();
+                var user = _userRepo.FindUserByUserId(userId);
+
+                if (user == null)
+                {
+                    return new JsonResult(new BaseResponse<BaseModel>()
+                    {
+                        Code = HttpStatusCode.BadRequest,
+                        Data = null,
+                        Error = "Cannot find user by user in token",
+                        Message = "Lỗi hệ thống!"
+                    })
+                    {
+                        StatusCode = (int)HttpStatusCode.BadRequest
+                    };
+                }
+                else
+                {
+                    return new JsonResult(new AuthResponse()
+                    {
+                        AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
+                        RefreshToken = requestData.RefreshToken
                     });
                 }
             }

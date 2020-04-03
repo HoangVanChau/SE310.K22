@@ -43,25 +43,31 @@ namespace HRM.Services.Auth
         
         public string GenerateRefreshToken(string userId)
         {
-            var token = new JwtBuilder()
-                .WithAlgorithm(new HMACSHA256Algorithm())
-                .WithSecret(_authSetting.SecretCode)
-                .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(_authSetting.RefreshTokenExpire).ToUnixTimeSeconds())
-                .AddClaim("userId", userId)
-                .Build();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_authSetting.SecretCode);
+            var listClaim = new List<Claim> {new Claim(ClaimTypes.Name, userId)};
 
-            return token;
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(listClaim),
+                Expires = DateTime.UtcNow.AddHours(_authSetting.RefreshTokenExpire),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);        
         }
-        public string VerifyToken(string token)
+        public IDictionary<String, Object> VerifyToken(string token)
         {
             try
             {
                 var payload = new JwtBuilder()
+                    .WithAlgorithm(new HMACSHA256Algorithm())
                     .WithSecret(_authSetting.SecretCode)
                     .MustVerifySignature()
                     .Decode<IDictionary<string, object>>(token);
 
-                return payload["userId"].ToString();
+                return payload;
             }
             catch (TokenExpiredException)
             {
