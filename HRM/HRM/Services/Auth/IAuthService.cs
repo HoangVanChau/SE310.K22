@@ -10,7 +10,7 @@ namespace HRM.Services.Auth
     {
         public String GenerateAccessToken(String userId, String role);
         public String GenerateRefreshToken(String userId);
-        public String VerifyToken(String token);
+        public IDictionary<String, Object> VerifyToken(String token);
         public string HashPassword(string password);
     }
 }
