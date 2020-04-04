@@ -26,7 +26,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
     let value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['day', 'one', 'two', 'three', 'four', 'five', 'six'][value ] }
     if (result.length > 0 && value < 10) {
       value = '0' + value
     }
@@ -43,14 +43,14 @@ export function formatTime(time, option) {
   const diff = (now - d) / 1000
 
   if (diff < 30) {
-    return '刚刚'
+    return 'just'
   } else if (diff < 3600) {
     // less 1 hour
-    return Math.ceil(diff / 60) + '分钟前'
+    return Math.ceil(diff / 60) + 'minutes ago'
   } else if (diff < 3600 * 24) {
-    return Math.ceil(diff / 3600) + '小时前'
+    return Math.ceil(diff / 3600) + 'An hour ago'
   } else if (diff < 3600 * 24 * 2) {
-    return '1天前'
+    return '1 day ago'
   }
   if (option) {
     return parseTime(time, option)
@@ -58,13 +58,13 @@ export function formatTime(time, option) {
     return (
       d.getMonth() +
       1 +
-      '月' +
+      'month' +
       d.getDate() +
-      '日' +
+      'day' +
       d.getHours() +
-      '时' +
+      'hour' +
       d.getMinutes() +
-      '分'
+      'minute'
     )
   }
 }
@@ -193,7 +193,7 @@ export function toggleClass(element, className) {
 
 export const pickerOptions = [
   {
-    text: '今天',
+    text: 'Nowadays',
     onClick(picker) {
       const end = new Date()
       const start = new Date(new Date().toDateString())
@@ -202,7 +202,7 @@ export const pickerOptions = [
     }
   },
   {
-    text: '最近一周',
+    text: 'Last week',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()
@@ -211,7 +211,7 @@ export const pickerOptions = [
     }
   },
   {
-    text: '最近一个月',
+    text: 'Last month',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()
@@ -220,7 +220,7 @@ export const pickerOptions = [
     }
   },
   {
-    text: '最近三个月',
+    text: 'Last three months',
     onClick(picker) {
       const end = new Date(new Date().toDateString())
       const start = new Date()
