@@ -16,6 +16,7 @@
   <ItemGroup>
     <Folder Include="Repositories\Salary" />
     <Folder Include="Repositories\Traning" />
+    <Folder Include="Resources\Images" />
   </ItemGroup>
 
 
