@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using HRM.Helpers;
+using HRM.Repositories.Image;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
 using HRM.Services.MongoDB;
@@ -35,6 +36,7 @@ namespace HRM
             {
                 options.ConnectionString = Configuration.GetSection("MongoDb:ConnectionString").Value;
                 options.Database = Configuration.GetSection("MongoDb:Database").Value;
+                options.StorageDatabase = Configuration.GetSection("MongoDb:StorageDatabase").Value;
                 options.UserName = Configuration.GetSection("MongoDb:UserName").Value;
                 options.Host = Configuration.GetSection("MongoDb:Host").Value;
                 options.Port = Int32.Parse(Configuration.GetSection("MongoDb:Port").Value);
@@ -84,6 +86,7 @@ namespace HRM
 
             //Repository ....
             services.AddSingleton<IUserRepository, UserRepositoryImpl>();
+            services.AddSingleton<IImageRepository, ImageRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

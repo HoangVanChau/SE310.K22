@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HRM.Models.Base;
 using HRM.Services.MongoDB;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -34,17 +35,17 @@ namespace HRM.Repositories.Base
         public bool UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
             updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            return _collection.UpdateOne(x => x.Id.Equals(id), updateDefinition).ModifiedCount.Equals(1);
+            return _collection.UpdateOne(x => x.Id.Equals(ObjectId.Parse(id)), updateDefinition).ModifiedCount.Equals(1);
         }
 
         public bool DeleteOneById(String id)
         {
-            return _collection.DeleteOne(x => x.Id.Equals(id)).DeletedCount.Equals(1);
+            return _collection.DeleteOne(x => x.Id.Equals(ObjectId.Parse(id))).DeletedCount.Equals(1);
         }
 
         public T FindFirstById(string id)
         {
-            return _collection.Find(x => x.Id.Equals(id)).FirstOrDefault();
+            return _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefault();
         }
     }
 }

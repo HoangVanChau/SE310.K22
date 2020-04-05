@@ -1,3 +1,4 @@
+#nullable enable
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,20 +28,20 @@ namespace HRM.Helpers
             var jpeg = new byte[] { 255, 216, 255, 224 };          // jpeg
             var jpeg2 = new byte[] { 255, 216, 255, 225 };         // jpeg canon
 
-            if (bmp.SequenceEqual(bytes.Take(bmp.Length)))
-                return ImageFormat.Bmp;
-
-            if (gif.SequenceEqual(bytes.Take(gif.Length)))
-                return ImageFormat.Gif;
+            // if (bmp.SequenceEqual(bytes.Take(bmp.Length)))
+            //     return ImageFormat.Bmp;
+            //
+            // if (gif.SequenceEqual(bytes.Take(gif.Length)))
+            //     return ImageFormat.Gif;
 
             if (png.SequenceEqual(bytes.Take(png.Length)))
                 return ImageFormat.Png;
 
-            if (tiff.SequenceEqual(bytes.Take(tiff.Length)))
-                return ImageFormat.Tiff;
-
-            if (tiff2.SequenceEqual(bytes.Take(tiff2.Length)))
-                return ImageFormat.Tiff;
+            // if (tiff.SequenceEqual(bytes.Take(tiff.Length)))
+            //     return ImageFormat.Tiff;
+            //
+            // if (tiff2.SequenceEqual(bytes.Take(tiff2.Length)))
+            //     return ImageFormat.Tiff;
 
             if (jpeg.SequenceEqual(bytes.Take(jpeg.Length)))
                 return ImageFormat.Jpeg;
@@ -51,16 +52,16 @@ namespace HRM.Helpers
             return ImageFormat.Unknown;
         }
         
-        public static bool CheckIfImageFile(IFormFile file)
+        public static bool CheckIfImageFile(IFormFile? file)
         {
             byte[] fileBytes;
             using (var ms = new MemoryStream())
             {
-                file.CopyTo(ms);
+                file?.CopyTo(ms);
                 fileBytes = ms.ToArray();
             }
 
-            return WriterHelper.GetImageFormat(fileBytes) != WriterHelper.ImageFormat.Unknown;
+            return GetImageFormat(fileBytes) != ImageFormat.Unknown;
         }
 
     }
