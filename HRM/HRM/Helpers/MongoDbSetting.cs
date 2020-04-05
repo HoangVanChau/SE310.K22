@@ -9,6 +9,7 @@ namespace HRM.Helpers
     {
         public string ConnectionString { get; set; }
         public string Database { get; set; }
+        public string StorageDatabase { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string AuthMechanism { get; set; }
@@ -19,6 +20,7 @@ namespace HRM.Helpers
     {
         public string ConnectionString { get; set; }
         public string Database { get; set; }
+        public string StorageDatabase { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string AuthMechanism { get; set; }
