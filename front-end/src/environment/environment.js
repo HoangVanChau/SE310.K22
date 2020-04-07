@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  basePath: 'https://127.0.0.1:5001/api',
+  basePath: 'http://34.80.19.146:5000',
   // basePathLocal: 'https://localhost:8000/api'
 }
 
