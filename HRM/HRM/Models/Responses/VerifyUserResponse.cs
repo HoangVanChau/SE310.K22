@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using HRM.Models.Base;
 
-namespace HRM.Models
+namespace HRM.Models.Responses
 {
     public class VerifyUserResponse
     {

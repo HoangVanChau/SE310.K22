@@ -1,7 +1,6 @@
 using System;
-using HRM.Models.Cores;
 
-namespace HRM.Models
+namespace HRM.Models.Responses
 {
     public class AuthResponse
     {

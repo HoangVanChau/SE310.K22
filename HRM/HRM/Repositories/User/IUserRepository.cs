@@ -6,7 +6,7 @@ namespace HRM.Repositories.User
 {
     public interface IUserRepository: IBaseRepository<Models.Cores.User>
     {
-        Models.Cores.User FindUserByUserName(String userName); 
-        Models.Cores.User FindUserByUserId(String userId); 
+        Task<Models.Cores.User> FindUserByUserName(String userName); 
+        Task<Models.Cores.User> FindUserByUserId(String userId); 
     }
 }
