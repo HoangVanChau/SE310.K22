@@ -9,7 +9,7 @@ using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRM.Extensions;
-using HRM.Models.Base;
+using HRM.Models.Bases;
 using HRM.Models.Requests;
 using HRM.Models.Responses;
 using HRM.Models.Responses.Bases;

@@ -1,4 +1,5 @@
 using System;
+using HRM.Models.Cores;
 
 namespace HRM.Models.Responses
 {

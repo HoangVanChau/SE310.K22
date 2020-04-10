@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using HRM.Models.Base;
+using HRM.Models.Bases;
 using MongoDB.Bson;
 using MongoDB.Driver;
 

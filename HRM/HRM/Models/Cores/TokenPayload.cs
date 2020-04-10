@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HRM.Models
+namespace HRM.Models.Cores
 {
     public class TokenPayload
     {

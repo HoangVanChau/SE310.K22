@@ -1,5 +1,5 @@
 using System;
-using HRM.Models.Base;
+using HRM.Models.Bases;
 
 namespace HRM.Models.Cores
 {
