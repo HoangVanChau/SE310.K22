@@ -9,6 +9,7 @@ using HRM.Helpers;
 using HRM.Models.Cores;
 using HRM.Models.Requests;
 using HRM.Models.Responses.Bases;
+using HRM.Repositories.Counter;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -21,12 +22,14 @@ namespace HRM.Controllers.User
     public class UserController: ControllerBase
     {
         private readonly IUserRepository _userRepo;
+        private readonly ICounterRepository _counterRepo;
         private readonly IAuthService _authService;
 
-        public UserController(IUserRepository userRepo, IAuthService authService)
+        public UserController(IUserRepository userRepo, IAuthService authService, ICounterRepository counterRepo)
         {
             _userRepo = userRepo;
             _authService = authService;
+            _counterRepo = counterRepo;
         }
         
         [HttpPost]
@@ -34,11 +37,13 @@ namespace HRM.Controllers.User
         public async Task<JsonResult> Register([FromBody] UserRegisterRequest registerData)
         {
             var newUserUuid = Guid.NewGuid().ToString();
+            var newEmployeeId = await _counterRepo.GetNextCounterValue(Collections.UserCollection);
             var newUser = new Models.Cores.User
             {
                 UserId = newUserUuid,
                 FullName = registerData.FullName,
                 Email = registerData.Email,
+                EmployeeId = newEmployeeId,
                 HashPassword = _authService.HashPassword(registerData.Password),
                 Role = Roles.Member,
                 PhoneNumber = registerData.PhoneNumber,

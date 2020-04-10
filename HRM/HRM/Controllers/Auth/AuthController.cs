@@ -36,7 +36,7 @@ namespace HRM.Controllers.Auth
             var user = await _userRepo.FindUserByUserName(authRequest.UserName);
             if (user == null)
             {
-                return new JsonResult(new BaseResponse<Object>
+                return new BadRequestResponse(new BaseResponse<Object>
                 {
                     Code = HttpStatusCode.BadRequest,
                     Message = "Không tìm thấy tài khoản!",
@@ -44,32 +44,28 @@ namespace HRM.Controllers.Auth
                     Error = "Cannot find user with username"
                 });
             }
-            else
+
+            if (user.HashPassword == _authService.HashPassword(authRequest.Password))
             {
-                if (user.HashPassword == _authService.HashPassword(authRequest.Password))
+                return new OkResponse(new BaseResponse<AuthResponse>()
                 {
-                    return new OkResponse(new BaseResponse<AuthResponse>()
+                    Data = new AuthResponse
                     {
-                        Data = new AuthResponse
-                        {
-                            AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
-                            RefreshToken = _authService.GenerateRefreshToken(user.UserId)
-                        },
-                        Error = null,
-                        Message = "Đăng nhập thành công!"
-                    });
-                }
-                else
-                {
-                    return new BadRequestResponse(new BaseResponse<Object>
-                    {
-                        Code = HttpStatusCode.BadRequest,
-                        Message = "Mật khẩu không đúng. Vui lòng thử lại!",
-                        Data = null,
-                        Error = "Wrong password"
-                    });
-                }
+                        AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
+                        RefreshToken = _authService.GenerateRefreshToken(user.UserId)
+                    },
+                    Error = null,
+                    Message = "Đăng nhập thành công!"
+                });
             }
+
+            return new BadRequestResponse(new BaseResponse<Object>
+            {
+                Code = HttpStatusCode.BadRequest,
+                Message = "Mật khẩu không đúng. Vui lòng thử lại!",
+                Data = null,
+                Error = "Wrong password"
+            });
         }
         
         [HttpPost]
@@ -91,8 +87,8 @@ namespace HRM.Controllers.Auth
                 {
                     Code = HttpStatusCode.BadRequest,
                     Data = null,
-                    Error = "Cannot find user by user in token",
-                    Message = "Lỗi hệ thống!"
+                    Error = "Cannot find user by user Id in token",
+                    Message = "Lỗi nhận diện User!"
                 });
             }
 

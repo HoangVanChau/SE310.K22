@@ -1,4 +1,7 @@
+using System.Threading.Tasks;
+using HRM.Constants;
 using HRM.Helpers;
+using HRM.Models.Cores;
 using MongoDB.Driver;
 
 namespace HRM.Services.MongoDB
@@ -33,5 +36,19 @@ namespace HRM.Services.MongoDB
 
         public IMongoDatabase GetDb() => _db;
         public IMongoDatabase GetStorageDb() => _storageDb;
+
+        public async Task ValidateDb()
+        {
+            //count user for employee Id increase
+            var counterCollection = GetDb().GetCollection<Counter>(Collections.CounterCollection);
+            if (counterCollection.CountDocuments(x => true) == 0)
+            {
+                await counterCollection.InsertOneAsync(new Counter
+                {
+                    Name = Collections.UserCollection,
+                    Value = 0
+                });
+            }
+        }
     }
 }

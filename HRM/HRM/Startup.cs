@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using HRM.Helpers;
+using HRM.Repositories.Counter;
 using HRM.Repositories.Image;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
@@ -87,6 +88,7 @@ namespace HRM
             //Repository ....
             services.AddSingleton<IUserRepository, UserRepositoryImpl>();
             services.AddSingleton<IImageRepository, ImageRepositoryImpl>();
+            services.AddSingleton<ICounterRepository, CounterRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

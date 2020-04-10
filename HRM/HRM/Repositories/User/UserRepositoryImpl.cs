@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using HRM.Constants;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
@@ -18,7 +19,7 @@ namespace HRM.Repositories.User
 
         public override string GetCollectionName()
         {
-            return "User";
+            return Collections.UserCollection;
         }
 
         public async Task<Models.Cores.User> FindUserByUserName(string userName)
