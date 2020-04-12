@@ -9,7 +9,7 @@
       drag
       action="https://httpbin.org/post">
       <i class="el-icon-upload"/>
-      <div class="el-upload__text">Drag或<em>点击上传</em></div>
+      <div class="el-upload__text">Drag hoặc<em>Tải lên</em></div>
     </el-upload>
     <div v-show="imageUrl.length>0" class="image-preview">
       <div v-show="imageUrl.length>1" class="image-preview-wrapper">

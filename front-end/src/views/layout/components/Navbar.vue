@@ -29,6 +29,11 @@
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
+          <router-link to="/profile">
+            <el-dropdown-item to="/profile">
+              Profile
+            </el-dropdown-item>
+          </router-link>
           <router-link to="/">
             <el-dropdown-item>
               {{ $t('navbar.dashboard') }}
@@ -66,7 +71,7 @@ export default {
     Screenfull,
     SizeSelect,
     LangSelect,
-    ThemePicker
+    ThemePicker,
   },
   computed: {
     ...mapGetters([
