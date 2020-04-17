@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using HRM.Models.Base;
+using System.Threading.Tasks;
+using HRM.Models.Bases;
 using HRM.Services.MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -18,34 +19,36 @@ namespace HRM.Repositories.Base
         }
         
         public abstract string GetCollectionName();
-        public List<T> GetAllDocument()
+        public async Task<List<T>> GetAllDocument()
         {
-            return _collection.AsQueryable().ToList();
+            return await _collection.Find(x => true).ToListAsync();
         }
 
-        public bool InsertOne(T document)
+        public async Task<ObjectId> InsertOne(T document)
         {
             document.CreatedDate = DateTime.Now;
             document.ModifyDate = new List<DateTime>();
             
-            _collection.InsertOne(document);
-            return true;
+            await _collection.InsertOneAsync(document);
+            return document.Id;
         }
 
-        public bool UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
+        public async Task<bool> UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
             updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            return _collection.UpdateOne(x => x.Id.Equals(ObjectId.Parse(id)), updateDefinition).ModifiedCount.Equals(1);
+            var task = await _collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), updateDefinition);
+            return task.ModifiedCount.Equals(1);
         }
 
-        public bool DeleteOneById(String id)
+        public async Task<bool> DeleteOneById(String id)
         {
-            return _collection.DeleteOne(x => x.Id.Equals(ObjectId.Parse(id))).DeletedCount.Equals(1);
+            var task = await _collection.DeleteOneAsync(x => x.Id.Equals(ObjectId.Parse(id)));
+            return task.DeletedCount.Equals(1);
         }
 
-        public T FindFirstById(string id)
+        public async Task<T> FindFirstById(string id)
         {
-            return _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefault();
+            return await _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync();
         }
     }
 }

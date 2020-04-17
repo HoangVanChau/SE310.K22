@@ -1,6 +1,6 @@
 using System;
 
-namespace HRM.Models
+namespace HRM.Models.Requests
 {
     public class AuthRequest
     {

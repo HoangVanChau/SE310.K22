@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Models;
 using HRM.Models.Cores;
@@ -8,8 +9,10 @@ using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRM.Extensions;
-using HRM.Models.Base;
+using HRM.Models.Bases;
 using HRM.Models.Requests;
+using HRM.Models.Responses;
+using HRM.Models.Responses.Bases;
 
 namespace HRM.Controllers.Auth
 {
@@ -28,12 +31,12 @@ namespace HRM.Controllers.Auth
 
         [HttpPost]
         [Route("/api/auth/login")]
-        public JsonResult Login([FromBody] AuthRequest authRequest)
+        public async Task<JsonResult> Login([FromBody] AuthRequest authRequest)
         {
-            var user = _userRepo.FindUserByUserName(authRequest.UserName);
+            var user = await _userRepo.FindUserByUserName(authRequest.UserName);
             if (user == null)
             {
-                return new JsonResult(new BaseResponse<Object>
+                return new BadRequestResponse(new BaseResponse<Object>
                 {
                     Code = HttpStatusCode.BadRequest,
                     Message = "Không tìm thấy tài khoản!",
@@ -41,86 +44,71 @@ namespace HRM.Controllers.Auth
                     Error = "Cannot find user with username"
                 });
             }
-            else
+
+            if (user.HashPassword == _authService.HashPassword(authRequest.Password))
             {
-                if (user.HashPassword == _authService.HashPassword(authRequest.Password))
+                return new OkResponse(new BaseResponse<AuthResponse>()
                 {
-                    return new JsonResult(new BaseResponse<AuthResponse>()
+                    Data = new AuthResponse
                     {
-                        Code = HttpStatusCode.OK,
-                        Data = new AuthResponse()
-                        {
-                            AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
-                            RefreshToken = _authService.GenerateRefreshToken(user.UserId)
-                        },
-                        Error = null,
-                        Message = "Đăng nhập thành công!"
-                    });
-                }
-                else
-                {
-                    return new JsonResult(new BaseResponse<Object>
-                    {
-                        Code = HttpStatusCode.BadRequest,
-                        Message = "Mật khẩu không đúng. Vui lòng thử lại!",
-                        Data = null,
-                        Error = "Wrong password"
-                    });
-                }
+                        AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
+                        RefreshToken = _authService.GenerateRefreshToken(user.UserId)
+                    },
+                    Error = null,
+                    Message = "Đăng nhập thành công!"
+                });
             }
+
+            return new BadRequestResponse(new BaseResponse<Object>
+            {
+                Code = HttpStatusCode.BadRequest,
+                Message = "Mật khẩu không đúng. Vui lòng thử lại!",
+                Data = null,
+                Error = "Wrong password"
+            });
         }
         
         [HttpPost]
         [Route("/api/auth/refresh")]
-        public JsonResult RefreshToken([FromBody] RefreshTokenRequest requestData)
+        public async Task<JsonResult> RefreshToken([FromBody] RefreshTokenRequest requestData)
         {
             var payLoad = _authService.VerifyToken(requestData.RefreshToken);
             if (payLoad == null)
             {
-                return new JsonResult(null)
-                {
-                    StatusCode = (int)HttpStatusCode.Unauthorized
-                };
+                return new UnauthorizedResponse(null);
             }
-            else
-            {
-                var userId = payLoad["unique_name"].ToString();
-                var user = _userRepo.FindUserByUserId(userId);
 
-                if (user == null)
+            var userId = payLoad["unique_name"].ToString();
+            var user = await _userRepo.FindUserByUserId(userId);
+
+            if (user == null)
+            {
+                return new BadRequestResponse(new BaseResponse<BaseModel>()
                 {
-                    return new JsonResult(new BaseResponse<BaseModel>()
-                    {
-                        Code = HttpStatusCode.BadRequest,
-                        Data = null,
-                        Error = "Cannot find user by user in token",
-                        Message = "Lỗi hệ thống!"
-                    })
-                    {
-                        StatusCode = (int)HttpStatusCode.BadRequest
-                    };
-                }
-                else
-                {
-                    return new JsonResult(new AuthResponse()
-                    {
-                        AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
-                        RefreshToken = requestData.RefreshToken
-                    });
-                }
+                    Code = HttpStatusCode.BadRequest,
+                    Data = null,
+                    Error = "Cannot find user by user Id in token",
+                    Message = "Lỗi nhận diện User!"
+                });
             }
+
+            return new OkResponse(new AuthResponse()
+            {
+                AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
+                RefreshToken = requestData.RefreshToken
+            });
         }
         
         [Authorize(Roles = Roles.Member)]
         [HttpGet]
         [Route("/api/auth/verify")]
-        public JsonResult VerifyToken([FromHeader] string token)
+        public async Task<JsonResult> VerifyToken([FromHeader] string token)
         {
             var userId = User.Identity.GetId();
-            var user = _userRepo.FindUserByUserId(userId);
-            return new JsonResult(new BaseResponse<VerifyUserResponse>()
+            var user = await _userRepo.FindUserByUserId(userId);
+            
+            return new OkResponse(new BaseResponse<VerifyUserResponse>()
             {
-                Code = HttpStatusCode.OK,
                 Data = new VerifyUserResponse()
                 {
                     UserId = user.UserId,
@@ -132,8 +120,7 @@ namespace HRM.Controllers.Auth
                     Role = user.Role,
                     UserName = user.UserName
                 },
-                Message = "Thành công!",
-                Error = null
+                Message = "Thành công!"
             });
         }
     }

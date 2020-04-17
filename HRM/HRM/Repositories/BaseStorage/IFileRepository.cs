@@ -7,7 +7,7 @@ namespace HRM.Repositories.BaseStorage
 {
     public interface IFileRepository<T> where T: StorageFile
     {
-        public ObjectId SaveFile(T storageFile);
-        public T FindFileById(String id);
+        public Task<ObjectId> SaveFile(T storageFile);
+        public Task<T> FindFileById(String id);
     }
 }

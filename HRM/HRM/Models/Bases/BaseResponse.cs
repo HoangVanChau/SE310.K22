@@ -1,4 +1,4 @@
-namespace HRM.Models.Base
+namespace HRM.Models.Bases
 {
     public class BaseResponse
     {

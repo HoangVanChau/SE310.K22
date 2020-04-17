@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
-using HRM.Models.Base;
+using HRM.Models.Cores;
 
-namespace HRM.Models
+namespace HRM.Models.Responses
 {
     public class VerifyUserResponse
     {
         public String UserId { get; set; } //guid auto gen
-        public int EmployeeId { get; set; } //auto increase
+        public uint EmployeeId { get; set; } //auto increase
         public String FullName { get; set; }
         public String UserName { get; set; }
         public String Email { get; set; }

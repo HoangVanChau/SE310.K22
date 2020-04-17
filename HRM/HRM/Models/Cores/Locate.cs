@@ -1,4 +1,4 @@
-namespace HRM.Models
+namespace HRM.Models.Cores
 {
     public class Locate
     {

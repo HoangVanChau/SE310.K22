@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
-using HRM.Models.Base;
+using System.Threading.Tasks;
+using HRM.Models.Bases;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace HRM.Repositories.Base
 {
     public interface IBaseRepository<T> where T: BaseModel
     {
-        List<T> GetAllDocument();
-        bool InsertOne(T document);
-        bool UpdateOneById(String id, UpdateDefinition<T> updateDefinition);
-        bool DeleteOneById(String id);
-        T FindFirstById(String id);
+        Task<List<T>> GetAllDocument();
+        Task<ObjectId> InsertOne(T document);
+        Task<bool> UpdateOneById(String id, UpdateDefinition<T> updateDefinition);
+        Task<bool> DeleteOneById(String id);
+        Task<T> FindFirstById(String id);
     }
 }

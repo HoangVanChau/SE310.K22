@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace HRM.Models.Base
+namespace HRM.Models.Bases
 {
     public abstract class BaseModel
     {

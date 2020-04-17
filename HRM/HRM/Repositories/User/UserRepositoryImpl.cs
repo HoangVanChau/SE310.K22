@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using HRM.Constants;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
@@ -18,17 +19,17 @@ namespace HRM.Repositories.User
 
         public override string GetCollectionName()
         {
-            return "User";
+            return Collections.UserCollection;
         }
 
-        public Models.Cores.User FindUserByUserName(string userName)
+        public async Task<Models.Cores.User> FindUserByUserName(string userName)
         {
-            return _collection.AsQueryable().Where(u => u.UserName == userName).FirstOrDefault();
+            return await _collection.Find(x => x.UserName == userName).FirstOrDefaultAsync();
         }
 
-        public Models.Cores.User FindUserByUserId(string userId)
+        public async Task<Models.Cores.User> FindUserByUserId(string userId)
         {
-            return _collection.AsQueryable().Where(u => u.UserId == userId).FirstOrDefault();
+            return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
         }
     }
 }

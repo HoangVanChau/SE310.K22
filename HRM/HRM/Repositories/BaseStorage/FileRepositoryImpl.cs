@@ -1,11 +1,9 @@
 using System;
-using System.Collections;
 using System.Threading.Tasks;
 using HRM.Models.Cores;
 using HRM.Services.MongoDB;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 
 namespace HRM.Repositories.BaseStorage
 {
@@ -20,16 +18,16 @@ namespace HRM.Repositories.BaseStorage
 
         public abstract String GetCollectionName();
         
-        public ObjectId SaveFile(T storageFile)
+        public async Task<ObjectId> SaveFile(T storageFile)
         {
-            _collection.InsertOneAsync(storageFile);
+            await _collection.InsertOneAsync(storageFile);
             return storageFile.Id;
         }
 
-        public T FindFileById(string id)
+        public async Task<T> FindFileById(string id)
         {
             var objectId = ObjectId.Parse(id);
-            return _collection.AsQueryable().Where(x => x.Id.Equals(objectId)).FirstOrDefault();
+            return await _collection.Find(x => x.Id.Equals(objectId)).FirstOrDefaultAsync();
         }
     }
 }

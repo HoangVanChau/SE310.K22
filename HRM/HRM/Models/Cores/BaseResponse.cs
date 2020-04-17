@@ -7,7 +7,7 @@ namespace HRM.Models.Cores
     {
         public String Message { get; set; }
         public HttpStatusCode Code { get; set; }
-        public String Error { get; set; }
+        public object Error { get; set; }
         public T Data { get; set; }
     }
 }
