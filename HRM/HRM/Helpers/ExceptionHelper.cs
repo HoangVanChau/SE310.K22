@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -42,12 +43,17 @@ namespace HRM.Helpers
             };
         }
 
-        private static List<string> GetDuplicateField(string errorMessage)
+        private static Hashtable GetDuplicateField(string errorMessage)
         {
-            return new List<string>()
-            {
-                errorMessage
-            };
+            var fieldName = Regex.Match(errorMessage, @"index: (.+?)_1")
+                .Groups[1]
+                .Value;
+            var fieldValue = Regex.Match(errorMessage, @"{ : (.+?) }")
+                .Groups[1]
+                .Value
+                .Replace('"'.ToString(), "");
+            
+            return new Hashtable {{"DuplicateField", fieldName}, {"DuplicateValue", fieldValue}};
         }
     }
 }
