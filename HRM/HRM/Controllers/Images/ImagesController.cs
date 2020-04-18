@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net;
 using System.Threading.Tasks;
 using HRM.Helpers;
 using HRM.Models.Cores;
@@ -8,27 +7,23 @@ using HRM.Models.Responses.Bases;
 using HRM.Repositories.Image;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using MongoDB.Bson;
 
-namespace HRM.Controllers.Image
+namespace HRM.Controllers.Images
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ImageController: ControllerBase
+    [Route("api/[controller]")]
+    public class ImagesController: ControllerBase
     {
-        private readonly IHostEnvironment _hostEnvironment;
         private readonly IImageRepository _imageRepository;
 
-        public ImageController(IHostEnvironment hostEnvironment, IImageRepository imageRepository)
+        public ImagesController(IImageRepository imageRepository)
         {
-            _hostEnvironment = hostEnvironment;
             _imageRepository = imageRepository;
         }
         
-        [Route("/image/upload")]
         [HttpPost]
-        public async Task<JsonResult> UploadImage(IFormFile file)
+        public async Task<JsonResult> Post(IFormFile file)
         {
             if (WriterHelper.CheckIfImageFile(file))
             {
@@ -42,9 +37,8 @@ namespace HRM.Controllers.Image
             });
         }
 
-        [Route("/image")]
         [HttpGet]
-        public async Task<FileContentResult> GetImage(String id)
+        public async Task<FileContentResult> Get(String id)
         { 
             var imageFile = await _imageRepository.FindFileById(id);
             byte[] imageBytes = Convert.FromBase64String(imageFile.RawBinary);
@@ -52,7 +46,7 @@ namespace HRM.Controllers.Image
             return new FileContentResult(imageBytes, "image/jpeg");
         }
 
-        public async Task<string> WriteFileToMongoDb(IFormFile file)
+        private async Task<string> WriteFileToMongoDb(IFormFile file)
         {
             ObjectId fileName;
             await using (var ms = new MemoryStream())
