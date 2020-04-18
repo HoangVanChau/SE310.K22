@@ -17,7 +17,6 @@ using HRM.Models.Responses.Bases;
 namespace HRM.Controllers.Auth
 {
     [ApiController]
-    [Route("[controller]")]
     public class AuthController: ControllerBase
     {
         private readonly IAuthService _authService;
@@ -36,35 +35,25 @@ namespace HRM.Controllers.Auth
             var user = await _userRepo.FindUserByUserName(authRequest.UserName);
             if (user == null)
             {
-                return new BadRequestResponse(new BaseResponse<Object>
+                return new BadRequestResponse(new ErrorData
                 {
-                    Code = HttpStatusCode.BadRequest,
                     Message = "Không tìm thấy tài khoản!",
                     Data = null,
-                    Error = "Cannot find user with username"
                 });
             }
 
             if (user.HashPassword == _authService.HashPassword(authRequest.Password))
             {
-                return new OkResponse(new BaseResponse<AuthResponse>()
+                return new OkResponse(new AuthResponse
                 {
-                    Data = new AuthResponse
-                    {
-                        AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
-                        RefreshToken = _authService.GenerateRefreshToken(user.UserId)
-                    },
-                    Error = null,
-                    Message = "Đăng nhập thành công!"
+                    AccessToken = _authService.GenerateAccessToken(user.UserId, user.Role),
+                    RefreshToken = _authService.GenerateRefreshToken(user.UserId)
                 });
             }
 
-            return new BadRequestResponse(new BaseResponse<Object>
+            return new BadRequestResponse(new ErrorData
             {
-                Code = HttpStatusCode.BadRequest,
                 Message = "Mật khẩu không đúng. Vui lòng thử lại!",
-                Data = null,
-                Error = "Wrong password"
             });
         }
         
@@ -83,11 +72,9 @@ namespace HRM.Controllers.Auth
 
             if (user == null)
             {
-                return new BadRequestResponse(new BaseResponse<BaseModel>()
+                return new BadRequestResponse(new ErrorData
                 {
-                    Code = HttpStatusCode.BadRequest,
                     Data = null,
-                    Error = "Cannot find user by user Id in token",
                     Message = "Lỗi nhận diện User!"
                 });
             }
@@ -106,22 +93,8 @@ namespace HRM.Controllers.Auth
         {
             var userId = User.Identity.GetId();
             var user = await _userRepo.FindUserByUserId(userId);
-            
-            return new OkResponse(new BaseResponse<VerifyUserResponse>()
-            {
-                Data = new VerifyUserResponse()
-                {
-                    UserId = user.UserId,
-                    Address = user.Address,
-                    Email = user.Email,
-                    EmployeeId = user.EmployeeId,
-                    FullName = user.FullName,
-                    PhoneNumber = user.PhoneNumber,
-                    Role = user.Role,
-                    UserName = user.UserName
-                },
-                Message = "Thành công!"
-            });
+
+            return new OkResponse(user.WithoutPassword());
         }
     }
 }

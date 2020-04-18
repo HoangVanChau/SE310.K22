@@ -26,8 +26,9 @@ namespace HRM.Repositories.Base
 
         public async Task<ObjectId> InsertOne(T document)
         {
-            document.CreatedDate = DateTime.Now;
-            document.ModifyDate = new List<DateTime>();
+            var now = DateTime.Now;
+            document.CreatedDate = now;
+            document.ModifyDate = new List<DateTime>{now};
             
             await _collection.InsertOneAsync(document);
             return document.Id;
@@ -35,8 +36,8 @@ namespace HRM.Repositories.Base
 
         public async Task<bool> UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
-            updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            var task = await _collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), updateDefinition);
+            var finalDefinition = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
+            var task = await _collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), finalDefinition);
             return task.ModifiedCount.Equals(1);
         }
 

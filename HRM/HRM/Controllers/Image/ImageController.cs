@@ -36,9 +36,8 @@ namespace HRM.Controllers.Image
                 return new OkResponse(imageName);
             }
 
-            return new BadRequestResponse(new BaseResponse<Object>
+            return new BadRequestResponse(new ErrorData
             {
-                Code = HttpStatusCode.BadRequest,
                 Message = "Định dạng không hợp lệ, chỉ chấp nhận JPEG/PNG"
             });
         }

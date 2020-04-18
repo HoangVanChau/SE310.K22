@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -10,9 +11,9 @@ namespace HRM.Models.Bases
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreatedDate { get; set; }
-        public List<DateTime> ModifyDate { get; set; }
-
-        public String GetCollectionName() => this.GetType().Name;
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public List<DateTime> ModifyDate { get; set; } 
     }
 }

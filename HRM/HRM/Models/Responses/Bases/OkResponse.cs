@@ -1,9 +1,10 @@
 using System.Net;
+using HRM.Models.Cores;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRM.Models.Responses.Bases
 {
-    public class OkResponse : JsonResult
+    public class OkResponse : JsonResult 
     {
         public OkResponse(object value) : base(value)
         {

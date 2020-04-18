@@ -31,5 +31,12 @@ namespace HRM.Repositories.User
         {
             return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> UpdateUserByUserId(string userId, UpdateDefinition<Models.Cores.User> updateDefinition)
+        {
+            var finalUpdate = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
+            var result = await _collection.UpdateOneAsync(x => x.UserId == userId, finalUpdate);
+            return result.ModifiedCount.Equals(1);
+        }
     }
 }
