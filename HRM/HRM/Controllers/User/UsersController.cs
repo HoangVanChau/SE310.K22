@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
 using HRM.Helpers;
-using HRM.Models.Bases;
 using HRM.Models.Cores;
 using HRM.Models.Requests;
 using HRM.Models.Responses.Bases;
@@ -143,6 +141,14 @@ namespace HRM.Controllers.User
             var userId = User.Identity.GetId();
             var currentUser = await _userRepo.FindUserByUserId(userId);
             return new OkResponse(currentUser.WithoutPassword());
+        }
+        
+        //for testing...... must remove 
+        [HttpGet]
+        [Route("getAllUser")]
+        public async Task<JsonResult> GetAllUsers()
+        {
+            return new OkResponse(await _userRepo.GetAllDocument());
         }
         
     }
