@@ -1,23 +1,23 @@
 
 export default {
-  zh: {
+  vi: {
     i18nView: {
-      title: '切换语言',
-      note: '本项目国际化基于 vue-i18n',
-      datePlaceholder: '请选择日期',
-      selectPlaceholder: '请选择',
-      tableDate: '日期',
-      tableName: '姓名',
-      tableAddress: '地址',
-      default: '默认按钮',
-      primary: '主要按钮',
-      success: '成功按钮',
-      info: '信息按钮',
-      warning: '警告按钮',
-      danger: '危险按钮',
-      one: '一',
-      two: '二',
-      three: '三'
+      title: 'Chuyển ngôn ngữ',
+      note: 'Việc quốc tế hóa dự án này dựa trên vue-i18n',
+      datePlaceholder: 'Vui lòng chọn một ngày',
+      selectPlaceholder: 'Vui lòng chọn',
+      tableDate: 'Ngày',
+      tableName: 'Tên',
+      tableAddress: 'Địa chỉ',
+      default: 'Nút mặc định',
+      primary: 'Nút chính',
+      success: 'Nút thành công',
+      info: 'Nút thông tin',
+      warning: 'Nút cảnh báo',
+      danger: 'Nút lỗi',
+      one: '1',
+      two: '2',
+      three: '3'
     }
   },
   en: {

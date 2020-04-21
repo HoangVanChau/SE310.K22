@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-top: 15px">
     <svg
       t="1508738709248"
       class="screenfull-svg"

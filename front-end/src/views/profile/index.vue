@@ -11,7 +11,7 @@
           <h6>Upload a different photo...</h6>
           <input type="file" class="text-center center-block file-upload">
         </div> -->
-        <upload-avatar/>
+        <upload-avatar />
         <hr>
         <br>
 
@@ -43,6 +43,6 @@ import uploadAvatar from './components/UploadAvatar/uploadAvatar.vue';
 
 export default {
   name: 'Profile',
-  components: { singleImage, profileTab, uploadAvatar }
+  components: { singleImage, profileTab, uploadAvatar },
 }
 </script>

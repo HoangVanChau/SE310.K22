@@ -1,5 +1,6 @@
 export default {
   route: {
+    Profile: 'Hồ sơ',
     dashboard: 'Dashboard',
     introduction: 'Giới thiệu',
     documentation: 'Tài liệu',
@@ -75,6 +76,7 @@ export default {
     title: 'Đăng nhập hệ thống',
     logIn: 'Đăng nhập',
     username: 'Tên đăng nhập',
+    email: 'Email',
     password: 'Mật khẩu',
     any: 'Bất kì',
     thirdparty: 'bên thứ 3',
@@ -121,7 +123,7 @@ export default {
     export: 'Xuất',
     reviewer: 'Người nhận xét',
     id: 'Số sê-ri',
-    date: '时间',
+    date: 'Thời gian',
     author: 'Tác giả',
     readings: 'Đọc sách',
     status: 'Trạng thái',
@@ -159,5 +161,27 @@ export default {
     close: 'Đóng',
     closeOthers: 'Đóng cái khác',
     closeAll: 'Đóng hết'
+  },
+  profile: {
+    firstName: 'Tên Họ',
+    lastName: 'Tên',
+    dateOfBirth: 'Ngày sinh',
+    phone: 'Số điện thoại',
+    gender: 'Giới tính',
+    marryStatus: 'Tình trạng hôn nhân',
+    email: 'Email',
+    password: 'Mật khẩu',
+    verify: 'Xác nhận mật khẩu',
+    save: 'Thay đổi',
+    reset: 'Xóa hết',
+    male: 'Nam',
+    female: 'Nữ',
+    married: 'Đã kết hôn',
+    placeFirt: 'Nhập tên họ',
+    placeLast: 'Nhập tên',
+    placedateOf: 'Chọn ngày sinh',
+    placephone: 'Nhập số điện thoại',
+    placepass: 'Nhập mật khẩu',
+    placeverify: 'Nhập xác nhận mật khẩu'
   }
 };

@@ -5,6 +5,7 @@ import { Message } from 'element-ui';
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css'; // progress bar style
 import { getToken } from '@/utils/auth'; // getToken from cookie
+import jwt from 'jsonwebtoken'
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
@@ -27,19 +28,23 @@ router.beforeEach((to, from, next) => {
       NProgress.done(); // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (store.getters.roles.length === 0) {
+        console.log('@@@ userId', store.getters.userId);
+        var token = getToken()
+        var userId = jwt.decode(token).sub
         store
-          .dispatch('GetUserInfo')
+          .dispatch('GetUserInfo', userId)
           .then(res => {
-            console.log('@@@ vo day', res);
-            // 拉取user_info
             const roles = res.roles;
-            console.log('@@@ roles', roles);
             // note: roles must be a array! such as: ['editor','develop']
-            store.dispatch('GenerateRoutes', { roles }).then(() => {
-              // 根据roles权限生成可访问的路由表
-              router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
-              next({ ...to, replace: true }); // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-            });
+
+            store
+              .dispatch('GenerateRoutes', roles)
+              .then(() => {
+                // 根据roles权限生成可访问的路由表
+                router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+                next({ ...to, replace: true }); // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+              })
+              .catch(e => console.log(e));
           })
           .catch(err => {
             store.dispatch('FedLogOut').then(() => {

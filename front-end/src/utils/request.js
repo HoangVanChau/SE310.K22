@@ -7,9 +7,8 @@ import { Message, MessageBox } from 'element-ui';
 const service = axios.create({
   baseURL: environment.basePath, // api base_url
   headers: {
-    'Content-Type': 'application/json'
-  },
-  timeout: 1000
+    'Content-Type': 'application/json,multipart/form-data',
+  }
 });
 
 // request interceptor

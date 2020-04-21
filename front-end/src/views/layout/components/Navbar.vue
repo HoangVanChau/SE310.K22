@@ -5,7 +5,8 @@
     <breadcrumb class="breadcrumb-container"/>
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
+      <template>
+        <!-- v-if="device!=='mobile'" -->
         <error-log class="errLog-container right-menu-item"/>
 
         <el-tooltip :content="$t('navbar.screenfull')" effect="dark" placement="bottom">
@@ -25,7 +26,7 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="account.avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" style="margin-bottom: 30px">
           <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -76,9 +77,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
-      'avatar',
-      'device'
+      'account'
     ])
   },
   methods: {

@@ -13,8 +13,8 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          v-model="loginForm.username"
-          :placeholder="$t('login.username')"
+          v-model="loginForm.email"
+          :placeholder="$t('login.email')"
           name="username"
           type="text"
           auto-complete="on"
@@ -52,11 +52,11 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'metajet1',
-        password: 'abcabcabc'
+        email: 'admin@gmail.com',
+        password: 'Admin123!'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur' }],
+        email: [{ required: true, trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur' }]
       },
       passwordType: 'password',
@@ -95,8 +95,9 @@ export default {
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
             this.loading = false
             this.$router.push({ path: '/' })
-          }).catch(() => {
+          }).catch((e) => {
             this.loading = false
+            console.log(e);
           })
         } else {
           console.log('error submit!!')

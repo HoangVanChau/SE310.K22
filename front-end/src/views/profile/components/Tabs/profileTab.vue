@@ -21,8 +21,8 @@ export default {
     return {
       tabMapOptions: [
         { label: 'Home', key: 'home' },
-        { label: 'Message', key: 'me' },
-        { label: 'Setting', key: 'set' },
+        // { label: 'Message', key: 'me' },
+        // { label: 'Setting', key: 'set' },
       ],
       activeName: 'home',
       createdTimes: 0
