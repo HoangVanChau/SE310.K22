@@ -38,7 +38,7 @@ namespace HRM.Controllers.Users
         {
             var newUserUuid = Guid.NewGuid().ToString();
             var newEmployeeId = await _counterRepo.GetNextCounterValue(Collections.UserCollection);
-            var newUser = new Models.Cores.User
+            var newUser = new Models.Cores.UserAuth
             {
                 UserId = newUserUuid,
                 FullName = registerData.FullName,
@@ -63,7 +63,7 @@ namespace HRM.Controllers.Users
 
             var responseData = new Dictionary<String, Object>
             {
-                {"user", newUser.WithoutPassword()},
+                {"user", newUser},
                 {"accessToken", _authService.GenerateAccessToken(newUser.UserId, newUser.Role)},
                 {"refreshToken", _authService.GenerateRefreshToken(newUser.UserId)}
             };
@@ -198,7 +198,7 @@ namespace HRM.Controllers.Users
         {
             var userId = User.Identity.GetId();
             var currentUser = await _userRepo.FindUserByUserId(userId);
-            return new OkResponse(currentUser.WithoutPassword());
+            return new OkResponse(currentUser);
         }
         
         [HttpGet("{userId}")]
@@ -206,7 +206,7 @@ namespace HRM.Controllers.Users
         public async Task<JsonResult> Get(string userId)
         {
             var user = await _userRepo.FindUserByUserId(userId);
-            return new OkResponse(user.WithoutPassword());
+            return new OkResponse(user);
         }
 
         [HttpDelete("{userId}")]
@@ -246,7 +246,7 @@ namespace HRM.Controllers.Users
             var supperAdmin = await _userRepo.GetUsersByRole(Constants.Roles.SuperAdmin);
             if (supperAdmin.Count == 0)
             {
-                var newSupperAdmin = new Models.Cores.User
+                var newSupperAdmin = new Models.Cores.UserAuth
                 {
                     UserId = Guid.NewGuid().ToString(),
                     HashPassword = _authService.HashPassword("123456789"),
@@ -255,7 +255,7 @@ namespace HRM.Controllers.Users
                 };
                 await _userRepo.InsertOne(newSupperAdmin);
                 
-                return new OkResponse(newSupperAdmin.WithoutPassword());
+                return new OkResponse(newSupperAdmin);
             }
             else
             {

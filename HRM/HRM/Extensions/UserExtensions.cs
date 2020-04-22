@@ -5,7 +5,7 @@ namespace HRM.Extensions
 {
     public static class UserExtensions
     {
-        public static User WithoutPassword(this User user) 
+        public static User WithoutPassword(this UserAuth user) 
         {
             if (user == null) return null;
 

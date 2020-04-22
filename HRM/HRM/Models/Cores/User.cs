@@ -20,7 +20,6 @@ namespace HRM.Models.Cores
         
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime DateOfBirth { get; set; }
-        public String HashPassword { get; set; }
         public String Role { get; set; }
     }
 }

@@ -31,7 +31,7 @@ namespace HRM.Repositories.User
         public async Task<Models.Cores.User> FindUserByUserId(string userId)
         {
             var user = await Collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
-            return user.WithoutPassword();
+            return user;
         }
 
         public async Task<bool> UpdateUserByUserId(string userId, UpdateDefinition<Models.Cores.User> updateDefinition)
