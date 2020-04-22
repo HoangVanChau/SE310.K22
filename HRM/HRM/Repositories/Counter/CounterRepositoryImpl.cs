@@ -22,7 +22,7 @@ namespace HRM.Repositories.Counter
         {
             var filter = Builders<Models.Cores.Counter>.Filter.Eq(a => a.Name, sequenceName);
             var update = Builders<Models.Cores.Counter>.Update.Inc<uint>(a => a.Value, 1);
-            var sequence = await _collection.FindOneAndUpdateAsync(filter, update);
+            var sequence = await Collection.FindOneAndUpdateAsync(filter, update);
 
             return sequence.Value;
         }

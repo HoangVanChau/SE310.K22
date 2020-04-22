@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace HRM.Models.Cores
 {
+    [BsonIgnoreExtraElements]
     public class User : BaseModel
     {
         public String UserId { get; set; } //guid auto gen

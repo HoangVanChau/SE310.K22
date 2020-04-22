@@ -86,7 +86,7 @@ namespace HRM.Controllers.Auth
             });
         }
         
-        [Authorize(Roles = Roles.Member)]
+        [AllowAllSystemUser]
         [HttpGet]
         [Route("/api/auth/verify")]
         public async Task<JsonResult> VerifyToken([FromHeader] string token)

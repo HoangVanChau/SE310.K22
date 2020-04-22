@@ -11,17 +11,18 @@ namespace HRM.Repositories.Base
 {
     public abstract class BaseRepositoryImpl<T>: IBaseRepository<T> where T: BaseModel
     {
-        protected readonly IMongoCollection<T> _collection;
+        protected readonly IMongoCollection<T> Collection;
 
         public BaseRepositoryImpl(MongoDbService service)
         {
-            _collection = service.GetDb().GetCollection<T>(GetCollectionName());
+            Collection = service.GetDb().GetCollection<T>(GetCollectionName());
         }
-        
+
         public abstract string GetCollectionName();
+        
         public async Task<List<T>> GetAllDocument()
         {
-            return await _collection.Find(x => true).ToListAsync();
+            return await Collection.Find(x => true).ToListAsync();
         }
 
         public async Task<ObjectId> InsertOne(T document)
@@ -30,26 +31,26 @@ namespace HRM.Repositories.Base
             document.CreatedDate = now;
             document.ModifyDate = new List<DateTime>{now};
             
-            await _collection.InsertOneAsync(document);
+            await Collection.InsertOneAsync(document);
             return document.Id;
         }
 
         public async Task<bool> UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
             var finalDefinition = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            var task = await _collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), finalDefinition);
+            var task = await Collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), finalDefinition);
             return task.ModifiedCount.Equals(1);
         }
 
         public async Task<bool> DeleteOneById(String id)
         {
-            var task = await _collection.DeleteOneAsync(x => x.Id.Equals(ObjectId.Parse(id)));
+            var task = await Collection.DeleteOneAsync(x => x.Id.Equals(ObjectId.Parse(id)));
             return task.DeletedCount.Equals(1);
         }
 
         public async Task<T> FindFirstById(string id)
         {
-            return await _collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync();
+            return await Collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync();
         }
     }
 }
