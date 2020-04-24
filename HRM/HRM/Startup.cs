@@ -1,8 +1,10 @@
 using System;
 using System.Text;
 using HRM.Helpers;
+using HRM.Repositories.AuthRepository;
 using HRM.Repositories.Counter;
 using HRM.Repositories.Image;
+using HRM.Repositories.Team;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
 using HRM.Services.MongoDB;
@@ -89,6 +91,8 @@ namespace HRM
             services.AddSingleton<IUserRepository, UserRepositoryImpl>();
             services.AddSingleton<IImageRepository, ImageRepositoryImpl>();
             services.AddSingleton<ICounterRepository, CounterRepositoryImpl>();
+            services.AddSingleton<ITeamRepository, TeamRepositoryImpl>();
+            services.AddSingleton<IAuthRepository, AuthRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

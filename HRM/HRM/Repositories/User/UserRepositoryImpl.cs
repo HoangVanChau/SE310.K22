@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using HRM.Constants;
+using HRM.Extensions;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
@@ -24,19 +25,31 @@ namespace HRM.Repositories.User
 
         public async Task<Models.Cores.User> FindUserByUserName(string userName)
         {
-            return await _collection.Find(x => x.UserName == userName).FirstOrDefaultAsync();
+            return await Collection.Find(x => x.UserName == userName).FirstOrDefaultAsync();
         }
 
         public async Task<Models.Cores.User> FindUserByUserId(string userId)
         {
-            return await _collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
+            var user = await Collection.Find(u => u.UserId == userId).FirstOrDefaultAsync();
+            return user;
         }
 
         public async Task<bool> UpdateUserByUserId(string userId, UpdateDefinition<Models.Cores.User> updateDefinition)
         {
             var finalUpdate = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            var result = await _collection.UpdateOneAsync(x => x.UserId == userId, finalUpdate);
+            var result = await Collection.UpdateOneAsync(x => x.UserId == userId, finalUpdate);
             return result.ModifiedCount.Equals(1);
+        }
+
+        public async Task<List<Models.Cores.User>> GetUsersByRole(string role)
+        {
+            return await Collection.Find(x => x.Role == role).ToListAsync();
+        }
+
+        public async Task<bool> DeleteUserByUserid(string userId)
+        {
+            var result = await Collection.DeleteOneAsync(x => x.UserId == userId);
+            return result.DeletedCount == 1;
         }
     }
 }

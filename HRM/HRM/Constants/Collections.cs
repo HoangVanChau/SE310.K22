@@ -4,5 +4,6 @@ namespace HRM.Constants
     {
         public static string UserCollection = "User";
         public static string CounterCollection = "Counter";
+        public static string TeamCollection = "Team";
     }
 }

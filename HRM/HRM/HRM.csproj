@@ -13,10 +13,5 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repositories\Salary" />
-    <Folder Include="Repositories\Traning" />
-  </ItemGroup>
-
 
 </Project>

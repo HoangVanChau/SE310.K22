@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace HRM.Models.Cores
 {
+    [BsonIgnoreExtraElements]
     public class User : BaseModel
     {
         public String UserId { get; set; } //guid auto gen
@@ -19,7 +20,6 @@ namespace HRM.Models.Cores
         
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime DateOfBirth { get; set; }
-        public String HashPassword { get; set; }
         public String Role { get; set; }
     }
 }

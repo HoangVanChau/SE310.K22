@@ -13,6 +13,7 @@ using HRM.Models.Bases;
 using HRM.Models.Requests;
 using HRM.Models.Responses;
 using HRM.Models.Responses.Bases;
+using HRM.Repositories.AuthRepository;
 
 namespace HRM.Controllers.Auth
 {
@@ -20,19 +21,19 @@ namespace HRM.Controllers.Auth
     public class AuthController: ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IUserRepository _userRepo;
+        private readonly IAuthRepository _authUserRepo;
 
-        public AuthController(IAuthService authService, IUserRepository userRepo)
+        public AuthController(IAuthService authService, IAuthRepository authUserRepo)
         {
             _authService = authService;
-            _userRepo = userRepo;
+            _authUserRepo = authUserRepo;
         }
 
         [HttpPost]
         [Route("/api/auth/login")]
         public async Task<JsonResult> Login([FromBody] AuthRequest authRequest)
         {
-            var user = await _userRepo.FindUserByUserName(authRequest.UserName);
+            var user = await _authUserRepo.FindUserAuthByUserName(authRequest.UserName);
             if (user == null)
             {
                 return new BadRequestResponse(new ErrorData
@@ -68,7 +69,7 @@ namespace HRM.Controllers.Auth
             }
 
             var userId = payLoad["unique_name"].ToString();
-            var user = await _userRepo.FindUserByUserId(userId);
+            var user = await _authUserRepo.FindUserAuthByUserId(userId);
 
             if (user == null)
             {
@@ -86,13 +87,13 @@ namespace HRM.Controllers.Auth
             });
         }
         
-        [Authorize(Roles = Roles.Member)]
+        [AllowAllSystemUser]
         [HttpGet]
         [Route("/api/auth/verify")]
         public async Task<JsonResult> VerifyToken([FromHeader] string token)
         {
             var userId = User.Identity.GetId();
-            var user = await _userRepo.FindUserByUserId(userId);
+            var user = await _authUserRepo.FindUserAuthByUserId(userId);
 
             return new OkResponse(user.WithoutPassword());
         }
