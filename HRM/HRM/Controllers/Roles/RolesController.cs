@@ -51,7 +51,7 @@ namespace HRM.Controllers.Roles
                 });
             }
 
-            var updateBuilder = Builders<Models.Cores.User>.Update.Set(u => u.Role, data.NewRole);
+            var updateBuilder = Builders<User>.Update.Set(u => u.Role, data.NewRole);
             try
             {
                 var result = await _userRepo.UpdateUserByUserId(data.UserId, updateBuilder);

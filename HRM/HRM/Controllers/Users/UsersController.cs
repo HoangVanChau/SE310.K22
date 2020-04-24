@@ -80,7 +80,7 @@ namespace HRM.Controllers.Users
         public async Task<JsonResult> Patch([FromBody] UserModifyRequest updateData)
         {
             var userId = User.Identity.GetId();
-            var updateDefine = Builders<User>.Update.Set(u => u.Email, updateData.Email);
+            var updateDefine = Builders<User>.Update.CurrentDate(x => x.LastModifyDate);
             
             if (updateData.UserName != null)
             {

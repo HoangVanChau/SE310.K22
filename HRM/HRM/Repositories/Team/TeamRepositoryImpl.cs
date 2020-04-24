@@ -1,14 +1,17 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
 namespace HRM.Repositories.Team
 {
     public class TeamRepositoryImpl: BaseRepositoryImpl<Models.Cores.Team>, ITeamRepository
     {
-
+        //foreign collection for Lookup
         private readonly IMongoCollection<Models.Cores.User> _userCollection;
         
         public TeamRepositoryImpl(MongoDbService service) : base(service)
@@ -21,19 +24,60 @@ namespace HRM.Repositories.Team
             return Constants.Collections.TeamCollection;
         }
 
-        public Task<Models.Cores.Team> GetTeamByTeamId(string teamId)
+        public async Task<Models.Cores.Team> GetTeamByTeamId(string teamId)
         {
-            return Collection.Find(x => x.TeamId == teamId).FirstOrDefaultAsync();
+            return await Collection.Aggregate()
+                .Match(x => x.TeamId == teamId)
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: x => x.LeaderId,
+                    foreignField: u => u.UserId,
+                    @as: (Models.Cores.Team t) => t.Leaders
+                )
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: x => x.MembersId,
+                    foreignField: u => u.UserId,
+                    @as: (Models.Cores.Team t) => t.Members
+                    )
+                .FirstOrDefaultAsync();
         }
 
-        public Task<bool> AddNewUserToTeam(string teamId, string userId)
+        public async Task<bool> AddNewUserToTeam(string teamId, string userId)
         {
-            throw new System.NotImplementedException();
+            var updateDefine = Builders<Models.Cores.Team>
+                .Update
+                .Push(t => t.MembersId, userId);
+            var result = await Collection.UpdateOneAsync(t => t.TeamId == teamId, updateDefine);
+            return result.ModifiedCount.Equals(1);
         }
 
-        public Task<bool> DeleteUserFromTeam(string teamId, string userId)
+        public async Task<bool> DeleteUserFromTeam(string teamId, string userId)
         {
-            throw new System.NotImplementedException();
+            var updateDefine = Builders<Models.Cores.Team>
+                .Update
+                .PullFilter(x => x.MembersId, id => id == userId)
+                .Push(x => x.ModifyDate, DateTime.Now)
+                .CurrentDate(x => x.LastModifyDate);
+            
+            var result = await Collection.FindOneAndUpdateAsync(t => t.TeamId == teamId, updateDefine);
+            return true;
+        }
+
+        public List<Models.Cores.Team> FindUserExistInAnyTeam(string userId)
+        {
+            var result = Collection
+                .AsQueryable()
+                .Where(x => x.MembersId.Contains(userId))
+                .ToList();
+            return result;
+        }
+
+        public async Task<bool> UpdateTeamInfoByTeamId(string teamId, UpdateDefinition<Models.Cores.Team> updateDefine)
+        {
+            var finalDefine = updateDefine.Push(x => x.ModifyDate, DateTime.Now);
+            var result = await Collection.UpdateOneAsync(x => x.TeamId == teamId, finalDefine);
+            return result.IsAcknowledged && result.ModifiedCount.Equals(1);
         }
 
         public Task<List<Models.Cores.Team>> GetAllTeams()

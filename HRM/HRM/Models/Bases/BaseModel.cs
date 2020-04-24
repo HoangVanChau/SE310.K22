@@ -5,7 +5,8 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace HRM.Models.Bases
-{
+{    
+    [BsonIgnoreExtraElements]
     public abstract class BaseModel
     {
         [BsonId]
@@ -13,6 +14,8 @@ namespace HRM.Models.Bases
         public ObjectId Id { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime CreatedDate { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
+        public DateTime LastModifyDate { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public List<DateTime> ModifyDate { get; set; } 
     }
