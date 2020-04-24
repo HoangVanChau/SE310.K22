@@ -1,6 +1,7 @@
 export default {
   route: {
     Profile: 'Profile',
+    department: 'Department',
     dashboard: 'Dashboard',
     introduction: 'Introduction',
     documentation: 'Documentation',
@@ -135,7 +136,8 @@ export default {
     draft: 'Draft',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    department: 'Department'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

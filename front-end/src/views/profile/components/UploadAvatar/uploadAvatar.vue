@@ -30,7 +30,6 @@ export default {
       if (!files.length) { return; }
 
       this.$store.dispatch('UpdateAvatar', files[0]).then(res => {
-        console.log('this.$store.getters.newAvatar', this.$store.getters.newAvatar);
       })
     }
   }

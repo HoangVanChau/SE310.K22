@@ -120,20 +120,37 @@ const user = {
 
     // update user
     UpdateUser({ commit, dispatch }, updatedUser) {
-      console.log('updatedUser.file', updatedUser.file);
-
       return new Promise((resolve, reject) => {
-        uploadAvatar(updatedUser.file).then(resp => {
+        if (updatedUser.file) {
+          uploadAvatar(updatedUser.file).then(resp => {
+            const userResponse = updatedUser.data;
+            const newAvaLink = resp.url;
+            var user = userResponse;
+            if (newAvaLink !== userResponse.avatar) {
+              user = { ...userResponse, avatar: newAvaLink };
+            }
+            updateUser(updatedUser.id, user)
+              .then(res => {
+                if (res.code !== 200) return resolve(null);
+
+                commit('SET_ACCOUNT', user);
+                commit('SET_ROLES', user.roles);
+                commit('SET_AVATAR', {});
+                resolve(user);
+              })
+              .catch(e => reject(e));
+          });
+        } else {
           updateUser(updatedUser.id, updatedUser.data)
             .then(res => {
               if (res.code !== 200) return resolve(null);
-              const user = { ...res.data, avatar: resp.url };
-              commit('SET_ACCOUNT', user);
-              commit('SET_ROLES', user.roles);
-              resolve(user);
+
+              commit('SET_ACCOUNT', res.data);
+              commit('SET_ROLES', res.data.roles);
+              resolve(res.data);
             })
             .catch(e => reject(e));
-        });
+        }
       });
     },
     // update user

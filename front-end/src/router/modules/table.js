@@ -37,10 +37,10 @@ const tableRouter = {
       meta: { title: 'treeTable' }
     },
     {
-      path: 'custom-tree-table',
-      component: () => import('@/views/table/treeTable/customTreeTable'),
-      name: 'CustomTreeTableDemo',
-      meta: { title: 'customTreeTable' }
+      path: 'department',
+      component: () => import('@/views/department/index'),
+      name: 'Department',
+      meta: { title: 'department' }
     },
     {
       path: 'complex-table',

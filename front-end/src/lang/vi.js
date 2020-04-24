@@ -1,6 +1,7 @@
 export default {
   route: {
     Profile: 'Hồ sơ',
+    department: 'Phòng ban',
     dashboard: 'Dashboard',
     introduction: 'Giới thiệu',
     documentation: 'Tài liệu',
@@ -133,7 +134,8 @@ export default {
     draft: 'Bản nháp',
     delete: 'Xóa',
     cancel: 'Hủy bỏ',
-    confirm: 'Xác nhận'
+    confirm: 'Xác nhận',
+    department: 'Phòng ban'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',

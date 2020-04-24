@@ -85,6 +85,10 @@
 <script>
 // import { fetchList } from '@/api/article'
 import store from '@/store'
+import NProgress from 'nprogress'; // progress bar
+import 'nprogress/nprogress.css'; // progress bar style
+
+NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 export default {
   filters: {
@@ -175,7 +179,7 @@ export default {
   },
   methods: {
     getList() {
-      this.loading = true
+      // this.loading = true
       // this.$emit('create') // for test
       // fetchList(this.listQuery).then(response => {
       //   this.list = response.data.items
@@ -183,11 +187,17 @@ export default {
       // })
     },
     save() {
-      this.loading = true
+      // this.loading = true
+      NProgress.start();
       this.$emit('update')
       console.log('this.$store.getters.newAvatar', this.$store.getters.newAvatar);
-
-      this.$store.dispatch('UpdateUser', { id: this.$store.getters.userId, data: this.updatedData, file: this.$store.getters.newAvatar })
+      // bug update the same avatar
+      this.$store.dispatch('UpdateUser', {
+        id: this.$store.getters.userId,
+        data: this.updatedData,
+        file: this.$store.getters.newAvatar === this.updatedData.avatar ? null : this.$store.getters.newAvatar }).then(res => {
+        NProgress.done()
+      })
     }
   }
 }
