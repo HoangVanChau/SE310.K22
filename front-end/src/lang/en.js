@@ -1,5 +1,7 @@
 export default {
   route: {
+    team: 'Team',
+    profile: 'Profile',
     dashboard: 'Dashboard',
     introduction: 'Introduction',
     documentation: 'Documentation',
@@ -107,8 +109,8 @@ export default {
     dragTips1: 'The default order',
     dragTips2: 'The after dragging order',
     title: 'Title',
-    importance: 'Imp',
-    type: 'Type',
+    teamName: 'Team Name',
+    createdDate: 'Created Date',
     remark: 'Remark',
     search: 'Search',
     add: 'Add',
@@ -121,8 +123,8 @@ export default {
     status: 'Status',
     actions: 'Actions',
     edit: 'Edit',
-    publish: 'Publish',
-    draft: 'Draft',
+    lastModifiedDate: 'Last modified date',
+    leader: 'Leader',
     delete: 'Delete',
     cancel: 'Cancel',
     confirm: 'Confirm'

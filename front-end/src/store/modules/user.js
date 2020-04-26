@@ -1,25 +1,19 @@
-import { loginByUsername, getUserInfo } from '@/api/login';
+import { loginByUsername } from '@/api/login';
 import { getToken, setToken, removeToken } from '@/utils/auth';
+import { getCurUser, updateCurUser, getAllUsers } from '../../api/user';
 
 const user = {
   state: {
-    user: '',
-    status: '',
-    code: '',
+    curUser: {},
     token: getToken(),
-    name: '',
-    avatar: '',
-    introduction: '',
     roles: [],
     setting: {
       articlePlatform: []
-    }
+    },
+    users: []
   },
 
   mutations: {
-    SET_CODE: (state, code) => {
-      state.code = code;
-    },
     SET_TOKEN: (state, token) => {
       state.token = token;
     },
@@ -29,17 +23,14 @@ const user = {
     SET_SETTING: (state, setting) => {
       state.setting = setting;
     },
-    SET_STATUS: (state, status) => {
-      state.status = status;
-    },
-    SET_NAME: (state, name) => {
-      state.name = name;
-    },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar;
+    SET_USER: (state, user) => {
+      state.curUser = user;
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles;
+    },
+    SET_USERS: (state, users) => {
+      state.users = users;
     }
   },
 
@@ -50,8 +41,7 @@ const user = {
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password)
           .then(response => {
-            const data = response.data;
-            console.log('@@@ data', data);
+            const data = response;
             commit('SET_TOKEN', data.accessToken);
             setToken(data.accessToken);
             resolve();
@@ -62,25 +52,22 @@ const user = {
       });
     },
 
-    // 获取用户信息
     GetUserInfo({ commit, state }) {
       return new Promise(resolve => {
-        commit('SET_ROLES', 'admin');
-        commit('SET_NAME', 'CRIT');
-        commit(
-          'SET_AVATAR',
-          'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
-        );
-        commit('SET_INTRODUCTION', 'Introduction');
-        const admin = {
-          roles: ['admin'],
-          token: 'admin',
-          introduction: '我是超级管理员',
-          avatar:
-            'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-          name: 'Super Admin'
-        };
-        resolve(admin);
+        getCurUser().then(user => {
+          commit('SET_USER', user);
+          commit('SET_ROLES', [user.role]);
+          resolve(user);
+        });
+      });
+    },
+    UpdateCurUser({ commit, state }, updatedUser) {
+      return new Promise(resolve => {
+        updateCurUser(updatedUser).then(user => {
+          commit('SET_USER', user);
+          commit('SET_ROLES', [user.role]);
+          resolve(user);
+        });
       });
     },
 
@@ -123,14 +110,22 @@ const user = {
       return new Promise(resolve => {
         commit('SET_TOKEN', role);
         setToken(role);
-        getUserInfo(role).then(response => {
+        getCurUser().then(response => {
           const data = response.data;
           commit('SET_ROLES', data.roles);
-          commit('SET_NAME', data.name);
-          commit('SET_AVATAR', data.avatar);
-          commit('SET_INTRODUCTION', data.introduction);
+          // commit('SET_NAME', data.name);
+          // commit('SET_AVATAR', data.avatar);
+          // commit('SET_INTRODUCTION', data.introduction);
           dispatch('GenerateRoutes', data); // 动态修改权限后 重绘侧边菜单
           resolve();
+        });
+      });
+    },
+    GetAllUser({ commit, dispatch }) {
+      return new Promise(resolve => {
+        getAllUsers().then(res => {
+          commit('SET_USERS', res);
+          resolve(res);
         });
       });
     }

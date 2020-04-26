@@ -15,10 +15,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // Do something before request is sent
     if (store.getters.token) {
-      // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-      config.headers['X-Token'] = getToken();
+      config.headers['Authorization'] = `Bearer ${getToken()}`;
     }
     return config;
   },
@@ -39,15 +37,16 @@ service.interceptors.response.use(
    * The following codes are all examples, please modify them according to your own needs, if not, you can delete
    */
   response => {
-    const res = response.data;
-    if (res.code !== 200) {
+    const res = response;
+
+    if (res.status !== 200) {
       Message({
         message: res.message,
         type: 'error',
         duration: 5 * 1000
       });
       // 50008:Illegal token; 50012:Other clients have logged in;  50014:Token expired;
-      if (res.code === 500 || res.code === 404 || res.code === 400) {
+      if (res.status === 500 || res.status === 404 || res.status === 400) {
         // 请自行在引入 MessageBox
         // import { Message, MessageBox } from 'element-ui'
         MessageBox.confirm(

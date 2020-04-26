@@ -52,8 +52,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'metajet1',
-        password: 'abcabcabc'
+        username: 'SuperAdmin',
+        password: '123456789'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],

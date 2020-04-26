@@ -9,7 +9,7 @@
         <error-log class="errLog-container right-menu-item"/>
 
         <el-tooltip :content="$t('navbar.screenfull')" effect="dark" placement="bottom">
-          <screenfull class="screenfull right-menu-item"/>
+          <screenfull class="screenfull right-menu-item" style="margin-top: 13px"/>
         </el-tooltip>
 
         <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
@@ -25,8 +25,9 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom"/>
+          <!-- <img :src="curUser.avatarImageId+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
+          <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png" class="user-avatar" style="margin-bottom: 25px">
+          <i class="el-icon-caret-bottom" style="margin-bottom: 25px"/>
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/profile">
@@ -76,8 +77,7 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'name',
-      'avatar',
+      'curUser',
       'device'
     ])
   },
@@ -100,6 +100,7 @@ export default {
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;
+  margin-bottom: 0px !important;
   .hamburger-container {
     line-height: 58px;
     height: 50px;
@@ -147,7 +148,7 @@ export default {
         .el-icon-caret-bottom {
           position: absolute;
           right: -20px;
-          top: 25px;
+          top: 15px;
           font-size: 12px;
         }
       }

@@ -25,10 +25,10 @@ const tableRouter = {
       meta: { title: 'dragTable' }
     },
     {
-      path: 'inline-edit-table',
-      component: () => import('@/views/table/inlineEditTable'),
-      name: 'InlineEditTable',
-      meta: { title: 'inlineEditTable' }
+      path: 'team',
+      component: () => import('@/views/team/index'),
+      name: 'Team',
+      meta: { title: 'team' }
     },
     {
       path: 'tree-table',

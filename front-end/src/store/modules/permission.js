@@ -1,4 +1,4 @@
-import { asyncRouterMap, constantRouterMap } from '@/router'
+import { asyncRouterMap, constantRouterMap } from '@/router';
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -7,9 +7,13 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
  */
 function hasPermission(roles, route) {
   if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+    console.log('route.meta', route.meta);
+    console.log('roles', roles);
+
+    // return roles.some(role => route.meta.roles.includes(role));
+    return route.meta.roles.includes(roles);
   } else {
-    return true
+    return true;
   }
 }
 
@@ -19,19 +23,19 @@ function hasPermission(roles, route) {
  * @param roles
  */
 function filterAsyncRouter(routes, roles) {
-  const res = []
+  const res = [];
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = { ...route };
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
-        tmp.children = filterAsyncRouter(tmp.children, roles)
+        tmp.children = filterAsyncRouter(tmp.children, roles);
       }
-      res.push(tmp)
+      res.push(tmp);
     }
-  })
+  });
 
-  return res
+  return res;
 }
 
 const permission = {
@@ -41,25 +45,27 @@ const permission = {
   },
   mutations: {
     SET_ROUTERS: (state, routers) => {
-      state.addRouters = routers
-      state.routers = constantRouterMap.concat(routers)
+      state.addRouters = routers;
+      state.routers = constantRouterMap.concat(routers);
     }
   },
   actions: {
     GenerateRoutes({ commit }, data) {
       return new Promise(resolve => {
-        const { roles } = data
-        let accessedRouters
-        if (roles.includes('admin')) {
-          accessedRouters = asyncRouterMap
+        // const { roles } = data;
+        const roles = data;
+        let accessedRouters;
+
+        if (roles === 'SuperAdmin') {
+          accessedRouters = asyncRouterMap;
         } else {
-          accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
+          accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
         }
-        commit('SET_ROUTERS', accessedRouters)
-        resolve()
-      })
+        commit('SET_ROUTERS', accessedRouters);
+        resolve();
+      });
     }
   }
-}
+};
 
-export default permission
+export default permission;

@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-10"><h1>User name</h1></div>
+      <div class="col-sm-10"><h1>{{ $t('route.profile') }}</h1></div>
     </div>
     <div class="row">
       <div class="col-sm-3"><!--left col-->
@@ -16,8 +16,8 @@
         <br>
 
         <div class="panel panel-default">
-          <div class="panel-heading">Website <i class="fa fa-link fa-1x"/></div>
-          <div class="panel-body"><a href="http://bootnipets.com">bootnipets.com</a></div>
+          <div class="panel-heading">Roles <i class="fa fa-link fa-1x"/></div>
+          <div class="panel-body"><a href="http://bootnipets.com"/>{{ curUser.role }}</div>
         </div>
 
         <ul class="list-group">
@@ -40,9 +40,16 @@
 import singleImage from '@/components/Upload/singleImage.vue';
 import profileTab from './components/Tabs/profileTab.vue';
 import uploadAvatar from './components/UploadAvatar/uploadAvatar.vue';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'Profile',
-  components: { singleImage, profileTab, uploadAvatar }
+  components: { singleImage, profileTab, uploadAvatar },
+  computed: {
+    ...mapGetters([
+      'curUser',
+      'roles'
+    ])
+  }
 }
 </script>
