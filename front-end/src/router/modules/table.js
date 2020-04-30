@@ -31,10 +31,10 @@ const tableRouter = {
       meta: { title: 'team' }
     },
     {
-      path: 'tree-table',
-      component: () => import('@/views/table/treeTable/treeTable'),
-      name: 'TreeTableDemo',
-      meta: { title: 'treeTable' }
+      path: 'user',
+      component: () => import('@/views/user/index'),
+      name: 'User',
+      meta: { title: 'user' }
     },
     {
       path: 'custom-tree-table',

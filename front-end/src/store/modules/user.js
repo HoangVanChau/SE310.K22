@@ -1,6 +1,12 @@
 import { loginByUsername } from '@/api/login';
 import { getToken, setToken, removeToken } from '@/utils/auth';
-import { getCurUser, updateCurUser, getAllUsers } from '../../api/user';
+import {
+  getCurUser,
+  updateCurUser,
+  getAllUsers,
+  createUser,
+  updateUser
+} from '../../api/user';
 
 const user = {
   state: {
@@ -90,7 +96,6 @@ const user = {
       return new Promise((resolve, reject) => {
         commit('SET_TOKEN', '');
         commit('SET_ROLES', []);
-        console.log('@@@ state.token', state.token);
         removeToken();
         resolve();
       });
@@ -125,6 +130,22 @@ const user = {
       return new Promise(resolve => {
         getAllUsers().then(res => {
           commit('SET_USERS', res);
+          resolve(res);
+        });
+      });
+    },
+    CreateUser({ commit, dispatch }, user) {
+      return new Promise((resolve, reject) => {
+        createUser(user).then(res => {
+          dispatch('GetAllUser');
+          resolve(res);
+        });
+      });
+    },
+    UpdateUser({ commit, dispatch }, user) {
+      return new Promise((resolve, reject) => {
+        updateUser(user.userId, user).then(res => {
+          dispatch('GetAllUser');
           resolve(res);
         });
       });

@@ -1,5 +1,6 @@
 export default {
   route: {
+    user: 'Nhân viên',
     team: 'Nhóm',
     profile: 'Hồ sơ',
     dashboard: 'Dashboard',
@@ -133,7 +134,11 @@ export default {
     leader: 'Trưởng nhóm',
     delete: 'Xóa',
     cancel: 'Hủy bỏ',
-    confirm: 'Xác nhận'
+    confirm: 'Xác nhận',
+    phoneNumber: 'Số điện thoại',
+    role: 'Chức vụ',
+    fullName: 'Họ Tên',
+    dateOfBirth: 'Ngày sinh'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',

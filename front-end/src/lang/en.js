@@ -1,5 +1,6 @@
 export default {
   route: {
+    user: 'Employee',
     team: 'Team',
     profile: 'Profile',
     dashboard: 'Dashboard',
@@ -127,7 +128,11 @@ export default {
     leader: 'Leader',
     delete: 'Delete',
     cancel: 'Cancel',
-    confirm: 'Confirm'
+    confirm: 'Confirm',
+    phoneNumber: 'Phone Number',
+    role: 'Role',
+    fullName: 'Full Name',
+    dateOfBirth: 'Date of Birth'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',

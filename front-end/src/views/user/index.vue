@@ -1,14 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('table.title')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+      <el-input :placeholder="$t('table.fullName')" v-model="listQuery.fullName" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-select v-model="listQuery.sort" style="width: 160px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
     </div>
+    <!-- :default-sort = "{prop: 'date', order: 'descending'}" -->
 
     <el-table
       v-loading="listLoading"
@@ -19,14 +20,14 @@
       stripe
       highlight-current-row
       style="width: 100%;">
-      <el-table-column :label="$t('table.id')" align="center" hidden="true">
+      <el-table-column :label="$t('table.id')" :sort-method="handleFilter" align="center" hidden="hidden" prop="userId">
         <template slot-scope="scope">
-          <span>{{ scope.row.teamId }}</span>
+          <span>{{ scope.row.userId }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.leader')" align="center">
+      <el-table-column :label="$t('table.fullName')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.leaders[0].fullName }}</span>
+          <span>{{ scope.row.fullName }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.createdDate')" align="center" sortable prop="createdDate">
@@ -34,14 +35,19 @@
           <span>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.lastModifiedDate')" align="center">
+      <el-table-column :label="$t('table.lastModifiedDate')" align="center" sortable prop="lastModifiedDate">
         <template slot-scope="scope">
           <span>{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.teamName')" align="center">
+      <el-table-column :label="$t('table.phoneNumber')" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.teamName }}</span>
+          <span>{{ scope.row.phoneNumber }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column :label="$t('table.role')" align="center" sortable prop="role">
+        <template slot-scope="scope">
+          <span>{{ scope.row.role }}</span>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
@@ -59,13 +65,23 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 70%; margin-left:50px;">
-        <el-form-item :label="$t('table.leader')" prop="leaderId">
-          <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%">
-            <el-option v-for="item in lstLeader" :key="item.userId" :label="item.fullName" :value="item.userId"/>
-          </el-select>
+        <el-form-item :label="$t('table.fullName')" prop="fullName">
+          <el-input v-model="temp.fullName"/>
         </el-form-item>
-        <el-form-item :label="$t('table.teamName')" prop="teamName">
-          <el-input v-model="temp.teamName"/>
+        <el-form-item :label="$t('login.username')" prop="username">
+          <el-input v-model="temp.userName"/>
+        </el-form-item>
+        <el-form-item :label="'Email'" prop="email">
+          <el-input v-model="temp.email"/>
+        </el-form-item>
+        <el-form-item :label="$t('table.phoneNumber')" prop="phoneNumber">
+          <el-input v-model="temp.phoneNumber"/>
+        </el-form-item>
+        <el-form-item :label="$t('table.role')" prop="role">
+          <el-input v-model="temp.role" disabled/>
+        </el-form-item>
+        <el-form-item :label="$t('table.dateOfBirth')" prop="dateOfBirth">
+          <el-date-picker v-model="temp.dateOfBirth" :placeholder="$t('i18nView.datePlaceholder')" type="date"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -83,7 +99,7 @@ import waves from '@/directive/waves' // 水波纹指令
 import { parseTime, compareValues } from '@/utils'
 
 export default {
-  name: 'Team',
+  name: 'Employee',
   directives: {
     waves
   },
@@ -100,22 +116,30 @@ export default {
   data() {
     return {
       tableKey: 0,
-      list: null,
+      list: [],
       total: null,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
         // importance: undefined,
-        teamName: undefined,
+        fullName: undefined,
         // type: undefined,
         sort: '+createdDate'
       },
       sortOptions: [{ label: 'Date Ascending', key: '+createdDate' }, { label: 'Date Descending', key: '-createdDate' }],
       temp: {
-        id: undefined,
-        teamName: '',
-        leaderId: '',
+        userId: undefined,
+        employeeId: undefined,
+        fullName: '',
+        userName: '',
+        email: '',
+        avatarImageId: '',
+        phoneNumber: '',
+        address: '',
+        dateOfBirth: Date.now(),
+        lastModifyDate: Date.now(),
+        role: 'User'
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -124,12 +148,15 @@ export default {
         create: 'Create'
       },
       rules: {
-        leaderId: [{ required: true, message: 'leader is required', trigger: 'change' }],
+        fullName: [{ required: true, message: 'Full name is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        teamName: [{ required: true, message: 'Team Name is required', trigger: 'blur' }]
+        username: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
+        email: [{ required: true, message: 'Email is required', trigger: 'blur' }],
+        phoneNumber: [{ required: true, message: 'Phone Number is required', trigger: 'blur' }],
+        dateOfBirth: [{ required: true, message: 'Date of birth is required', trigger: 'blur' }]
+
       },
       downloadLoading: false,
-      lstLeader: []
     }
   },
   created() {
@@ -138,24 +165,22 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      this.$store.dispatch('GetAllTeam').then(items => {
-        if (this.listQuery.teamName) {
+      this.$store.dispatch('GetAllUser').then(items => {
+        if (this.listQuery.fullName) {
           this.list = items.map(item => {
-            this.$set(item, 'edit', false)
+            this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
             return item
           })
             .sort(compareValues(this.listQuery.sort))
-            .filter(item => item.teamName.toLowerCase().startsWith(this.listQuery.teamName.toLowerCase()));
+            .filter(item => item.fullName.toLowerCase().startsWith(this.listQuery.fullName.toLowerCase()))
         } else {
           this.list = items.map(item => {
-            this.$set(item, 'edit', false)
+            this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
             return item
           }).sort(compareValues(this.listQuery.sort));
         }
       });
-      this.$store.dispatch('GetAllUser').then(items => {
-        this.lstLeader = items.filter(user => user.role === 'Manager')
-      })
+
       this.listLoading = false;
     },
     handleFilter() {
@@ -179,9 +204,17 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
-        teamName: '',
-        leader: '',
+        userId: undefined,
+        employeeId: undefined,
+        fullName: '',
+        userName: '',
+        email: '',
+        avatarImageId: '',
+        phoneNumber: '',
+        address: '',
+        dateOfBirth: Date.now(),
+        lastModifyDate: Date.now(),
+        role: 'User'
       }
     },
     handleCreate() {
@@ -195,7 +228,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.$store.dispatch('CreateTeam', this.temp).then(res => {
+          this.$store.dispatch('createUser', this.temp).then(res => {
             console.log(res);
           });
         }
@@ -233,13 +266,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['id', 'teamName', 'createdDate', 'lastModifyDate', 'leader']
-        const filterVal = ['id', 'teamName', 'createdDate', 'lastModifyDate', 'leader']
+        const tHeader = ['id', 'fullName', 'createdDate', 'lastModifyDate', 'dateOfBirth', 'email', 'phoneNumber', 'role']
+        const filterVal = ['id', 'fullName', 'createdDate', 'lastModifyDate', 'dateOfBirth', 'email', 'phoneNumber', 'role']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'list team'
+          filename: 'ListUser'
         })
         this.downloadLoading = false
       })
