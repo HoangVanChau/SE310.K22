@@ -14,16 +14,23 @@
       v-loading="listLoading"
       :key="tableKey"
       :data="list"
+      :default-sort = "{prop: 'date', order: 'descending'}"
       border
       fit
+      stripe
       highlight-current-row
       style="width: 100%;">
+      <el-table-column :label="$t('table.id')" align="center" hidden="true">
+        <template slot-scope="scope">
+          <span>{{ scope.row.teamId }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('table.leader')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.leaders[0].fullName }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.createdDate')" align="center">
+      <el-table-column :label="$t('table.createdDate')" align="center" sortable>
         <template slot-scope="scope">
           <span>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</span>
         </template>
@@ -53,12 +60,12 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 70%; margin-left:50px;">
-        <el-form-item :label="$t('table.leader')" prop="leader">
-          <el-select v-model="temp.leader" class="filter-item" placeholder="Please select" style="width: 100%">
+        <el-form-item :label="$t('table.leader')" prop="leaderId">
+          <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%">
             <el-option v-for="item in lstLeader" :key="item.userId" :label="item.fullName" :value="item.userId"/>
           </el-select>
         </el-form-item>
-        <el-form-item :label="$t('table.teamName')" prop="title">
+        <el-form-item :label="$t('table.teamName')" prop="teamName">
           <el-input v-model="temp.teamName"/>
         </el-form-item>
       </el-form>
@@ -109,7 +116,7 @@ export default {
       temp: {
         id: undefined,
         teamName: '',
-        leader: '',
+        leaderId: '',
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -118,7 +125,7 @@ export default {
         create: 'Create'
       },
       rules: {
-        leader: [{ required: true, message: 'leader is required', trigger: 'change' }],
+        leaderId: [{ required: true, message: 'leader is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         teamName: [{ required: true, message: 'Team Name is required', trigger: 'blur' }]
       },
@@ -164,6 +171,7 @@ export default {
     },
     resetTemp() {
       this.temp = {
+        id: undefined,
         teamName: '',
         leader: '',
       }
@@ -178,6 +186,11 @@ export default {
     },
     createData() {
       this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('CreateTeam', this.temp).then(res => {
+            console.log(res);
+          });
+        }
       })
     },
     handleUpdate(row) {
@@ -193,7 +206,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          this.$store.dispatch('UpdateTeam', tempData).then(res => {
+            console.log(res);
+          });
         }
       })
     },
