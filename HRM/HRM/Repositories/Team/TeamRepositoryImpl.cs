@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace HRM.Repositories.Team
@@ -54,13 +55,16 @@ namespace HRM.Repositories.Team
 
         public async Task<bool> DeleteUserFromTeam(string teamId, string userId)
         {
+            var team = await Collection.Find(x => x.TeamId == teamId).FirstOrDefaultAsync();
+            team.MembersId.Remove(userId);
+            
             var updateDefine = Builders<Models.Cores.Team>
                 .Update
-                .PullFilter(x => x.MembersId, id => id == userId)
+                .Set(t => t.MembersId, team.MembersId)
                 .Push(x => x.ModifyDate, DateTime.Now)
                 .CurrentDate(x => x.LastModifyDate);
             
-            var result = await Collection.FindOneAndUpdateAsync(t => t.TeamId == teamId, updateDefine);
+            var result = await Collection.FindOneAndUpdateAsync(x => x.TeamId == teamId, updateDefine);
             return true;
         }
 
