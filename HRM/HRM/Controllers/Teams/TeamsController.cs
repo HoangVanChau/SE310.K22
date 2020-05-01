@@ -83,6 +83,14 @@ namespace HRM.Controllers.Teams
             var checkExistTeam = _teamRepo.FindUserExistInAnyTeam(newUser.UserId);
             if (checkExistTeam != null && checkExistTeam.Count > 0)
             {
+                if (checkExistTeam.Find(x => x.MembersId.Contains(newUser.UserId)).TeamId == teamId)
+                {
+                    return new BadRequestResponse(new ErrorData
+                    {
+                        Message = "User đã tồn tại ở chính Team này!",
+                        Data = checkExistTeam
+                    });
+                }
                 return new BadRequestResponse(new ErrorData
                 {
                     Message = "User đã tồn tại ở Team khác!",
@@ -103,7 +111,7 @@ namespace HRM.Controllers.Teams
             {
                 return new OkResponse(new
                 {
-                    Message = "Sửa thông tin team thành công"
+                    Message = "Thêm nhân viên vào Team thành công"
                 });
             }
             else

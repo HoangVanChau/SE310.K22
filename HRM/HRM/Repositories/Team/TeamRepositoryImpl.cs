@@ -56,7 +56,14 @@ namespace HRM.Repositories.Team
         public async Task<bool> DeleteUserFromTeam(string teamId, string userId)
         {
             var team = await Collection.Find(x => x.TeamId == teamId).FirstOrDefaultAsync();
-            team.MembersId.Remove(userId);
+            if (team.MembersId.Contains(userId))
+            {
+                team.MembersId.Remove(userId);
+            }
+            else
+            {
+                return false;
+            }
             
             var updateDefine = Builders<Models.Cores.Team>
                 .Update
@@ -64,8 +71,8 @@ namespace HRM.Repositories.Team
                 .Push(x => x.ModifyDate, DateTime.Now)
                 .CurrentDate(x => x.LastModifyDate);
             
-            var result = await Collection.FindOneAndUpdateAsync(x => x.TeamId == teamId, updateDefine);
-            return true;
+            var result = await Collection.UpdateOneAsync(x => x.TeamId == teamId, updateDefine);
+            return result.ModifiedCount.Equals(1);
         }
 
         public List<Models.Cores.Team> FindUserExistInAnyTeam(string userId)
