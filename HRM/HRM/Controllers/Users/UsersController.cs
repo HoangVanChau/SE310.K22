@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
@@ -112,6 +113,11 @@ namespace HRM.Controllers.Users
                 updateDefine = updateDefine.Set(u => u.DateOfBirth, newDoB); 
             }
 
+            if (updateData.AvatarImageId != null)
+            {
+                updateDefine = updateDefine.Set(u => u.AvatarImageId, updateData.AvatarImageId);
+            }
+
             try
             {
                 var result = await _userRepo.UpdateUserByUserId(userId, updateDefine);
@@ -168,6 +174,11 @@ namespace HRM.Controllers.Users
             {
                 var newDoB = DateTime.Parse(updateData.DateOfBirth);
                 updateDefine = updateDefine.Set(u => u.DateOfBirth, newDoB); 
+            }
+
+            if (updateData.AvatarImageId != null)
+            {
+                updateDefine = updateDefine.Set(u => u.AvatarImageId, updateData.AvatarImageId);
             }
 
             try
@@ -255,11 +266,19 @@ namespace HRM.Controllers.Users
                 };
                 await _userRepo.InsertOne(newSupperAdmin);
                 
-                return new OkResponse(newSupperAdmin);
+                return new OkResponse(new
+                {
+                    UserName = newSupperAdmin.UserName,
+                    Password = "123456789"
+                });
             }
             else
             {
-                return new OkResponse(supperAdmin);
+                return new OkResponse(new
+                {
+                    UserName = supperAdmin.First().UserName,
+                    Password = "123456789"
+                });
             }
         }
         
