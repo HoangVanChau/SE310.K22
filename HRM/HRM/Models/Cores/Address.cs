@@ -5,5 +5,6 @@ namespace HRM.Models.Cores
         public Locate Province { get; set; }
         public Locate District { get; set; }
         public Locate Ward { get; set; }
+        public string DetailAddress { get; set; }
     }
 }
