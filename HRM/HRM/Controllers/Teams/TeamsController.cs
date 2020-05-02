@@ -105,14 +105,14 @@ namespace HRM.Controllers.Teams
             }
             
             var updateDefine = Builders<Team>.Update.CurrentDate(x => x.LastModifyDate);
-            updateDefine.Set(x => x.LeaderId, newLeader.UserId);
+            updateDefine = updateDefine.Set(x => x.LeaderId, newLeader.UserId);
 
             var result = await _teamRepo.UpdateTeamInfoByTeamId(teamId, updateDefine);
             if (result)
             {
                 return new OkResponse(new
                 {
-                    Message = "Sửa thông tin team thành công"
+                    Message = "Thay đổi leader thành công!"
                 });
             }
             else

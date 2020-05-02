@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
-using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace HRM.Repositories.Team
