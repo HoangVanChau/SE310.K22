@@ -26,5 +26,13 @@ namespace HRM.Repositories.AuthRepository
         {
             return await Collection.Find(x => x.UserId == userId).FirstOrDefaultAsync();
         }
+
+        public async Task<bool> UpdateUserPassword(string userId, string newHashPassword)
+        {
+            var updateDefine = Builders<Models.Cores.UserAuth>.Update.Set(x => x.HashPassword, newHashPassword);
+            var result = await Collection.UpdateOneAsync(x => x.UserId == userId, updateDefine);
+
+            return result.ModifiedCount.Equals(1);
+        }
     }
 }

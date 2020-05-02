@@ -117,7 +117,7 @@ namespace HRM.Controllers.Users
             {
                 updateDefine = updateDefine.Set(u => u.AvatarImageId, updateData.AvatarImageId);
             }
-
+            
             try
             {
                 var result = await _userRepo.UpdateUserByUserId(userId, updateDefine);

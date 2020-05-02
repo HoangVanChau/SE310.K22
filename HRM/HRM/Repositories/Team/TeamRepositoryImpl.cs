@@ -91,6 +91,11 @@ namespace HRM.Repositories.Team
             return result.IsAcknowledged && result.ModifiedCount.Equals(1);
         }
 
+        public async Task<Models.Cores.Team> FindLeaderExistInAnyTeam(string userId)
+        {
+            return await Collection.Find(x => x.LeaderId == userId || x.MembersId.Contains(userId)).FirstOrDefaultAsync();
+        }
+
         public Task<List<Models.Cores.Team>> GetAllTeams()
         {
             return Collection.Aggregate()
