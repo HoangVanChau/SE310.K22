@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using HRM.Services.MongoDB;
@@ -31,9 +32,15 @@ namespace HRM
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:5000");
+                    var configuration = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile("appSettings.json", false, true)
+                        .Build();
+                    
+                    webBuilder.UseConfiguration(configuration);
+                    webBuilder.UseUrls("http://0.0.0.0:5001");
                     webBuilder.UseKestrel();
+                    webBuilder.UseStartup<Startup>();
                 });
     }
 }
