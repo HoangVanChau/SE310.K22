@@ -97,5 +97,42 @@ namespace HRM.Controllers.Auth
 
             return new OkResponse(user.WithoutPassword());
         }
+        
+        [AllowAllSystemUser]
+        [HttpPatch]
+        [Route("/api/auth/password")]
+        public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordRequest requestData)
+        {
+            var userId = User.Identity.GetId();
+            var user = await _authUserRepo.FindUserAuthByUserId(userId);
+
+            if (_authService.HashPassword(requestData.OldPassword) == user.HashPassword)
+            {
+                var newHashPassword = _authService.HashPassword(requestData.NewPassword);
+                var result = await _authUserRepo.UpdateUserPassword(userId, newHashPassword);
+                
+                if (result)
+                {
+                    return new OkResponse(new
+                    {
+                        Message = "Thay đổi mật khẩu thành công"
+                    });
+                }
+                else
+                {
+                    return new BadRequestResponse(new ErrorData
+                    {
+                        Message = "Thay đổi mật khẩu thất bại!"
+                    });
+                }
+            }
+            else
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Mật khẩu cũ không đúng!"
+                });
+            }
+        }
     }
 }

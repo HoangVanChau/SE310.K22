@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace HRM.Repositories.Team
@@ -54,14 +55,24 @@ namespace HRM.Repositories.Team
 
         public async Task<bool> DeleteUserFromTeam(string teamId, string userId)
         {
+            var team = await Collection.Find(x => x.TeamId == teamId).FirstOrDefaultAsync();
+            if (team.MembersId.Contains(userId))
+            {
+                team.MembersId.Remove(userId);
+            }
+            else
+            {
+                return false;
+            }
+            
             var updateDefine = Builders<Models.Cores.Team>
                 .Update
-                .PullFilter(x => x.MembersId, id => id == userId)
+                .Set(t => t.MembersId, team.MembersId)
                 .Push(x => x.ModifyDate, DateTime.Now)
                 .CurrentDate(x => x.LastModifyDate);
             
-            var result = await Collection.FindOneAndUpdateAsync(t => t.TeamId == teamId, updateDefine);
-            return true;
+            var result = await Collection.UpdateOneAsync(x => x.TeamId == teamId, updateDefine);
+            return result.ModifiedCount.Equals(1);
         }
 
         public List<Models.Cores.Team> FindUserExistInAnyTeam(string userId)
@@ -78,6 +89,11 @@ namespace HRM.Repositories.Team
             var finalDefine = updateDefine.Push(x => x.ModifyDate, DateTime.Now);
             var result = await Collection.UpdateOneAsync(x => x.TeamId == teamId, finalDefine);
             return result.IsAcknowledged && result.ModifiedCount.Equals(1);
+        }
+
+        public async Task<Models.Cores.Team> FindLeaderExistInAnyTeam(string userId)
+        {
+            return await Collection.Find(x => x.LeaderId == userId || x.MembersId.Contains(userId)).FirstOrDefaultAsync();
         }
 
         public Task<List<Models.Cores.Team>> GetAllTeams()

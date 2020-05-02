@@ -8,5 +8,6 @@ namespace HRM.Repositories.AuthRepository
     {
         public Task<UserAuth> FindUserAuthByUserName(string userName);
         public Task<UserAuth> FindUserAuthByUserId(string userId);
+        public Task<bool> UpdateUserPassword(string userId, string newHashPassword);
     }
 }

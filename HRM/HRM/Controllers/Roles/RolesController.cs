@@ -31,7 +31,6 @@ namespace HRM.Controllers.Roles
         }
 
         [HttpPost]
-        
         [AllowChangeRole]
         public async Task<JsonResult> Post([FromBody] ChangeRoleRequest data)
         {

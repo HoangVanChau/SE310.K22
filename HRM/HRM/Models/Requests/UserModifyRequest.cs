@@ -11,5 +11,6 @@ namespace HRM.Models.Requests
         public String DateOfBirth { get; set; }
         public String FullName { get; set; }
         public Address Address { get; set; }
+        public String AvatarImageId { get; set; }
     }
 }

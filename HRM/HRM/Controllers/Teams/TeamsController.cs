@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using HRM.Constants;
 using HRM.Extensions;
 using HRM.Models.Cores;
 using HRM.Models.Responses.Bases;
@@ -25,12 +26,14 @@ namespace HRM.Controllers.Teams
         }
 
         [HttpGet]
+        [AllowAllSystemUser]
         public async Task<JsonResult> Get()
         {
             return new OkResponse(await _teamRepo.GetAllTeams());
         }
         
         [HttpGet("{teamId}")]
+        [AllowAllSystemUser]
         public async Task<JsonResult> Get(string teamId)
         {
             return new OkResponse(await _teamRepo.GetTeamByTeamId(teamId));
@@ -41,10 +44,6 @@ namespace HRM.Controllers.Teams
         public async Task<JsonResult> Patch(string teamId, [FromBody] Team updateData)
         {
             var updateDefine = Builders<Team>.Update.CurrentDate(x => x.LastModifyDate);
-            if (updateData.LeaderId != null)
-            {
-                updateDefine = updateDefine.Set(x => x.LeaderId, updateData.LeaderId);
-            }
             
             if (updateData.TeamName != null)
             {
@@ -73,6 +72,58 @@ namespace HRM.Controllers.Teams
             }
         }
         
+        [HttpPatch("{teamId}/leader")]
+        [Authorize(Roles = Constants.Roles.Director)]
+        public async Task<JsonResult> Patch(string teamId, [FromBody] User newLeader)
+        {
+            if (newLeader.UserId == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Thông tin leader mới bị lỗi"
+                });
+            }
+
+            var newLeaderData = await _userRepo.FindUserByUserId(newLeader.UserId);
+            if (newLeaderData.Role != Constants.Roles.Manager)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "User phải có Role là Manager mới được làm Lead của team",
+                    Data = newLeaderData
+                });
+            }
+
+            var checkExistInAnotherTeam = await _teamRepo.FindLeaderExistInAnyTeam(newLeader.UserId);
+            if (checkExistInAnotherTeam != null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Leader này đã có mặt ở team khác",
+                    Data = checkExistInAnotherTeam
+                });
+            }
+            
+            var updateDefine = Builders<Team>.Update.CurrentDate(x => x.LastModifyDate);
+            updateDefine.Set(x => x.LeaderId, newLeader.UserId);
+
+            var result = await _teamRepo.UpdateTeamInfoByTeamId(teamId, updateDefine);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Sửa thông tin team thành công"
+                });
+            }
+            else
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Lỗi khi thay đổi thông tin team!"
+                });
+            }
+        }
+        
         [HttpPost("{teamId}")]
         [Authorize(Roles = Constants.Roles.Manager)]
         public async Task<JsonResult> Post(string teamId,[FromBody] User newUser)
@@ -83,6 +134,14 @@ namespace HRM.Controllers.Teams
             var checkExistTeam = _teamRepo.FindUserExistInAnyTeam(newUser.UserId);
             if (checkExistTeam != null && checkExistTeam.Count > 0)
             {
+                if (checkExistTeam.Find(x => x.MembersId.Contains(newUser.UserId)).TeamId == teamId)
+                {
+                    return new BadRequestResponse(new ErrorData
+                    {
+                        Message = "User đã tồn tại ở chính Team này!",
+                        Data = checkExistTeam
+                    });
+                }
                 return new BadRequestResponse(new ErrorData
                 {
                     Message = "User đã tồn tại ở Team khác!",
@@ -103,7 +162,7 @@ namespace HRM.Controllers.Teams
             {
                 return new OkResponse(new
                 {
-                    Message = "Sửa thông tin team thành công"
+                    Message = "Thêm nhân viên vào Team thành công"
                 });
             }
             else
