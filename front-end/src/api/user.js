@@ -18,7 +18,21 @@ export function getUser(userId) {
     method: 'get'
   });
 }
-export function updateCurUser(data) {
+export function updateCurUser(dataParam) {
+  const data = {
+    UserName: dataParam.userName,
+    FullName: dataParam.fullName,
+    PhoneNumber: dataParam.phoneNumber,
+    Email: dataParam.email,
+    DateOfBirth: dataParam.dateOfBirth,
+    Address: {
+      Province: dataParam.province || null,
+      District: dataParam.district || null,
+      Ward: dataParam.ward || null,
+      DetailAddress: dataParam.detailAddress || null
+    },
+    AvatarImageId: dataParam.avatarImageId || null
+  };
   return request({
     url: '/api/users',
     method: 'patch',
@@ -26,7 +40,21 @@ export function updateCurUser(data) {
   });
 }
 
-export function createUser(data) {
+export function createUser(dataParam) {
+  const data = {
+    UserName: dataParam.userName,
+    FullName: dataParam.fullName,
+    Password: '123456789',
+    PhoneNumber: dataParam.phoneNumber,
+    Email: dataParam.email,
+    DateOfBirth: dataParam.dateOfBirth,
+    Address: {
+      Province: null,
+      District: null,
+      Ward: null
+    },
+    AvatarImageId: null
+  };
   return request({
     url: '/api/users',
     method: 'post',
@@ -34,10 +62,30 @@ export function createUser(data) {
   });
 }
 
-export function updateUser(userId, data) {
+export function updateUser(userId, dataParam) {
+  const data = {
+    UserName: dataParam.userName,
+    FullName: dataParam.fullName,
+    PhoneNumber: dataParam.phoneNumber,
+    Email: dataParam.email,
+    DateOfBirth: dataParam.dateOfBirth,
+    Address: {
+      Province: dataParam.province || null,
+      District: dataParam.district || null,
+      Ward: dataParam.ward || null,
+      DetailAddress: dataParam.detailAddress || null
+    },
+    AvatarImageId: dataParam.avatarImageId || null
+  };
   return request({
-    url: '/api/users'.concat(userId),
+    url: '/api/users/'.concat(userId),
     method: 'patch',
     data
+  });
+}
+export function deleteUser(userId) {
+  return request({
+    url: '/api/users/'.concat(userId),
+    method: 'delete'
   });
 }

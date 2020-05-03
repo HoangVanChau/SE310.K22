@@ -23,9 +23,9 @@ export default {
     ])
   },
   created() {
-    if (!this.roles.includes('SuperAdmin')) {
-      this.currentRole = 'editorDashboard'
-    }
+    // if (!this.roles.includes('SuperAdmin')) {
+    //   this.currentRole = 'editorDashboard'
+    // }
   }
 }
 </script>

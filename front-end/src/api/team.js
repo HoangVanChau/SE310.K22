@@ -12,14 +12,25 @@ export function getTeam(teamId) {
     method: 'get'
   });
 }
-export function updateTeam(teamId, data) {
+export function updateTeam(teamId, dataParam) {
+  const data = {
+    TeamName: dataParam.teamName,
+    LeaderId: dataParam.leaderId,
+    TeamAvatarImageId: dataParam.teamAvatarImageId || null
+  };
   return request({
     url: `/api/teams/${teamId}`,
     method: 'patch',
     data
   });
 }
-export function createTeam(data) {
+export function createTeam(dataParam) {
+  const data = {
+    TeamName: dataParam.teamName,
+    LeaderId: dataParam.leaderId,
+    TeamAvatarImageId: dataParam.teamAvatarImageId || null
+  };
+
   return request({
     url: `/api/teams`,
     method: 'post',

@@ -1,7 +1,10 @@
 export default {
   route: {
-    user: 'Nhân viên',
-    team: 'Nhóm',
+    role: 'Chức vụ',
+    lstUser: 'Danh sách nhân viên',
+    Employee: 'Nhân viên',
+    lstTeam: 'Danh sách nhóm',
+    Team: 'Nhóm',
     profile: 'Hồ sơ',
     dashboard: 'Dashboard',
     introduction: 'Giới thiệu',
@@ -138,7 +141,8 @@ export default {
     phoneNumber: 'Số điện thoại',
     role: 'Chức vụ',
     fullName: 'Họ Tên',
-    dateOfBirth: 'Ngày sinh'
+    dateOfBirth: 'Ngày sinh',
+    refresh: 'Làm mới'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',
@@ -166,5 +170,13 @@ export default {
     close: 'Đóng',
     closeOthers: 'Đóng cái khác',
     closeAll: 'Đóng hết'
+  },
+  i18nView: {
+    datePlaceholder: 'Chọn ngày'
+  },
+  confirm: {
+    deleteMes: 'Bạn có chắc chắn muốn xóa hay không?',
+    ok: 'Xác nhận',
+    cancel: 'Hủy bỏ'
   }
 };

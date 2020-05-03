@@ -8,6 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh" @click="getList">{{ $t('table.refresh') }}</el-button>
     </div>
     <!-- :default-sort = "{prop: 'date', order: 'descending'}" -->
 
@@ -20,11 +21,11 @@
       stripe
       highlight-current-row
       style="width: 100%;">
-      <el-table-column :label="$t('table.id')" :sort-method="handleFilter" align="center" hidden="hidden" prop="userId">
-        <template slot-scope="scope">
+      <!-- <el-table-column :label="$t('table.id')" :sort-method="handleFilter" align="center" hidden="hidden" prop="userId" >
+        <template slot-scope="scope" style="visible: hidden">
           <span>{{ scope.row.userId }}</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column :label="$t('table.fullName')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.fullName }}</span>
@@ -68,7 +69,7 @@
         <el-form-item :label="$t('table.fullName')" prop="fullName">
           <el-input v-model="temp.fullName"/>
         </el-form-item>
-        <el-form-item :label="$t('login.username')" prop="username">
+        <el-form-item :label="$t('login.username')" prop="userName">
           <el-input v-model="temp.userName"/>
         </el-form-item>
         <el-form-item :label="'Email'" prop="email">
@@ -77,17 +78,39 @@
         <el-form-item :label="$t('table.phoneNumber')" prop="phoneNumber">
           <el-input v-model="temp.phoneNumber"/>
         </el-form-item>
-        <el-form-item :label="$t('table.role')" prop="role">
+        <!-- <el-form-item v-if="dialogStatus=='create'" :label="$t('table.role')" prop="role">
           <el-input v-model="temp.role" disabled/>
-        </el-form-item>
+        </el-form-item> -->
+        <!-- <el-form-item :label="$t('table.role')" prop="role">
+          <el-select v-model="temp.role" class="filter-item" placeholder="Please select" style="width: 100%">
+            <el-option v-for="item in roles" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item> -->
         <el-form-item :label="$t('table.dateOfBirth')" prop="dateOfBirth">
-          <el-date-picker v-model="temp.dateOfBirth" :placeholder="$t('i18nView.datePlaceholder')" type="date"/>
+          <el-date-picker
+            v-model="temp.dateOfBirth"
+            :placeholder="$t('i18nView.datePlaceholder')"
+            type="date"
+            format="MM/dd/yyyy"
+            value-format="MM/dd/yyyy"
+            style="width: 100%"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
         <el-button v-else type="primary" @click="updateData">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog :visible.sync="confirm" title="Xác nhận">
+      <div class="" style="width: 70%; margin-left: 50px;">
+        {{ $t('confirm.deleteMes') }}
+        {{ temp.fullName }}
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="confirm = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="handleDelete">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
 
@@ -121,7 +144,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 10,
         // importance: undefined,
         fullName: undefined,
         // type: undefined,
@@ -137,7 +160,7 @@ export default {
         avatarImageId: '',
         phoneNumber: '',
         address: '',
-        dateOfBirth: Date.now(),
+        dateOfBirth: '',
         lastModifyDate: Date.now(),
         role: 'User'
       },
@@ -150,22 +173,28 @@ export default {
       rules: {
         fullName: [{ required: true, message: 'Full name is required', trigger: 'change' }],
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        username: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
+        userName: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
         email: [{ required: true, message: 'Email is required', trigger: 'blur' }],
         phoneNumber: [{ required: true, message: 'Phone Number is required', trigger: 'blur' }],
-        dateOfBirth: [{ required: true, message: 'Date of birth is required', trigger: 'blur' }]
+        dateOfBirth: [{ required: true, message: 'Date of birth is required', trigger: 'blur' }],
+        role: [{ required: true, message: 'Role is required', trigger: 'blur' }]
 
       },
       downloadLoading: false,
+      roles: [],
+      confirm: false
     }
   },
   created() {
     this.getList()
+    this.getRoles()
   },
   methods: {
     getList() {
       this.listLoading = true
       this.$store.dispatch('GetAllUser').then(items => {
+        const begin = (this.listQuery.page - 1) * this.listQuery.limit;
+        const end = begin + this.listQuery.limit;
         if (this.listQuery.fullName) {
           this.list = items.map(item => {
             this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
@@ -173,15 +202,21 @@ export default {
           })
             .sort(compareValues(this.listQuery.sort))
             .filter(item => item.fullName.toLowerCase().startsWith(this.listQuery.fullName.toLowerCase()))
+            .slice(begin, end)
         } else {
           this.list = items.map(item => {
             this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
             return item
-          }).sort(compareValues(this.listQuery.sort));
+          }).sort(compareValues(this.listQuery.sort)).slice(begin, end);
         }
+        this.total = items.length;
+        this.listLoading = false;
       });
-
-      this.listLoading = false;
+    },
+    getRoles() {
+      this.$store.dispatch('GetAllRole').then((result) => {
+        this.roles = result;
+      })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -196,15 +231,17 @@ export default {
       this.getList()
     },
     handleModifyStatus(row, status) {
-      this.$message({
-        message: 'Success',
-        type: 'success'
-      })
-      row.status = status
+      // this.$message({
+      //   message: 'Success',
+      //   type: 'success'
+      // })
+      // row.status = status
+      this.confirm = true;
+      this.temp = Object.assign({}, row)
     },
     resetTemp() {
       this.temp = {
-        userId: undefined,
+        serId: undefined,
         employeeId: undefined,
         fullName: '',
         userName: '',
@@ -212,7 +249,7 @@ export default {
         avatarImageId: '',
         phoneNumber: '',
         address: '',
-        dateOfBirth: Date.now(),
+        dateOfBirth: '',
         lastModifyDate: Date.now(),
         role: 'User'
       }
@@ -228,15 +265,21 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.$store.dispatch('createUser', this.temp).then(res => {
-            console.log(res);
+          this.$store.dispatch('CreateUser', this.temp).then(res => {
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Create successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
           });
         }
       })
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -247,21 +290,38 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          this.$store.dispatch('UpdateTeam', tempData).then(res => {
-            console.log(res);
+          this.$store.dispatch('UpdateUser', { userId: tempData.userId, newData: tempData }).then(res => {
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
           });
         }
       })
     },
-    handleDelete(row) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete successfully',
-        type: 'success',
-        duration: 2000
-      })
-      const index = this.list.indexOf(row)
-      this.list.splice(index, 1)
+    handleDelete() {
+      this.$store.dispatch('DeleteUser', this.temp.userId).then(res => {
+        this.dialogFormVisible = false
+        this.confirm = false
+        this.$notify({
+          title: 'Success',
+          message: 'Delete successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      }).catch(e => {
+        this.$notify({
+          title: 'Error',
+          message: 'Delete unsuccessfully ' + JSON.stringify(e),
+          type: 'error',
+          duration: 2000
+        })
+      });
     },
     handleDownload() {
       this.downloadLoading = true

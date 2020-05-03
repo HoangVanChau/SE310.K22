@@ -3,11 +3,14 @@ import store from '@/store';
 import { getToken } from '@/utils/auth';
 import { environment } from '../environment/environment';
 import { Message, MessageBox } from 'element-ui';
+// import { removeToken } from './auth';
 // create an axios instance
 const service = axios.create({
   baseURL: environment.basePath, // api base_url
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json;charset=UTF-8',
+    'Access-Control-Allow-Origin': '*',
+    Accept: '*/*'
   },
   timeout: 1000
 });
@@ -17,6 +20,7 @@ service.interceptors.request.use(
   config => {
     if (store.getters.token) {
       config.headers['Authorization'] = `Bearer ${getToken()}`;
+      config.headers['Content-Type'] = `application/json`;
     }
     return config;
   },
@@ -46,7 +50,12 @@ service.interceptors.response.use(
         duration: 5 * 1000
       });
       // 50008:Illegal token; 50012:Other clients have logged in;  50014:Token expired;
-      if (res.status === 500 || res.status === 404 || res.status === 400) {
+      if (
+        res.status === 500 ||
+        res.status === 404 ||
+        res.status === 400 ||
+        res.status === 401
+      ) {
         // 请自行在引入 MessageBox
         // import { Message, MessageBox } from 'element-ui'
         MessageBox.confirm(
@@ -57,19 +66,26 @@ service.interceptors.response.use(
             cancelButtonText: 'cancel',
             type: 'warning',
             callback: () => {
+              // removeToken();
+              store.dispatch('LogOut');
               location.reload();
             }
           }
         );
       }
-      return Promise.reject('error');
+      return 'error';
     } else {
       return response.data;
     }
   },
   error => {
-    console.log('err' + error); // for debug
-    return Promise.reject(error);
+    console.log('err.response', error.response); // for debug
+    Message({
+      message: JSON.stringify(error.response.data),
+      type: 'error',
+      duration: 5 * 1000
+    });
+    // return Promise.reject(error);
   }
 );
 

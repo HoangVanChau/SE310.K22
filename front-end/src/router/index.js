@@ -1,16 +1,17 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/views/layout/Layout'
+import Layout from '@/views/layout/Layout';
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+import componentsRouter from './modules/components';
+import chartsRouter from './modules/charts';
+import userRouter from './modules/user';
+import teamRouter from './modules/team';
+import nestedRouter from './modules/nested';
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -88,7 +89,7 @@ export const constantRouterMap = [
         meta: { title: 'profile', icon: 'profile', noCache: true }
       }
     ]
-  },
+  }
   // {
   //   path: '/documentation',
   //   component: Layout,
@@ -115,13 +116,13 @@ export const constantRouterMap = [
   //     }
   //   ]
   // }
-]
+];
 
 export default new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
-})
+});
 
 export const asyncRouterMap = [
   {
@@ -132,7 +133,7 @@ export const asyncRouterMap = [
     meta: {
       title: 'permission',
       icon: 'lock',
-      roles: ['SuperAdmin', 'editor'] // you can set roles in root nav
+      roles: ['SuperAdmin', 'editor', 'Director'] // you can set roles in root nav
     },
     children: [
       {
@@ -141,7 +142,7 @@ export const asyncRouterMap = [
         name: 'PagePermission',
         meta: {
           title: 'pagePermission',
-          roles: ['SuperAdmin'] // or you can only set roles in sub nav
+          roles: ['SuperAdmin', 'Director'] // or you can only set roles in sub nav
         }
       },
       {
@@ -173,8 +174,8 @@ export const asyncRouterMap = [
   componentsRouter,
   chartsRouter,
   nestedRouter,
-  tableRouter,
-
+  userRouter,
+  teamRouter,
   {
     path: '/example',
     component: Layout,
@@ -359,4 +360,4 @@ export const asyncRouterMap = [
   // },
 
   { path: '*', redirect: '/404', hidden: true }
-]
+];

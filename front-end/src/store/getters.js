@@ -13,6 +13,8 @@ const getters = {
   addRouters: state => state.permission.addRouters,
   errorLogs: state => state.errorLog.logs,
   teams: state => state.team.teams,
-  users: state => state.user.users
-}
-export default getters
+  users: state => state.user.users,
+  lstRole: state => state.role.roles,
+  userPermission: state => state.user.permissions
+};
+export default getters;

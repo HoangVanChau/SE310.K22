@@ -5,7 +5,8 @@ import {
   updateCurUser,
   getAllUsers,
   createUser,
-  updateUser
+  updateUser,
+  deleteUser
 } from '../../api/user';
 
 const user = {
@@ -16,7 +17,8 @@ const user = {
     setting: {
       articlePlatform: []
     },
-    users: []
+    users: [],
+    permissions: false
   },
 
   mutations: {
@@ -37,6 +39,9 @@ const user = {
     },
     SET_USERS: (state, users) => {
       state.users = users;
+    },
+    SET_PERMISSIONS: (state, permissions) => {
+      state.permissions = permissions;
     }
   },
 
@@ -62,6 +67,10 @@ const user = {
       return new Promise(resolve => {
         getCurUser().then(user => {
           commit('SET_USER', user);
+          commit(
+            'SET_PERMISSIONS',
+            ['Director', 'SuperAdmin'].includes(user.role)
+          );
           commit('SET_ROLES', [user.role]);
           resolve(user);
         });
@@ -96,6 +105,9 @@ const user = {
       return new Promise((resolve, reject) => {
         commit('SET_TOKEN', '');
         commit('SET_ROLES', []);
+        commit('SET_USERS', []);
+        commit('SET_USER', {});
+        commit('SET_PERMISSIONS', false);
         removeToken();
         resolve();
       });
@@ -142,10 +154,17 @@ const user = {
         });
       });
     },
-    UpdateUser({ commit, dispatch }, user) {
+    UpdateUser({ commit, dispatch }, data) {
       return new Promise((resolve, reject) => {
-        updateUser(user.userId, user).then(res => {
+        updateUser(data.userId, data.newData).then(res => {
           dispatch('GetAllUser');
+          resolve(res);
+        });
+      });
+    },
+    DeleteUser({ commit, dispatch }, userId) {
+      return new Promise(resolve => {
+        deleteUser(userId).then(res => {
           resolve(res);
         });
       });

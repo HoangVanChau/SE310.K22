@@ -1,7 +1,10 @@
 export default {
   route: {
-    user: 'Employee',
-    team: 'Team',
+    role: 'Role',
+    lstUser: 'List Employee',
+    Employee: 'Employee',
+    lstTeam: 'List Team',
+    Team: 'Team',
     profile: 'Profile',
     dashboard: 'Dashboard',
     introduction: 'Introduction',
@@ -132,7 +135,8 @@ export default {
     phoneNumber: 'Phone Number',
     role: 'Role',
     fullName: 'Full Name',
-    dateOfBirth: 'Date of Birth'
+    dateOfBirth: 'Date of Birth',
+    refresh: 'Refresh'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
@@ -158,5 +162,13 @@ export default {
     close: 'Close',
     closeOthers: 'Close Others',
     closeAll: 'Close All'
+  },
+  i18nView: {
+    datePlaceholder: 'Date Placeholder'
+  },
+  confirm: {
+    deleteMes: 'Do you want to delete this record??',
+    ok: 'Confirm',
+    cancel: 'Cancel'
   }
 }

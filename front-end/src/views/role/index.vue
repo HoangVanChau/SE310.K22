@@ -6,7 +6,7 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
-      <el-button v-show="userPermission" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
     </div>
 
@@ -19,11 +19,11 @@
       stripe
       highlight-current-row
       style="width: 100%;">
-      <!-- <el-table-column :label="$t('table.id')" align="center" hidden="true">
+      <el-table-column :label="$t('table.id')" align="center" hidden="true">
         <template slot-scope="scope">
           <span>{{ scope.row.teamId }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column :label="$t('table.leader')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.leaders[0].fullName }}</span>
@@ -44,11 +44,11 @@
           <span>{{ scope.row.teamName }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" width="150" class-name="small-padding fixed-width">
+      <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button type="primary" size="medium" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <!-- <el-button v-if="scope.row.status!='deleted'" size="medium" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button> -->
+          <el-button v-if="scope.row.status!='deleted'" size="medium" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,10 +81,9 @@
 <script>
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime, compareValues } from '@/utils'
-import { mapGetters } from 'vuex'
 
 export default {
-  name: 'LstTeam',
+  name: 'Role',
   directives: {
     waves
   },
@@ -106,7 +105,7 @@ export default {
       listLoading: true,
       listQuery: {
         page: 1,
-        limit: 10,
+        limit: 20,
         // importance: undefined,
         teamName: undefined,
         // type: undefined,
@@ -130,18 +129,10 @@ export default {
         teamName: [{ required: true, message: 'Team Name is required', trigger: 'blur' }]
       },
       downloadLoading: false,
-      lstLeader: [],
+      lstLeader: []
     }
   },
-  computed: {
-    ...mapGetters([
-      'curUser',
-      'userPermission'
-    ])
-  },
   created() {
-    console.log('userPermission', this.userPermission);
-
     this.getList()
   },
   methods: {
@@ -161,7 +152,6 @@ export default {
             return item
           }).sort(compareValues(this.listQuery.sort));
         }
-        this.total = items.length;
       });
       this.$store.dispatch('GetAllUser').then(items => {
         this.lstLeader = items.filter(user => user.role === 'Manager')
@@ -206,8 +196,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('CreateTeam', this.temp).then(res => {
-            this.dialogFormVisible = false
-            this.getList()
+            console.log(res);
           });
         }
       })
@@ -224,16 +213,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          const tempData = {
-            teamName: this.temp.teamName,
-            // leaderId: this.temp.leaderId,
-            teamAvatarImageId: null
-          }
-          console.log(this.temp);
-
-          this.$store.dispatch('UpdateTeam', { teamId: this.temp.teamId, newTeam: tempData }).then(res => {
-            this.dialogFormVisible = false
-            this.getList()
+          const tempData = Object.assign({}, this.temp)
+          this.$store.dispatch('UpdateTeam', tempData).then(res => {
+            console.log(res);
           });
         }
       })
@@ -246,11 +228,7 @@ export default {
         duration: 2000
       })
       const index = this.list.indexOf(row)
-      // this.list.splice(index, 1)
-      this.$store.dispatch('DeleteSoftTeam', index).then(res => {
-        this.dialogFormVisible = false
-        this.getList()
-      });
+      this.list.splice(index, 1)
     },
     handleDownload() {
       this.downloadLoading = true
