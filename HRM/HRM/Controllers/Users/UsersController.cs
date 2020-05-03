@@ -141,7 +141,7 @@ namespace HRM.Controllers.Users
         }
         
         [HttpPatch("{userId}")]
-        [Authorize(Roles = Constants.Roles.Hr)]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
         public async Task<JsonResult> Patch(string userId, [FromBody] UserModifyRequest updateData)
         {
             var updateDefine = Builders<User>.Update.Set(u => u.Email, updateData.Email);
@@ -221,7 +221,7 @@ namespace HRM.Controllers.Users
         }
 
         [HttpDelete("{userId}")]
-        [Authorize(Roles = Constants.Roles.SuperAdmin)]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
         public async Task<JsonResult> Delete(string userId)
         {
             var result = await _userRepo.DeleteUserByUserid(userId);

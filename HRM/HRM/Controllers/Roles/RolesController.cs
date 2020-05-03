@@ -31,7 +31,7 @@ namespace HRM.Controllers.Roles
         }
 
         [HttpPost]
-        [AllowChangeRole]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
         public async Task<JsonResult> Post([FromBody] ChangeRoleRequest data)
         {
             if (!CheckCorrectRole(data.NewRole))

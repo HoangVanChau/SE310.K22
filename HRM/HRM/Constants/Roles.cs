@@ -20,7 +20,10 @@ namespace HRM.Constants
                 Member, Employee, Manager, Director, Hr, SuperAdmin
             };
         }
+
     }
+    
+    
 
     public class AllowAllSystemUser : AuthorizeAttribute
     {
@@ -40,11 +43,11 @@ namespace HRM.Constants
         }
     }
     
-    public class AllowChangeRole : AuthorizeAttribute
+    public class RoleWithSuperAdmin : AuthorizeAttribute
     {
-        public AllowChangeRole()
+        public RoleWithSuperAdmin(String role)
         {
-            Roles = Constants.Roles.SuperAdmin + "," + Constants.Roles.Hr;
+            Roles = Constants.Roles.SuperAdmin + "," + role;
         }
     }
 }

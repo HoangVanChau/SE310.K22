@@ -73,7 +73,7 @@ namespace HRM.Controllers.Teams
         }
         
         [HttpPatch("{teamId}/leader")]
-        [Authorize(Roles = Constants.Roles.Director)]
+        [RoleWithSuperAdmin(Constants.Roles.Director)]
         public async Task<JsonResult> Patch(string teamId, [FromBody] User newLeader)
         {
             if (newLeader.UserId == null)
@@ -125,7 +125,7 @@ namespace HRM.Controllers.Teams
         }
         
         [HttpPost("{teamId}")]
-        [Authorize(Roles = Constants.Roles.Manager)]
+        [RoleWithSuperAdmin(Constants.Roles.Manager)]
         public async Task<JsonResult> Post(string teamId,[FromBody] User newUser)
         {
             var currentUserId = User.Identity.GetId();
@@ -175,7 +175,7 @@ namespace HRM.Controllers.Teams
         }
         
         [HttpDelete("{teamId}")]
-        [Authorize(Roles = Constants.Roles.Manager)]
+        [RoleWithSuperAdmin(Constants.Roles.Manager)]
         public async Task<JsonResult> Delete(string teamId, [FromBody] User removeUser)
         {
             var currentUserId = User.Identity.GetId();
@@ -207,7 +207,7 @@ namespace HRM.Controllers.Teams
         }
 
         [HttpPost]
-        [Authorize(Roles = Constants.Roles.Director)]
+        [RoleWithSuperAdmin(Constants.Roles.Director)]
         public async Task<JsonResult> Post([FromBody] Team newTeam)
         {
             var leader = await _userRepo.FindUserByUserId(newTeam.LeaderId);
