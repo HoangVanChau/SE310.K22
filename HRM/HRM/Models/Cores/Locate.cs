@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace HRM.Models.Cores
 {
+    [BsonIgnoreExtraElements]
     public class Locate
     {    
         [BsonElement("id")]

@@ -1,5 +1,8 @@
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace HRM.Models.Cores
 {
+    [BsonIgnoreExtraElements]
     public class Address
     {
         public Locate Province { get; set; }
