@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HRM.Constants;
@@ -27,22 +28,81 @@ namespace HRM.Controllers.Teams
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> Get()
+        public async Task<JsonResult> GetTeams()
         {
             return new OkResponse(await _teamRepo.GetAllTeams());
         }
         
-        [HttpGet("{teamId}")]
-        [AllowAllSystemUser]
-        public async Task<JsonResult> Get(string teamId)
+        [HttpPost]
+        [RoleWithSuperAdmin(Constants.Roles.Director)]
+        public async Task<JsonResult> CreateTeam([FromBody] Team newTeam)
         {
-            return new OkResponse(await _teamRepo.GetTeamByTeamId(teamId));
+            var leader = await _userRepo.FindUserByUserId(newTeam.LeaderId);
+            if (leader == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Không tìm thấy Leader!"
+                });
+            }
+
+            if (leader.Role != Constants.Roles.Manager)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Leader phải có chức vụ Manager!"
+                });
+            }
+
+            var insertData = new Team
+            {
+                TeamId = Guid.NewGuid().ToString(),
+                TeamName = newTeam.TeamName,
+                CreatedDate = DateTime.Now,
+                LeaderId = newTeam.LeaderId,
+                MembersId = newTeam.MembersId ?? new List<string>(),
+                TeamAvatarImageId = newTeam.TeamAvatarImageId
+            };
+
+            try
+            {
+                await _teamRepo.InsertOne(insertData);
+                return new OkResponse(insertData);
+            }
+            catch (Exception e)
+            {
+                return Helpers.ExceptionHelper.HandleError(e);
+            }
         }
         
-        [HttpPatch("{teamId}")]
-        [Authorize(Roles = Constants.Roles.Hr)]
-        public async Task<JsonResult> Patch(string teamId, [FromBody] Team updateData)
+        [HttpGet("{teamId}")]
+        [AllowAllSystemUser]
+        public async Task<JsonResult> GetTeam(string teamId)
         {
+            var team = await _teamRepo.GetTeamByTeamId(teamId);
+            if (team == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            return new OkResponse(team);
+        }
+
+        [HttpPatch("{teamId}")]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
+        public async Task<JsonResult> PatchTeam(string teamId, [FromBody] Team updateData)
+        {
+            var team = await _teamRepo.GetTeamByTeamId(teamId);
+            if (team == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
             var updateDefine = Builders<Team>.Update.CurrentDate(x => x.LastModifyDate);
             
             if (updateData.TeamName != null)
@@ -71,11 +131,175 @@ namespace HRM.Controllers.Teams
                 });
             }
         }
+
+        [HttpDelete("{teamId}")]
+        [RoleWithSuperAdmin(Constants.Roles.Director)]
+        public async Task<JsonResult> DeleteTeam(string teamId)
+        {
+            var team = await _teamRepo.GetTeamByTeamId(teamId);
+            if (team == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
+            var result = await _teamRepo.DeleteTeam(teamId);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Xóa Team thành công!"
+                });
+            }
+            else
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Lỗi xảy ra khi xóa team!"
+                });
+            }
+        }
+
+        [HttpGet("{teamId}/members")]
+        [AllowAllSystemUser]
+        public async Task<JsonResult> GetMembersOfTeam(string teamId)
+        {
+            var team = await _teamRepo.GetTeamByTeamId(teamId);
+            if (team == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
+            return new OkResponse(await _teamRepo.GetMembersOfTeam(teamId));
+        }
+
+        [HttpPost("{teamId}/members")]
+        [RoleWithSuperAdmin(Constants.Roles.Manager)]
+        public async Task<JsonResult> AddMemberToTeam(string teamId,[FromBody] User newUser)
+        {
+            var targetTeam = await _teamRepo.GetTeamByTeamId(teamId);
+            if (targetTeam == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
+            var newMemberData = await _userRepo.FindUserByUserId(newUser.UserId);
+            if (newMemberData.Role != Constants.Roles.Employee)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Nhân viên viên mới của team phải có role Employee!"
+                });
+            }
+            
+            var checkExistTeam = _teamRepo.FindUserExistInAnyTeam(newUser.UserId);
+            if (checkExistTeam != null && checkExistTeam.Count > 0)
+            {
+                if (checkExistTeam.Find(x => x.MembersId.Contains(newUser.UserId)).TeamId == teamId)
+                {
+                    return new BadRequestResponse(new ErrorData
+                    {
+                        Message = "User đã tồn tại ở chính Team này!",
+                        Data = checkExistTeam
+                    });
+                }
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "User đã tồn tại ở Team khác!",
+                    Data = checkExistTeam
+                });
+            }
+            
+            var currentUserId = User.Identity.GetId();
+            var currentUser = await _userRepo.FindUserByUserId(currentUserId);
+
+            if (targetTeam.Leaders.FirstOrDefault()?.UserId != currentUserId && currentUser.Role != Constants.Roles.SuperAdmin)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Leader của team mới có quyền thêm thành viên mới"
+                });
+            }
+            
+            var result = await _teamRepo.AddNewUserToTeam(teamId, newUser.UserId);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Thêm nhân viên vào Team thành công"
+                });
+            }
+            else
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Lỗi khi thay đổi thông tin team!"
+                });
+            }
+        }
+        
+        [HttpDelete("{teamId}/members/{memberId}")]
+        [RoleWithSuperAdmin(Constants.Roles.Manager)]
+        public async Task<JsonResult> DeleteMemberOfTeam(string teamId, string memberId)
+        {
+            var currentUserId = User.Identity.GetId();
+            var currentUser = await _userRepo.FindUserByUserId(currentUserId);
+            var targetTeam = await _teamRepo.GetTeamByTeamId(teamId);
+
+            if (targetTeam == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
+            if (targetTeam.Leaders.FirstOrDefault()?.UserId != currentUserId && currentUser.Role != Constants.Roles.SuperAdmin)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Leader của team mới có quyền xóa thành viên"
+                });
+            }
+            
+            var result = await _teamRepo.DeleteUserFromTeam(teamId, memberId);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Đã xóa nhân viên ra khỏi team!"
+                });
+            }
+            else
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Lỗi khi thay đổi thông tin team!"
+                });
+            }
+        }
         
         [HttpPatch("{teamId}/leader")]
         [RoleWithSuperAdmin(Constants.Roles.Director)]
-        public async Task<JsonResult> Patch(string teamId, [FromBody] User newLeader)
+        public async Task<JsonResult> ChangeLeaderOfTeam(string teamId, [FromBody] User newLeader)
         {
+            var team = await _teamRepo.GetTeamByTeamId(teamId);
+            if (team == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Team không tồn tại!"
+                });
+            }
+            
             if (newLeader.UserId == null)
             {
                 return new BadRequestResponse(new ErrorData
@@ -121,130 +345,6 @@ namespace HRM.Controllers.Teams
                 {
                     Message = "Lỗi khi thay đổi thông tin team!"
                 });
-            }
-        }
-        
-        [HttpPost("{teamId}")]
-        [RoleWithSuperAdmin(Constants.Roles.Manager)]
-        public async Task<JsonResult> Post(string teamId,[FromBody] User newUser)
-        {
-            var currentUserId = User.Identity.GetId();
-            var targetTeam = await _teamRepo.GetTeamByTeamId(teamId);
-
-            var checkExistTeam = _teamRepo.FindUserExistInAnyTeam(newUser.UserId);
-            if (checkExistTeam != null && checkExistTeam.Count > 0)
-            {
-                if (checkExistTeam.Find(x => x.MembersId.Contains(newUser.UserId)).TeamId == teamId)
-                {
-                    return new BadRequestResponse(new ErrorData
-                    {
-                        Message = "User đã tồn tại ở chính Team này!",
-                        Data = checkExistTeam
-                    });
-                }
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "User đã tồn tại ở Team khác!",
-                    Data = checkExistTeam
-                });
-            }
-
-            if (targetTeam.Leaders.FirstOrDefault()?.UserId != currentUserId)
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Leader của team mới có quyền thêm thành viên mới"
-                });
-            }
-            
-            var result = await _teamRepo.AddNewUserToTeam(teamId, newUser.UserId);
-            if (result)
-            {
-                return new OkResponse(new
-                {
-                    Message = "Thêm nhân viên vào Team thành công"
-                });
-            }
-            else
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Lỗi khi thay đổi thông tin team!"
-                });
-            }
-        }
-        
-        [HttpDelete("{teamId}")]
-        [RoleWithSuperAdmin(Constants.Roles.Manager)]
-        public async Task<JsonResult> Delete(string teamId, [FromBody] User removeUser)
-        {
-            var currentUserId = User.Identity.GetId();
-            var targetTeam = await _teamRepo.GetTeamByTeamId(teamId);
-            
-            if (targetTeam.Leaders.FirstOrDefault()?.UserId != currentUserId)
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Leader của team mới có quyền xóa thành viên"
-                });
-            }
-            
-            var result = await _teamRepo.DeleteUserFromTeam(teamId, removeUser.UserId);
-            if (result)
-            {
-                return new OkResponse(new
-                {
-                    Message = "Đã xóa User ra khỏi team!"
-                });
-            }
-            else
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Lỗi khi thay đổi thông tin team!"
-                });
-            }
-        }
-
-        [HttpPost]
-        [RoleWithSuperAdmin(Constants.Roles.Director)]
-        public async Task<JsonResult> Post([FromBody] Team newTeam)
-        {
-            var leader = await _userRepo.FindUserByUserId(newTeam.LeaderId);
-            if (leader == null)
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Không tìm thấy Leader!"
-                });
-            }
-
-            if (leader.Role != Constants.Roles.Manager)
-            {
-                return new BadRequestResponse(new ErrorData
-                {
-                    Message = "Leader phải có chức vụ Manager!"
-                });
-            }
-
-            var insertData = new Team
-            {
-                TeamId = Guid.NewGuid().ToString(),
-                TeamName = newTeam.TeamName,
-                CreatedDate = DateTime.Now,
-                LeaderId = newTeam.LeaderId,
-                MembersId = newTeam.MembersId,
-                TeamAvatarImageId = newTeam.TeamAvatarImageId
-            };
-
-            try
-            {
-                await _teamRepo.InsertOne(insertData);
-                return new OkResponse(insertData);
-            }
-            catch (Exception e)
-            {
-                return Helpers.ExceptionHelper.HandleError(e);
             }
         }
     }

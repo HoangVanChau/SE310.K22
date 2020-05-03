@@ -14,5 +14,7 @@ namespace HRM.Repositories.Team
         public Task<List<Models.Cores.Team>> GetAllTeams();
         public Task<bool> UpdateTeamInfoByTeamId(string teamId, UpdateDefinition<Models.Cores.Team> updateDefine);
         public Task<Models.Cores.Team> FindLeaderExistInAnyTeam(string userId);
+        public Task<bool> DeleteTeam(string teamId);
+        public Task<List<Models.Cores.User>> GetMembersOfTeam(string teamId);
     }
 }

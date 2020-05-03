@@ -94,6 +94,25 @@ namespace HRM.Repositories.Team
             return await Collection.Find(x => x.LeaderId == userId || x.MembersId.Contains(userId)).FirstOrDefaultAsync();
         }
 
+        public async Task<bool> DeleteTeam(string teamId)
+        {
+            var result = await Collection.DeleteOneAsync(x => x.TeamId == teamId);
+            return result.DeletedCount.Equals(1);
+        }
+
+        public async Task<List<Models.Cores.User>> GetMembersOfTeam(string teamId)
+        {
+            var team = await Collection.Aggregate()
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: t => t.MembersId,
+                    foreignField: f => f.UserId,
+                    @as: (Models.Cores.Team t) => t.Members
+                )
+                .FirstOrDefaultAsync();
+            return team.Members;
+        }
+
         public Task<List<Models.Cores.Team>> GetAllTeams()
         {
             return Collection.Aggregate()
