@@ -41,6 +41,11 @@
           <span>{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</span>
         </template>
       </el-table-column>
+      <el-table-column :label="$t('table.dateOfBirth')" align="center" sortable prop="dateOfbirth">
+        <template slot-scope="scope">
+          <span>{{ scope.row.dateOfBirth | parseTime('{d}-{m}-{y}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column :label="$t('table.phoneNumber')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.phoneNumber }}</span>
@@ -98,12 +103,15 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">{{ $t('table.cancel') }}</el-button>
+        <el-button v-if="dialogStatus=='update'" type="success" @click="handleChangeRole(temp)">{{ $t('table.changeRole') }}</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">{{ $t('table.confirm') }}</el-button>
         <el-button v-else type="primary" @click="updateData">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="confirm" title="Xác nhận">
+    <confirm-dialog :confirm="confirm" :data="temp.fullName" :call-back="handleDelete"/>
+
+    <!-- <el-dialog :visible.sync="confirm" title="Xác nhận">
       <div class="" style="width: 70%; margin-left: 50px;">
         {{ $t('confirm.deleteMes') }}
         {{ temp.fullName }}
@@ -111,6 +119,20 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="confirm = false">{{ $t('table.cancel') }}</el-button>
         <el-button type="primary" @click="handleDelete">{{ $t('table.confirm') }}</el-button>
+      </div>
+    </el-dialog> -->
+
+    <el-dialog :visible.sync="openChangeRole" title="Change Role">
+      <el-form :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 70%; margin-left:50px;">
+        <el-form-item :label="$t('table.role')" prop="role">
+          <el-select v-model="temp.role" class="filter-item" placeholder="Please select" style="width: 100%">
+            <el-option v-for="item in roles" :key="item" :label="item" :value="item"/>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="openChangeRole = false">{{ $t('table.cancel') }}</el-button>
+        <el-button type="primary" @click="changeRole">{{ $t('table.confirm') }}</el-button>
       </div>
     </el-dialog>
 
@@ -120,12 +142,14 @@
 <script>
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime, compareValues } from '@/utils'
+import ConfirmDialog from '@/components/ConfirmDialog'
 
 export default {
   name: 'Employee',
   directives: {
     waves
   },
+  components: { ConfirmDialog },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -182,7 +206,8 @@ export default {
       },
       downloadLoading: false,
       roles: [],
-      confirm: false
+      confirm: false,
+      openChangeRole: false
     }
   },
   created() {
@@ -345,6 +370,32 @@ export default {
           return v[j]
         }
       }))
+    },
+    changeRole() {
+      const data = {
+        userId: this.temp.userId,
+        newRole: this.temp.role
+      }
+      this.$store.dispatch('ChangeRole', data).then(res => {
+        this.openChangeRole = false
+        this.$notify({
+          title: 'Success',
+          message: 'Change Role successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      }).catch(e => {
+        this.$notify({
+          title: 'Error',
+          message: 'Change Role unsuccessfully ' + JSON.stringify(e),
+          type: 'error',
+          duration: 2000
+        })
+      });
+    },
+    handleChangeRole(data) {
+      this.openChangeRole = true;
     }
   }
 }

@@ -6,7 +6,11 @@ export function getAllRoles() {
     method: 'get'
   });
 }
-export function changeRole(data) {
+export function changeRole(dataParam) {
+  const data = {
+    UserId: dataParam.userId,
+    NewRole: dataParam.newRole,
+  }
   return request({
     url: '/api/roles',
     method: 'post',

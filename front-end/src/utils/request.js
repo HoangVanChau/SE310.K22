@@ -80,11 +80,28 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err.response', error.response); // for debug
-    Message({
-      message: JSON.stringify(error.response.data),
-      type: 'error',
-      duration: 5 * 1000
-    });
+    if (error.response.status === 401) {
+      MessageBox.confirm(
+        'You have been logged out, you can cancel to stay on this page, or log in again',
+        'Logout',
+        {
+          confirmButtonText: 'log out',
+          cancelButtonText: 'cancel',
+          type: 'warning',
+          callback: () => {
+            // removeToken();
+            store.dispatch('LogOut');
+            location.reload();
+          }
+        }
+      );
+    } else {
+      Message({
+        message: error.response.data.message || error.statusText,
+        type: 'error',
+        duration: 5 * 1000
+      });
+    }
     // return Promise.reject(error);
   }
 );

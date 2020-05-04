@@ -142,7 +142,8 @@ export default {
     role: 'Chức vụ',
     fullName: 'Họ Tên',
     dateOfBirth: 'Ngày sinh',
-    refresh: 'Làm mới'
+    refresh: 'Làm mới',
+    changeRole: 'Chỉnh sửa quyền'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',

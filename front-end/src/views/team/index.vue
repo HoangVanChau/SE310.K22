@@ -8,6 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
       <el-button v-show="userPermission" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh" @click="getList">{{ $t('table.refresh') }}</el-button>
     </div>
 
     <el-table
@@ -20,7 +21,7 @@
       highlight-current-row
       style="width: 100%;">
       <!-- <el-table-column :label="$t('table.id')" align="center" hidden="true">
-        <template slot-scope="scope">
+      <template slot-scope="scope">
           <span>{{ scope.row.teamId }}</span>
         </template>
       </el-table-column> -->
@@ -226,29 +227,35 @@ export default {
         if (valid) {
           const tempData = {
             teamName: this.temp.teamName,
-            // leaderId: this.temp.leaderId,
+            leaderId: this.temp.leaderId,
             teamAvatarImageId: null
           }
           console.log(this.temp);
 
           this.$store.dispatch('UpdateTeam', { teamId: this.temp.teamId, newTeam: tempData }).then(res => {
             this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update successfully',
+              type: 'success',
+              duration: 2000
+            })
             this.getList()
           });
         }
       })
     },
     handleDelete(row) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete successfully',
-        type: 'success',
-        duration: 2000
-      })
       const index = this.list.indexOf(row)
       // this.list.splice(index, 1)
       this.$store.dispatch('DeleteSoftTeam', index).then(res => {
         this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Delete successfully',
+          type: 'success',
+          duration: 2000
+        })
         this.getList()
       });
     },

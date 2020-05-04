@@ -38,16 +38,32 @@ export function createTeam(dataParam) {
   });
 }
 export function addUserToTeam(teamId, userId) {
+  const data = {
+    UserId: userId
+  };
   return request({
     url: `/api/teams/${teamId}`,
     method: 'post',
-    userId
+    data
   });
 }
 export function removeUserToTeam(teamId, userId) {
+  const data = {
+    UserId: userId
+  };
   return request({
     url: `/api/teams/${teamId}`,
     method: 'delete',
-    userId
+    data
+  });
+}
+export function changeLeader(teamId, leaderId) {
+  const data = {
+    UserId: leaderId
+  };
+  return request({
+    url: `/api/teams/${teamId}/leader`,
+    method: 'patch',
+    data
   });
 }

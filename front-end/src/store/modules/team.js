@@ -2,7 +2,8 @@ import {
   getAllTeam,
   updateTeam,
   createTeam,
-  addUserToTeam
+  addUserToTeam,
+  changeLeader
 } from '../../api/team';
 
 const team = {
@@ -38,8 +39,10 @@ const team = {
         updateTeam(data.teamId, data.newTeam)
           .then(res => {
             commit('SET_TEAM', res);
-            dispatch('GetAllTeam');
-            resolve(res);
+            changeLeader(data.teamId, data.newTeam.leaderId).then(res => {
+              dispatch('GetAllTeam');
+              resolve(res);
+            });
           })
           .catch(err => console.log(err));
       });

@@ -1,4 +1,4 @@
-import { getAllRoles } from '../../api/role';
+import { getAllRoles, changeRole } from '../../api/role';
 
 const role = {
   state: {
@@ -18,6 +18,14 @@ const role = {
             resolve(result);
           })
           .catch(err => console.error(err));
+      });
+    },
+    ChangeRole({ commit, dispatch }, data) {
+      return new Promise(resolve => {
+        changeRole(data).then(res => {
+          dispatch('GetUserInfo');
+          resolve(res);
+        });
       });
     }
   }

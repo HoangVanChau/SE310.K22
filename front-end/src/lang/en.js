@@ -136,7 +136,8 @@ export default {
     role: 'Role',
     fullName: 'Full Name',
     dateOfBirth: 'Date of Birth',
-    refresh: 'Refresh'
+    refresh: 'Refresh',
+    changeRole: 'Change Role'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
