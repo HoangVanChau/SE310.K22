@@ -22,7 +22,6 @@ export default {
       tabMapOptions: [
         { label: 'Home', key: 'home' },
         { label: 'Auth', key: 'auth' },
-        { label: 'Setting', key: 'set' },
       ],
       activeName: 'home',
       createdTimes: 0

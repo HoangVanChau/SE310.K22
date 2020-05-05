@@ -1,96 +1,118 @@
 <template>
-  <div class="">
+  <div class="pt-0">
     <div v-if="type=='home'" id="home" class="tab-pane active">
-      <hr>
-      <form id="infoForm" class="form" action="##">
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="full_name"><h4>Full name</h4></label>
-            <input id="full_name" v-model="curUser.fullName" type="text" class="form-control" name="full_name" placeholder="full name" title="enter your full name if any.">
-          </div>
+      <el-form ref="infoForm" :rules="rules" :model="curUser" class="form border-top-width">
+        <div class="col-xs-6">
+          <el-form-item prop="fullName">
+            <span slot="label" class="fs" >{{ $t('table.fullName') }}</span>
+            <el-input v-model="curUser.fullName"/>
+          </el-form-item>
         </div>
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="date_of_birth"><h4>Date of birth</h4></label>
-            <el-date-picker id="date_of_birth" v-model="curUser.dateOfBirth" style="width: 100%" type="date" format="dd-MM-yyyy" placeholder="Date of birth"/>
-          </div>
-        </div>
-
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="phone"><h4>Phone</h4></label>
-            <input id="phone" v-model="curUser.phoneNumber" type="text" class="form-control" name="phone" placeholder="enter phone" title="enter your phone number if any.">
-          </div>
+        <div class="col-xs-6">
+          <el-form-item label-width="100" prop="dateOfBirth">
+            <span slot="label" class="fs">{{ $t('table.dateOfBirth') }}</span>
+            <el-date-picker
+              v-model="curUser.dateOfBirth"
+              :placeholder="$t('i18nView.datePlaceholder')"
+              type="date"
+              format="MM/dd/yyyy"
+              value-format="MM/dd/yyyy"
+              style="width: 100%"/>
+          </el-form-item>
         </div>
 
-        <div class="form-group">
-          <div class="col-xs-6">
-            <label for="username"><h4>Username</h4></label>
-            <input id="username" v-model="curUser.userName" type="text" class="form-control" name="username" placeholder="enter username" title="enter your username if any." readonly>
-          </div>
+        <div class="col-xs-6">
+          <el-form-item prop="phoneNumber">
+            <span slot="label" class="fs">{{ $t('table.phoneNumber') }}</span>
+            <el-input v-model="curUser.phoneNumber"/>
+          </el-form-item>
         </div>
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="email"><h4>Email</h4></label>
-            <input id="email" v-model="curUser.email" type="email" class="form-control" name="email" placeholder="you@email.com" title="enter your email.">
-          </div>
+        <div class="col-xs-6">
+          <el-form-item prop="userName">
+            <span slot="label" class="fs">{{ $t('table.userName') }}</span>
+            <el-input v-model="curUser.userName"/>
+          </el-form-item>
         </div>
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="address"><h4>Address</h4></label>
-            <input id="address" v-model="curUser.address" type="text" class="form-control" placeholder="somewhere" title="enter a address">
-          </div>
+        <div class="col-xs-6">
+          <el-form-item prop="email">
+            <span slot="label" class="fs">{{ $t('table.email') }}</span>
+            <el-input v-model="curUser.email"/>
+          </el-form-item>
         </div>
-        <div class="form-group">
-          <div class="col-xs-12">
-            <br>
-            <button class="btn btn-lg btn-success" @click="saveHomeTab()">
-              <i class="glyphicon glyphicon-ok-sign">
-                Save
-              </i>
-            </button>
-            <button class="btn btn-lg" type="reset">
-              <i class="glyphicon glyphicon-repeat">
-                Reset
-              </i>
-            </button>
-          </div>
+        <div class="col-xs-6">
+          <el-form-item prop="address">
+            <span slot="label" class="fs">{{ $t('table.address') }}</span>
+            <el-input v-model="detailAddress"/>
+          </el-form-item>
         </div>
-      </form>
+        <div class="col-xs-6">
+          <el-form-item prop="province">
+            <span slot="label" class="fs">{{ $t('table.province') }}</span>
+            <el-input v-model="province"/>
+          </el-form-item>
+        </div>
+        <div class="col-xs-6">
+          <el-form-item prop="district">
+            <span slot="label" class="fs">{{ $t('table.district') }}</span>
+            <el-input v-model="district"/>
+          </el-form-item>
+        </div>
+        <div class="col-xs-6">
+          <el-form-item prop="ward">
+            <span slot="label" class="fs">{{ $t('table.ward') }}</span>
+            <el-input v-model="ward"/>
+          </el-form-item>
+        </div>
+        <div class="col-xs-6">
+          <br>
+          <br>
+          <button class="btn btn-lg btn-success mr-5" @click.prevent="saveHomeTab">
+            <i class="glyphicon glyphicon-ok-sign">
+              Save
+            </i>
+          </button>
+          <button class="btn btn-lg" type="reset">
+            <i class="glyphicon glyphicon-repeat">
+              Reset
+            </i>
+          </button>
+        </div>
+      </el-form>
 
       <hr>
 
     </div><!--/tab-pane-->
     <div v-if="type=='auth'" id="auth">
       <hr>
-      <form id="verifyPassForm" class="form" action="##" method="post">
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="password"><h4>Password</h4></label>
-            <input id="password" type="password" class="form-control" name="password" placeholder="password" title="enter your password.">
-          </div>
+      <el-form ref="verifyPassForm" :rules="rules" :model="tempPass" class="form">
+        <div class="col-xs-6">
+          <el-form-item prop="oldpassword">
+            <span slot="label" class="fs">{{ $t('table.oldpassword') }}</span>
+            <el-input v-model="tempPass.oldpassword" type="password"/>
+          </el-form-item>
         </div>
-        <div class="form-group">
-
-          <div class="col-xs-6">
-            <label for="password2"><h4>Verify</h4></label>
-            <input id="password2" type="password" class="form-control" name="password2" placeholder="password2" title="enter your password2.">
-          </div>
+        <div class="col-xs-6">
+          <el-form-item prop="newpassword">
+            <span slot="label" class="fs">{{ $t('table.newpassword') }}</span>
+            <el-input v-model="tempPass.newpassword" type="password" name="newpassword"/>
+          </el-form-item>
+        </div>
+        <div class="col-xs-6">
+          <el-form-item prop="verifypassword">
+            <span slot="label" class="fs">{{ $t('table.verifypassword') }}</span>
+            <el-input v-model="tempPass.verifypassword" type="password"/>
+          </el-form-item>
         </div>
         <div class="form-group">
           <div class="col-xs-12">
             <br>
-            <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"/> Save</button>
+            <button class="btn btn-lg btn-success" @click.prevent="changePassword"><i
+              class="glyphicon glyphicon-ok-sign"
+            /> Save</button>
             <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"/> Reset</button>
           </div>
         </div>
-      </form>
+      </el-form>
 
       <hr>
     </div>
@@ -98,8 +120,6 @@
 </template>
 
 <script>
-// import { fetchList } from '@/api/article'
-
 export default {
   filters: {
     statusFilter(status) {
@@ -127,7 +147,33 @@ export default {
         sort: '+id'
       },
       loading: false,
-      curUser: this.$store.getters.curUser
+      curUser: this.$store.getters.curUser,
+      detailAddress: '',
+      province: '',
+      district: '',
+      ward: '',
+      tempPass: {
+        oldpassword: '',
+        newpassword: '',
+        verifypassword: '',
+      },
+      rules: {
+        fullName: [{ required: true, message: 'Full name is required', trigger: 'change' }],
+        userName: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
+        email: [{ required: true, message: 'Email is required', trigger: 'blur' }],
+        phoneNumber: [{ required: true, message: 'Phone Number is required', trigger: 'blur' }],
+        dateOfBirth: [{ required: true, message: 'Date of birth is required', trigger: 'blur' }],
+        oldpassword: [{ required: true, message: 'Old password is required', trigger: 'blur' }],
+        verifypassword: [{ required: true, message: 'Verify password is required', trigger: 'blur' }],
+        newpassword: [{ required: true, message: 'New password is required', trigger: 'blur' }]
+        // validator: (rule, value, callback) => {
+        //   if (value !== this.tempPass.verifypassword) {
+        //     callback(new Error('Two inputs don\'t match!'))
+        //   } else {
+        //     callback()
+        //   }
+        // } }]
+      },
     }
   },
   computed: {
@@ -145,10 +191,85 @@ export default {
       // })
     },
     saveHomeTab() {
-      console.log(this.curUser);
-      this.$store.dispatch('UpdateCurUser', this.curUser).then(user => console.log(user));
+      this.curUser.address = { }
+      this.curUser.address.detailAddress = this.detailAddress
+      this.curUser.address.province = this.province
+      this.curUser.address.district = this.district
+      this.curUser.address.ward = this.ward
+      this.$refs['infoForm'].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('UpdateCurUser', this.curUser).then(res => {
+            if (res) {
+              this.$notify({
+                title: 'Success',
+                message: 'Update successfully',
+                type: 'success',
+                duration: 2000
+              })
+            }
+          }).catch(e => {
+            this.$notify({
+              title: 'Error',
+              message: 'Update unsuccessfully ' + JSON.stringify(e),
+              type: 'error',
+              duration: 2000
+            })
+          });
+        }
+      })
+    },
+    changePassword() {
+      console.log('this.tempPass.newpassword', this.tempPass.newpassword);
+      console.log('this.tempPass.verifypassword', this.tempPass.verifypassword);
+
+      if (this.tempPass.newpassword !== this.tempPass.verifypassword) {
+        this.$notify({
+          title: 'Error',
+          message: 'Verify password does not match with new password',
+          type: 'error',
+          duration: 2000
+        })
+        return;
+      } else {
+        this.$refs['verifyPassForm'].validate((valid) => {
+          if (valid) {
+            const data = {
+              oldPassword: this.tempPass.oldpassword,
+              newPassword: this.tempPass.newpassword
+            }
+            this.$store.dispatch('ChangePassword', data).then(res => {
+              if (res) {
+                this.$notify({
+                  title: 'Success',
+                  message: 'Change passoword successfully',
+                  type: 'success',
+                  duration: 2000
+                })
+              }
+            }).catch(e => {
+              this.$notify({
+                title: 'Error',
+                message: 'Update unsuccessfully ' + JSON.stringify(e),
+                type: 'error',
+                duration: 2000
+              })
+            });
+          }
+        })
+      }
     }
   }
 }
 </script>
+<style lang="scss" scoped>
+  .fs {
+    font-size: 1.8rem;
+  }
+  /deep/ .el-form-item--medium .el-form-item__content{
+    line-height: 28px;
+  }
+  .mr-5{
+    margin-right: 5px;
+  }
+</style>
 

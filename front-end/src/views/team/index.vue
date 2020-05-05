@@ -233,14 +233,16 @@ export default {
           console.log(this.temp);
 
           this.$store.dispatch('UpdateTeam', { teamId: this.temp.teamId, newTeam: tempData }).then(res => {
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update successfully',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
+            if (res) {
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            }
           });
         }
       })
@@ -249,14 +251,16 @@ export default {
       const index = this.list.indexOf(row)
       // this.list.splice(index, 1)
       this.$store.dispatch('DeleteSoftTeam', index).then(res => {
-        this.dialogFormVisible = false
-        this.$notify({
-          title: 'Success',
-          message: 'Delete successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.getList()
+        if (res) {
+          this.dialogFormVisible = false
+          this.$notify({
+            title: 'Success',
+            message: 'Delete successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }
       });
     },
     handleDownload() {

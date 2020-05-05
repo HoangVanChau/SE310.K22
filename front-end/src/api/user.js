@@ -89,3 +89,14 @@ export function deleteUser(userId) {
     method: 'delete'
   });
 }
+export function changePassword(dataParam) {
+  const data = {
+    OldPassword: dataParam.oldPassword,
+    NewPassword: dataParam.newPassword
+  };
+  return request({
+    url: '/api/auth/password',
+    method: 'patch',
+    data
+  });
+}

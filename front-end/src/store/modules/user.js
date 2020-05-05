@@ -6,7 +6,8 @@ import {
   getAllUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  changePassword
 } from '../../api/user';
 
 const user = {
@@ -78,11 +79,13 @@ const user = {
     },
     UpdateCurUser({ commit, state }, updatedUser) {
       return new Promise(resolve => {
-        updateCurUser(updatedUser).then(user => {
-          commit('SET_USER', user);
-          commit('SET_ROLES', [user.role]);
-          resolve(user);
-        });
+        updateCurUser(updatedUser)
+          .then(user => {
+            commit('SET_USER', user);
+            commit('SET_ROLES', [user.role]);
+            resolve(user);
+          })
+          .catch(e => resolve(e));
       });
     },
 
@@ -167,6 +170,16 @@ const user = {
         deleteUser(userId).then(res => {
           resolve(res);
         });
+      });
+    },
+    ChangePassword({ commit, dispatch }, data) {
+      return new Promise(resolve => {
+        changePassword(data)
+          .then(res => {
+            dispatch('GetUserInfo');
+            resolve(res);
+          })
+          .catch(e => resolve(e));
       });
     }
   }

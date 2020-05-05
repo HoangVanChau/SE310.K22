@@ -143,7 +143,16 @@ export default {
     fullName: 'Họ Tên',
     dateOfBirth: 'Ngày sinh',
     refresh: 'Làm mới',
-    changeRole: 'Chỉnh sửa quyền'
+    changeRole: 'Chỉnh sửa quyền',
+    email: 'Email',
+    userName: 'Tên đăng nhập',
+    address: 'Địa chỉ',
+    province: 'Tỉnh/Thành phố',
+    district: 'Quận/Huyện',
+    ward: 'Thị trấn/Phường',
+    oldpassword: 'Mật khẩu cũ',
+    newpassword: 'Mật khẩu mới',
+    verifypassword: 'Xác nhận mật khẩu'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',

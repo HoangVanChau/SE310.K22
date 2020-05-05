@@ -83,14 +83,6 @@
         <el-form-item :label="$t('table.phoneNumber')" prop="phoneNumber">
           <el-input v-model="temp.phoneNumber"/>
         </el-form-item>
-        <!-- <el-form-item v-if="dialogStatus=='create'" :label="$t('table.role')" prop="role">
-          <el-input v-model="temp.role" disabled/>
-        </el-form-item> -->
-        <!-- <el-form-item :label="$t('table.role')" prop="role">
-          <el-select v-model="temp.role" class="filter-item" placeholder="Please select" style="width: 100%">
-            <el-option v-for="item in roles" :key="item" :label="item" :value="item"/>
-          </el-select>
-        </el-form-item> -->
         <el-form-item :label="$t('table.dateOfBirth')" prop="dateOfBirth">
           <el-date-picker
             v-model="temp.dateOfBirth"
@@ -291,14 +283,16 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('CreateUser', this.temp).then(res => {
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Create successfully',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
+            if (res) {
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Create successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            }
           });
         }
       })
@@ -316,28 +310,32 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           this.$store.dispatch('UpdateUser', { userId: tempData.userId, newData: tempData }).then(res => {
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update successfully',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
+            if (res) {
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            }
           });
         }
       })
     },
     handleDelete() {
       this.$store.dispatch('DeleteUser', this.temp.userId).then(res => {
-        this.dialogFormVisible = false
-        this.confirm = false
-        this.$notify({
-          title: 'Success',
-          message: 'Delete successfully',
-          type: 'success',
-          duration: 2000
-        })
+        if (res) {
+          this.dialogFormVisible = false
+          this.confirm = false
+          this.$notify({
+            title: 'Success',
+            message: 'Delete successfully',
+            type: 'success',
+            duration: 2000
+          })
+        }
         this.getList()
       }).catch(e => {
         this.$notify({
@@ -377,14 +375,16 @@ export default {
         newRole: this.temp.role
       }
       this.$store.dispatch('ChangeRole', data).then(res => {
-        this.openChangeRole = false
-        this.$notify({
-          title: 'Success',
-          message: 'Change Role successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.getList()
+        if (res) {
+          this.openChangeRole = false
+          this.$notify({
+            title: 'Success',
+            message: 'Change Role successfully',
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }
       }).catch(e => {
         this.$notify({
           title: 'Error',
