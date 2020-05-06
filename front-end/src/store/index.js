@@ -7,6 +7,7 @@ import tagsView from './modules/tagsView'
 import user from './modules/user'
 import team from './modules/team'
 import role from './modules/role'
+import address from './modules/address'
 import getters from './getters'
 
 Vue.use(Vuex)
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
     tagsView,
     user,
     team,
-    role
+    role,
+    address
   },
   getters
 })

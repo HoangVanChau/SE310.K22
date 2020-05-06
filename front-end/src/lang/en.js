@@ -4,6 +4,8 @@ export default {
     lstUser: 'List Employee',
     Employee: 'Employee',
     lstTeam: 'List Team',
+    lstDepartment: 'List Department',
+    Department: 'Department',
     Team: 'Team',
     profile: 'Profile',
     dashboard: 'Dashboard',

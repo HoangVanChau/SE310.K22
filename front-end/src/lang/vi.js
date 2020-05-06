@@ -3,6 +3,8 @@ export default {
     role: 'Chức vụ',
     lstUser: 'Danh sách nhân viên',
     Employee: 'Nhân viên',
+    lstDepartment: 'Danh sách phòng ban',
+    Department: 'Phòng ban',
     lstTeam: 'Danh sách nhóm',
     Team: 'Nhóm',
     profile: 'Hồ sơ',

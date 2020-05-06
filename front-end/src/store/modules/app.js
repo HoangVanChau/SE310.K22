@@ -8,7 +8,8 @@ const app = {
       withoutAnimation: false
     },
     device: 'desktop',
-    language: Cookies.get('language') || 'en',
+    // language: Cookies.get('language') || 'en',
+    language: 'vi',
     size: Cookies.get('size') || 'medium'
   },
   mutations: {

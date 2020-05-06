@@ -15,6 +15,9 @@ const getters = {
   teams: state => state.team.teams,
   users: state => state.user.users,
   lstRole: state => state.role.roles,
-  userPermission: state => state.user.permissions
+  userPermission: state => state.user.permissions,
+  provinces: state => state.address.provinces,
+  districts: state => state.address.districts,
+  wards: state => state.address.wards
 };
 export default getters;

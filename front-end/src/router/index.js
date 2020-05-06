@@ -7,11 +7,12 @@ Vue.use(Router);
 import Layout from '@/views/layout/Layout';
 
 /* Router Modules */
-import componentsRouter from './modules/components';
-import chartsRouter from './modules/charts';
+// import componentsRouter from './modules/components';
+// import chartsRouter from './modules/charts';
 import userRouter from './modules/user';
 import teamRouter from './modules/team';
-import nestedRouter from './modules/nested';
+import departmentRouter from './modules/department';
+// import nestedRouter from './modules/nested';
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -171,11 +172,12 @@ export const asyncRouterMap = [
   // },
 
   /** When your routing table is too long, you can split it into small modules**/
-  componentsRouter,
-  chartsRouter,
-  nestedRouter,
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
   userRouter,
   teamRouter,
+  departmentRouter,
   {
     path: '/example',
     component: Layout,

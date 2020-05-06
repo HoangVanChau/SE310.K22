@@ -8,7 +8,7 @@ export function getAllUsers() {
 }
 export function getCurUser() {
   return request({
-    url: '/api/users',
+    url: '/api/auth/verify',
     method: 'get'
   });
 }
@@ -26,10 +26,19 @@ export function updateCurUser(dataParam) {
     Email: dataParam.email,
     DateOfBirth: dataParam.dateOfBirth,
     Address: {
-      Province: dataParam.province || null,
-      District: dataParam.district || null,
-      Ward: dataParam.ward || null,
-      DetailAddress: dataParam.detailAddress || null
+      Province: {
+        LocateId: dataParam.address.province.locateId || null,
+        LocateName: dataParam.address.province.locateName || null
+      },
+      District: {
+        LocateId: dataParam.address.district.locateId || null,
+        LocateName: dataParam.address.district.locateName || null
+      },
+      Ward: {
+        LocateId: dataParam.address.ward.locateId || null,
+        LocateName: dataParam.address.ward.locateName || null
+      },
+      DetailAddress: dataParam.address.detailAddress || null
     },
     AvatarImageId: dataParam.avatarImageId || null
   };

@@ -9,7 +9,7 @@
   // 侧边栏
   .sidebar-container {
     transition: width 0.28s;
-    width: 180px !important;
+    width: 190px !important;
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -40,7 +40,7 @@
       overflow: hidden;
     }
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 10px;
     }
     .el-menu {
       border: none;

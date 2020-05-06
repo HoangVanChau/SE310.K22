@@ -48,19 +48,40 @@
         <div class="col-xs-6">
           <el-form-item prop="province">
             <span slot="label" class="fs">{{ $t('table.province') }}</span>
-            <el-input v-model="province"/>
+            <el-autocomplete
+              v-model="province.locateName"
+              :fetch-suggestions="querySearchProvince"
+              class="inline-input"
+              placeholder="Please Input"
+              style="width: 100%"
+              @select="handleSelectProvince"
+            />
           </el-form-item>
         </div>
         <div class="col-xs-6">
           <el-form-item prop="district">
             <span slot="label" class="fs">{{ $t('table.district') }}</span>
-            <el-input v-model="district"/>
+            <el-autocomplete
+              v-model="district.locateName"
+              :fetch-suggestions="querySearchDistrict"
+              class="inline-input"
+              placeholder="Please Input"
+              style="width: 100%"
+              @select="handleSelectDistrict"
+            />
           </el-form-item>
         </div>
         <div class="col-xs-6">
           <el-form-item prop="ward">
             <span slot="label" class="fs">{{ $t('table.ward') }}</span>
-            <el-input v-model="ward"/>
+            <el-autocomplete
+              v-model="ward.locateName"
+              :fetch-suggestions="querySearchWard"
+              class="inline-input"
+              placeholder="Please Input"
+              style="width: 100%"
+              @select="handleSelectWard"
+            />
           </el-form-item>
         </div>
         <div class="col-xs-6">
@@ -148,10 +169,10 @@ export default {
       },
       loading: false,
       curUser: this.$store.getters.curUser,
-      detailAddress: '',
-      province: '',
-      district: '',
-      ward: '',
+      detailAddress: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.detailAddress : '',
+      province: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.province : {},
+      district: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.district : {},
+      ward: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.ward : {},
       tempPass: {
         oldpassword: '',
         newpassword: '',
@@ -174,21 +195,27 @@ export default {
         //   }
         // } }]
       },
+      lstAddress: {
+        provinces: [],
+        districts: [],
+        wards: [],
+      }
     }
   },
   computed: {
   },
-  created() {
+  mounted() {
     this.getList()
   },
   methods: {
     getList() {
       this.loading = true
-      this.$emit('create') // for test
-      // fetchList(this.listQuery).then(response => {
-      //   this.list = response.data.items
-      //   this.loading = false
-      // })
+      this.$emit('mounted') // for test
+      this.$store.dispatch('GetProvinces').then(res => {
+        if (res) {
+          this.lstAddress.provinces = res;
+        }
+      })
     },
     saveHomeTab() {
       this.curUser.address = { }
@@ -198,6 +225,7 @@ export default {
       this.curUser.address.ward = this.ward
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
+          console.log('this.curUser :>> ', this.curUser);
           this.$store.dispatch('UpdateCurUser', this.curUser).then(res => {
             if (res) {
               this.$notify({
@@ -257,6 +285,72 @@ export default {
           }
         })
       }
+    },
+    querySearchProvince(queryString, cb) {
+      var lstPro = [];
+      this.lstAddress.provinces.forEach(province => {
+        lstPro.push({
+          value: province.locateName,
+          data: province
+        })
+      });
+      var results = queryString ? lstPro.filter(this.createFilter(queryString)) : lstPro;
+      // call callback function to return suggestions
+      cb(results);
+    },
+    querySearchDistrict(queryString, cb) {
+      var lstPro = [];
+      this.lstAddress.districts.forEach(district => {
+        lstPro.push({
+          value: district.locateName,
+          data: district
+        })
+      });
+      var results = queryString ? lstPro.filter(this.createFilter(queryString)) : lstPro;
+      // call callback function to return suggestions
+      cb(results);
+    },
+    querySearchWard(queryString, cb) {
+      var lstPro = [];
+      this.lstAddress.wards.forEach(ward => {
+        lstPro.push({
+          value: ward.locateName,
+          data: ward
+        })
+      });
+      var results = queryString ? lstPro.filter(this.createFilter(queryString)) : lstPro;
+      // call callback function to return suggestions
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (pro) => {
+        return (pro.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    handleSelectProvince(item) {
+      this.$store.dispatch('GetDistricts', item.data.locateId).then(res => {
+        if (res) {
+          this.lstAddress.districts = res;
+          this.province.locateId = item.data.locateId;
+        }
+      })
+    },
+    handleSelectDistrict(item) {
+      this.$store.dispatch('GetWards', item.data.locateId).then(res => {
+        if (res) {
+          this.lstAddress.wards = res;
+          this.district.locateId = item.data.locateId;
+        }
+      })
+    },
+    handleSelectWard(item) {
+      this.ward.locateId = item.data.locateId;
+      const address = {
+        province: this.province,
+        district: this.district,
+        ward: this.ward,
+      }
+      console.log('address :>> ', JSON.stringify(address));
     }
   }
 }
