@@ -181,6 +181,22 @@ const user = {
           })
           .catch(e => resolve(e));
       });
+    },
+    GetUserNotInTeam({ commit, dispatch }, data) {
+      return new Promise(resolve => {
+        const { users, teamId } = data;
+        var userIdInTeam = [];
+        dispatch('GetTeamByID', teamId).then(res => {
+          userIdInTeam = res.membersId;
+          var userNotInTeam = [];
+          users.forEach(item => {
+            if (userIdInTeam.includes(item.userId.trim()) === false) {
+              userNotInTeam.push(item);
+            }
+          });
+          resolve(userNotInTeam);
+        });
+      });
     }
   }
 };

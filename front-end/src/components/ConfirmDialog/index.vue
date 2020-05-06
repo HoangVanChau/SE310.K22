@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="confirm" title="Xác nhận">
+  <el-dialog :visible.sync="confirm" title="Xác nhận" @close="{onClose}">
     <div class="" style="width: 70%; margin-left: 50px;">
       {{ $t('confirm.deleteMes') }}
       {{ data }}
@@ -24,6 +24,10 @@ export default {
       default: ''
     },
     callBack: {
+      type: Function,
+      default: () => {}
+    },
+    onClose: {
       type: Function,
       default: () => {}
     }

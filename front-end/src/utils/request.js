@@ -96,8 +96,12 @@ service.interceptors.response.use(
         }
       );
     } else {
+      const message = error.response.data
+        ? error.response.data.message
+        : error.response.statusText;
+
       Message({
-        message: error.response.data.message || error.statusText,
+        message: message,
         type: 'error',
         duration: 5 * 1000
       });

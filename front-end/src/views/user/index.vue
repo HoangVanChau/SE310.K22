@@ -101,7 +101,7 @@
       </div>
     </el-dialog>
 
-    <confirm-dialog :confirm="confirm" :data="temp.fullName" :call-back="handleDelete"/>
+    <confirm-dialog :confirm="confirm" :data="temp.fullName" :call-back="handleDelete" :on-close="()=>confirm = false"/>
 
     <!-- <el-dialog :visible.sync="confirm" title="Xác nhận">
       <div class="" style="width: 70%; margin-left: 50px;">

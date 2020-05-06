@@ -37,24 +37,20 @@ export function createTeam(dataParam) {
     data
   });
 }
-export function addUserToTeam(teamId, userId) {
+export function addUserToTeam(teamId, memberId) {
   const data = {
-    UserId: userId
+    UserId: memberId
   };
   return request({
-    url: `/api/teams/${teamId}`,
+    url: `/api/teams/${teamId}/members`,
     method: 'post',
     data
   });
 }
-export function removeUserToTeam(teamId, userId) {
-  const data = {
-    UserId: userId
-  };
+export function removeUserToTeam(teamId, memberId) {
   return request({
-    url: `/api/teams/${teamId}`,
-    method: 'delete',
-    data
+    url: `/api/teams/${teamId}/members/${memberId}`,
+    method: 'delete'
   });
 }
 export function changeLeader(teamId, leaderId) {
@@ -65,5 +61,11 @@ export function changeLeader(teamId, leaderId) {
     url: `/api/teams/${teamId}/leader`,
     method: 'patch',
     data
+  });
+}
+export function deleteTeam(teamId) {
+  return request({
+    url: `/api/teams/${teamId}`,
+    method: 'delete'
   });
 }
