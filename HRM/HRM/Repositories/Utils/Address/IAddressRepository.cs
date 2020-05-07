@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HRM.Models.Cores;
-using MongoDB.Bson;
 
-namespace HRM.Repositories.Utils
+namespace HRM.Repositories.Utils.Address
 {
     public interface IAddressRepository
     {

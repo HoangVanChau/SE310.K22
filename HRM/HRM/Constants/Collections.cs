@@ -6,5 +6,7 @@ namespace HRM.Constants
         public static string CounterCollection = "Counter";
         public static string TeamCollection = "Team";
         public static string ProvinceCollection = "Province";
+
+        public static string CompanyInfoCollection = "CompanyInfo";
     }
 }

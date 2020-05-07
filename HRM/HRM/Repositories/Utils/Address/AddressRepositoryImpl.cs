@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using HRM.Models.Cores;
 using HRM.Services.MongoDB;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace HRM.Repositories.Utils
+namespace HRM.Repositories.Utils.Address
 {
     public class AddressRepositoryImpl: IAddressRepository
     {

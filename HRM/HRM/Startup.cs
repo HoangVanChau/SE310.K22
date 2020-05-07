@@ -7,6 +7,8 @@ using HRM.Repositories.Image;
 using HRM.Repositories.Team;
 using HRM.Repositories.User;
 using HRM.Repositories.Utils;
+using HRM.Repositories.Utils.Address;
+using HRM.Repositories.Utils.CompanyInfo;
 using HRM.Services.Auth;
 using HRM.Services.MongoDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,6 +97,7 @@ namespace HRM
             services.AddSingleton<ITeamRepository, TeamRepositoryImpl>();
             services.AddSingleton<IAuthRepository, AuthRepositoryImpl>();
             services.AddSingleton<IAddressRepository, AddressRepositoryImpl>();
+            services.AddSingleton<ICompanyInfoRepository, CompanyInfoRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
