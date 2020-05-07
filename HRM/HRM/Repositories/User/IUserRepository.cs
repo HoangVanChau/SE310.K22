@@ -13,5 +13,6 @@ namespace HRM.Repositories.User
         Task<Models.Cores.User> FindUserByUserId(String userId);
         Task<bool> UpdateUserByUserId(String userId, UpdateDefinition<Models.Cores.User> updateDefinition);
         Task<bool> DeleteUserByUserid(String userId);
+        Task<List<Models.Cores.User>> Query(String q, string available, string role);
     }
 }

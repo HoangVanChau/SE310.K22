@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
+using HRM.Models.Cores;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
@@ -13,9 +14,10 @@ namespace HRM.Repositories.User
 {
     public class UserRepositoryImpl: BaseRepositoryImpl<Models.Cores.User>, IUserRepository
     {
+        private readonly IMongoCollection<Models.Cores.Team> _teamCollection;
         public UserRepositoryImpl(MongoDbService service) : base(service)
         {
-            
+            _teamCollection = service.GetDb().GetCollection<Models.Cores.Team>(Constants.Collections.TeamCollection);
         }
 
         public override string GetCollectionName()
@@ -50,6 +52,31 @@ namespace HRM.Repositories.User
         {
             var result = await Collection.DeleteOneAsync(x => x.UserId == userId);
             return result.DeletedCount == 1;
+        }    
+
+        public Task<List<Models.Cores.User>> Query(string q, string available, string role)
+        {
+            var userFilter = Builders<Models.Cores.User>.Filter.Where(x =>
+                (role == null || x.Role.Equals(role)) &&
+                (q == null || x.FullName.ToLower().Contains((q ?? "").ToLower())));
+
+            var teamFilter = available switch
+            {
+                "true" => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count == 0),
+                "false" => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count > 0),
+                _ => Builders<Models.Cores.User>.Filter.Where(x => true)
+            };
+
+            return Collection.Aggregate()
+                .Match(userFilter)
+                .Lookup(
+                    foreignCollection: _teamCollection,
+                    foreignField: t => t.MembersId,
+                    localField: u => u.UserId,
+                    @as: (Models.Cores.User u) => u.Teams
+                    )
+                .Match(teamFilter)
+                .ToListAsync();
         }
     }
 }

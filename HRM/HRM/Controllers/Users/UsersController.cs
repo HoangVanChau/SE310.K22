@@ -205,11 +205,10 @@ namespace HRM.Controllers.Users
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> Get()
+        public async Task<JsonResult> GetUsers(string role, string available, string q)
         {
-            var userId = User.Identity.GetId();
-            var currentUser = await _userRepo.FindUserByUserId(userId);
-            return new OkResponse(currentUser);
+            var result = await _userRepo.Query(q, available, role);
+            return new OkResponse(result);
         }
         
         [HttpGet("{userId}")]
