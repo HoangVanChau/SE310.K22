@@ -1,9 +1,14 @@
 import request from '@/utils/request';
 
-export function getAllUsers() {
+export function getAllUsers(query) {
   return request({
-    url: '/api/users/getAllUser',
-    method: 'get'
+    url: '/api/users',
+    method: 'get',
+    params: {
+      q: query.name || null,
+      role: query.role || null,
+      available: query.available || null
+    }
   });
 }
 export function getCurUser() {

@@ -20,7 +20,6 @@
       stripe
       highlight-current-row
       style="width: 100%;"
-      @row-contextmenu="rowContextMenu"
     >
       <!-- <el-table-column :label="$t('table.id')" align="center" hidden="true">
       <template slot-scope="scope">
@@ -29,26 +28,26 @@
       </el-table-column> -->
       <el-table-column :label="$t('table.leader')" align="center">
         <template slot-scope="scope" >
-          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)" >{{ scope.row.leaders[0].fullName }}</div> -->
-          <div>{{ scope.row.leaders[0].fullName }}</div>
+          <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)" >{{ scope.row.leaders[0].fullName }}</div>
+          <!-- <div>{{ scope.row.leaders[0].fullName }}</div> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.createdDate')" align="center" sortable prop="createdDate">
         <template slot-scope="scope" >
-          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div> -->
-          <div>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div>
+          <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div>
+          <!-- <div>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.lastModifiedDate')" align="center">
         <template slot-scope="scope">
-          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div> -->
-          <div>{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div>
+          <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div>
+          <!-- <div>{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div> -->
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.teamName')" align="center">
         <template slot-scope="scope" >
-          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.teamName }}</div> -->
-          <div>{{ scope.row.teamName }}</div>
+          <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.teamName }}</div>
+          <!-- <div>{{ scope.row.teamName }}</div> -->
         </template>
       </el-table-column>
       <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width" >
@@ -97,8 +96,6 @@
       </template>
     </vue-context>
 
-    <team-context-menu v-if="menuVisible" ref="teamcontextmenu" @on-close="onClose" @handleAdd="handleAddUser" @handleRemove="handleRemoveUser"/>
-
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogExcUser" @close="onClose">
       <div class="row">
         <div class="col-xs-5 col-md-5 text-center" >
@@ -110,7 +107,7 @@
             style="height: 310px; overflow-y: auto">
             <ul class="list-group">
               <li
-                v-for="user in userNotInTeam"
+                v-for="user in employees"
                 :key="user.userId"
                 :class="{'active': selectedMemberId.includes(user.userId), 'disabled': dialogStatus == 'removeUser'}"
                 class="list-group-item"
@@ -229,7 +226,8 @@ export default {
       selectedMemberIdDeleted: [],
       userNotInTeam: [],
       confirm: false,
-      menuVisible: false
+      menuVisible: false,
+      employees: []
     }
   },
   computed: {
@@ -240,22 +238,12 @@ export default {
     ])
   },
   created() {
-    console.log('userPermission', this.userPermission);
-
     this.getList()
   },
   methods: {
-    rowContextMenu(row, column, event) {
-      this.menuVisible = true
-      this.$nextTick(() => {
-        this.$refs['teamcontextmenu'].init(row, column, event)
-      })
-    },
     onClose() {
       this.selectedMemberId = []
       this.selectedMemberIdDeleted = []
-      this.menuVisible = false
-      document.removeEventListener('click', this.onCloseContext)
     },
     onClick(type) {
       switch (type) {
@@ -409,8 +397,11 @@ export default {
         }
         this.total = items.length;
       });
-      this.$store.dispatch('GetAllUser').then(items => {
-        this.lstLeader = items.filter(user => user.role === 'Manager')
+      this.$store.dispatch('GetLeaderFree').then(items => {
+        this.lstLeader = items;
+      })
+      this.$store.dispatch('GetEmployeeFree').then(items => {
+        this.employees = items
       })
       this.listLoading = false;
     },

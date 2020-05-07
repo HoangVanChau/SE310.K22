@@ -19,6 +19,8 @@ const user = {
       articlePlatform: []
     },
     users: [],
+    employees: [],
+    leaders: [],
     permissions: false
   },
 
@@ -40,6 +42,12 @@ const user = {
     },
     SET_USERS: (state, users) => {
       state.users = users;
+    },
+    SET_LEADERS: (state, leaders) => {
+      state.leaders = leaders;
+    },
+    SET_EMPLOYEES: (state, employees) => {
+      state.employees = employees;
     },
     SET_PERMISSIONS: (state, permissions) => {
       state.permissions = permissions;
@@ -155,10 +163,37 @@ const user = {
         });
       });
     },
-    GetAllUser({ commit, dispatch }) {
+    GetAllUser({ commit, dispatch }, query) {
       return new Promise(resolve => {
-        getAllUsers().then(res => {
+        console.log('query :>> ', query);
+        getAllUsers(query).then(res => {
           commit('SET_USERS', res);
+          resolve(res);
+        });
+      });
+    },
+    GetEmployeeFree({ commit, dispatch }) {
+      return new Promise(resolve => {
+        const query = {
+          name: null,
+          role: 'Employee',
+          available: 'true'
+        };
+        getAllUsers(query).then(res => {
+          commit('SET_EMPLOYEES', res);
+          resolve(res);
+        });
+      });
+    },
+    GetLeaderFree({ commit, dispatch }) {
+      return new Promise(resolve => {
+        const query = {
+          name: null,
+          role: 'Manager',
+          available: 'true'
+        };
+        getAllUsers(query).then(res => {
+          commit('SET_LEADERS', res);
           resolve(res);
         });
       });

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('table.fullName')" v-model="listQuery.fullName" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-input :placeholder="$t('table.fullName')" v-model="listQuery.name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
       <el-select v-model="listQuery.sort" style="width: 160px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>
@@ -162,8 +162,9 @@ export default {
         page: 1,
         limit: 10,
         // importance: undefined,
-        fullName: undefined,
-        // type: undefined,
+        name: null,
+        role: null,
+        available: null,
         sort: '+createdDate'
       },
       sortOptions: [{ label: 'Date Ascending', key: '+createdDate' }, { label: 'Date Descending', key: '-createdDate' }],
@@ -209,23 +210,15 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      this.$store.dispatch('GetAllUser').then(items => {
+      this.$store.dispatch('GetAllUser', this.listQuery).then(items => {
         const begin = (this.listQuery.page - 1) * this.listQuery.limit;
         const end = begin + this.listQuery.limit;
-        if (this.listQuery.fullName) {
-          this.list = items.map(item => {
-            this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
-            return item
-          })
-            .sort(compareValues(this.listQuery.sort))
-            .filter(item => item.fullName.toLowerCase().startsWith(this.listQuery.fullName.toLowerCase()))
-            .slice(begin, end)
-        } else {
-          this.list = items.map(item => {
-            this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
-            return item
-          }).sort(compareValues(this.listQuery.sort)).slice(begin, end);
-        }
+        this.list = items.map(item => {
+          this.$set(item, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html will be used when user click the cancel botton
+          return item
+        })
+          .sort(compareValues(this.listQuery.sort))
+          .slice(begin, end)
         this.total = items.length;
         this.listLoading = false;
       });
