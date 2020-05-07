@@ -25,8 +25,8 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <!-- <img :src="curUser.avatarImageId+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-          <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png" class="user-avatar" style="margin-bottom: 25px">
+          <img :src="'http://34.80.19.146:5001/api/images?id='+curUser.avatarImageId" class="user-avatar" style="margin-bottom: 25px">
+          <!-- <img src="https://wpimg.wallstcn.com/e7d23d71-cf19-4b90-a1cc-f56af8c0903d.png" class="user-avatar" style="margin-bottom: 25px"> -->
           <i class="el-icon-caret-bottom" style="margin-bottom: 25px"/>
         </div>
         <el-dropdown-menu slot="dropdown">

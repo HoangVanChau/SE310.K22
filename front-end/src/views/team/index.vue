@@ -1,8 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input :placeholder="$t('table.title')" v-model="listQuery.title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
+      <el-input :placeholder="$t('table.teamName')" v-model="listQuery.teamName" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-select v-model="listQuery.sort" style="width: 160px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
       </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
@@ -19,30 +19,36 @@
       fit
       stripe
       highlight-current-row
-      style="width: 100%;">
+      style="width: 100%;"
+      @row-contextmenu="rowContextMenu"
+    >
       <!-- <el-table-column :label="$t('table.id')" align="center" hidden="true">
       <template slot-scope="scope">
-          <span>{{ scope.row.teamId }}</span>
+          <div>{{ scope.row.teamId }}</div>
         </template>
       </el-table-column> -->
-      <el-table-column :label="$t('table.leader')" align="center" >
+      <el-table-column :label="$t('table.leader')" align="center">
         <template slot-scope="scope" >
-          <span @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.leaders[0].fullName }}</span>
+          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)" >{{ scope.row.leaders[0].fullName }}</div> -->
+          <div>{{ scope.row.leaders[0].fullName }}</div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.createdDate')" align="center" sortable prop="createdDate">
         <template slot-scope="scope" >
-          <span @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</span>
+          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div> -->
+          <div>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.lastModifiedDate')" align="center">
         <template slot-scope="scope">
-          <span @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</span>
+          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div> -->
+          <div>{{ scope.row.lastModifyDate | parseTime('{d}-{m}-{y}') }}</div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('table.teamName')" align="center">
         <template slot-scope="scope" >
-          <span @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.teamName }}</span>
+          <!-- <div @contextmenu.prevent="$refs['menu'].open($event, scope.row)">{{ scope.row.teamName }}</div> -->
+          <div>{{ scope.row.teamName }}</div>
         </template>
       </el-table-column>
       <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width" >
@@ -76,7 +82,7 @@
       </div>
     </el-dialog>
 
-    <vue-context ref="menu">
+    <vue-context ref="menu" >
       <template v-if="child.data" slot-scope="child">
         <li>
           <a @click.prevent="handleAddUser(child.data)">
@@ -90,6 +96,8 @@
         </li>
       </template>
     </vue-context>
+
+    <team-context-menu v-if="menuVisible" ref="teamcontextmenu" @on-close="onClose" @handleAdd="handleAddUser" @handleRemove="handleRemoveUser"/>
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogExcUser" @close="onClose">
       <div class="row">
@@ -161,6 +169,7 @@ import { parseTime, compareValues } from '@/utils'
 import { mapGetters } from 'vuex'
 import VueContext from 'vue-context'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import TeamContextMenu from './component/TeamContextMenu/TeamContextMenu'
 import 'vue-context/src/sass/vue-context.scss';
 
 export default {
@@ -168,7 +177,7 @@ export default {
   directives: {
     waves
   },
-  components: { VueContext, ConfirmDialog },
+  components: { VueContext, ConfirmDialog, TeamContextMenu },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -219,7 +228,8 @@ export default {
       selectedMemberId: [],
       selectedMemberIdDeleted: [],
       userNotInTeam: [],
-      confirm: false
+      confirm: false,
+      menuVisible: false
     }
   },
   computed: {
@@ -235,9 +245,17 @@ export default {
     this.getList()
   },
   methods: {
+    rowContextMenu(row, column, event) {
+      this.menuVisible = true
+      this.$nextTick(() => {
+        this.$refs['teamcontextmenu'].init(row, column, event)
+      })
+    },
     onClose() {
       this.selectedMemberId = []
       this.selectedMemberIdDeleted = []
+      this.menuVisible = false
+      document.removeEventListener('click', this.onCloseContext)
     },
     onClick(type) {
       switch (type) {

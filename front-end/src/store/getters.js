@@ -18,6 +18,8 @@ const getters = {
   userPermission: state => state.user.permissions,
   provinces: state => state.address.provinces,
   districts: state => state.address.districts,
-  wards: state => state.address.wards
+  wards: state => state.address.wards,
+  file: state => state.image.file,
+  imageId: state => state.image.imageId,
 };
 export default getters;

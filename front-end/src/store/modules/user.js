@@ -77,15 +77,29 @@ const user = {
         });
       });
     },
-    UpdateCurUser({ commit, state }, updatedUser) {
+    UpdateCurUser({ commit, dispatch }, updatedUser) {
       return new Promise(resolve => {
-        updateCurUser(updatedUser)
-          .then(user => {
-            commit('SET_USER', user);
-            commit('SET_ROLES', [user.role]);
-            resolve(user);
-          })
-          .catch(e => resolve(e));
+        if (updatedUser.file === null) {
+          dispatch('UploadImage', updatedUser.file).then(imageId => {
+            updatedUser.data.avatarImageId = imageId;
+            console.log('updatedUser.data :>> ', updatedUser.data);
+            updateCurUser(updatedUser.data)
+              .then(user => {
+                commit('SET_USER', user);
+                commit('SET_ROLES', [user.role]);
+                resolve(user);
+              })
+              .catch(e => resolve(e));
+          });
+        } else {
+          updateCurUser(updatedUser.data)
+            .then(user => {
+              commit('SET_USER', user);
+              commit('SET_ROLES', [user.role]);
+              resolve(user);
+            })
+            .catch(e => resolve(e));
+        }
       });
     },
 

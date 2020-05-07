@@ -225,8 +225,12 @@ export default {
       this.curUser.address.ward = this.ward
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
-          console.log('this.curUser :>> ', this.curUser);
-          this.$store.dispatch('UpdateCurUser', this.curUser).then(res => {
+          const updatedUser = {
+            file: this.$store.getters.file,
+            data: this.curUser
+          }
+          console.log('updatedUser :>> ', updatedUser);
+          this.$store.dispatch('UpdateCurUser', updatedUser).then(res => {
             if (res) {
               this.$notify({
                 title: 'Success',
