@@ -70,6 +70,22 @@ namespace HRM.Controllers.Contracts
                     Message = "Không tìm thấy Team!"
                 });
             }
+
+            if (targetUser.Role == Constants.Roles.Employee && !targetTeam.MembersId.Contains(targetUser.UserId))
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "User phải nằm trong team hiện tại (Đối với người lao động- Employee)!"
+                });
+            }
+
+            if (targetUser.Role == Constants.Roles.Manager && targetTeam.LeaderId != targetUser.UserId)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "User phải đang là Leader trong team hiện tại (Đối với Quản lý- Manager)!"
+                });
+            }
             
             var targetPosition = await _positionRepo.GetPositionById(newContract.PositionId);
             if (targetPosition == null)
@@ -77,6 +93,18 @@ namespace HRM.Controllers.Contracts
                 return new BadRequestResponse(new ErrorData
                 {
                     Message = "Không tìm thấy Position!"
+                });
+            }
+
+            var filterAlreadyExistInActiveContract = Builders<Contract>.Filter.Where(
+                x => x.UserId == targetUser.UserId && x.Active == true);
+            var checkExist = await _contractRepo.QueryContracts(filterAlreadyExistInActiveContract);
+            if (checkExist.Count > 0)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "User hiện tại đang ở trong hợp đồng đã kích hoạt",
+                    Data = checkExist
                 });
             }
             
@@ -134,18 +162,17 @@ namespace HRM.Controllers.Contracts
 
             try
             {
-                var result = await _contractRepo.UpdateByContractId(contractId, updateDefine);
+                await _contractRepo.UpdateByContractId(contractId, updateDefine);
                 return new OkResponse(new
                 {
-                    Message = "Sửa thông tin position thành công",
-                    Data = result
+                    Message = "Sửa thông tin Contract thành công",
                 });
             }
             catch (Exception e)
             {
                 return new BadRequestResponse(new ErrorData
                 {
-                    Message = "Lỗi khi sửa thông tin Position",
+                    Message = "Lỗi khi sửa thông tin Contract",
                     Data = e
                 });
             }
