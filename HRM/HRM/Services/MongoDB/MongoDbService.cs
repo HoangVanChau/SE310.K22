@@ -45,7 +45,7 @@ namespace HRM.Services.MongoDB
             var counterCollection = GetDb().GetCollection<Counter>(Collections.CounterCollection);
             var userCollection = GetDb().GetCollection<User>(Collections.UserCollection);
             
-            if (counterCollection.CountDocuments(x => true) == 0)
+            if (counterCollection.CountDocuments(x => x.Name.Equals(Collections.UserCollection)) == 0)
             {
                 await counterCollection.InsertOneAsync(new Counter
                 {
