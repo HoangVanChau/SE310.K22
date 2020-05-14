@@ -12,6 +12,8 @@ import Layout from '@/views/layout/Layout';
 import userRouter from './modules/user';
 import teamRouter from './modules/team';
 import departmentRouter from './modules/department';
+import positionRouter from './modules/position';
+import contactRouter from './modules/contact';
 // import nestedRouter from './modules/nested';
 
 /** note: Submenu only appear when children.length>=1
@@ -178,6 +180,8 @@ export const asyncRouterMap = [
   userRouter,
   teamRouter,
   departmentRouter,
+  positionRouter,
+  contactRouter,
   // {
   //   path: '/example',
   //   component: Layout,

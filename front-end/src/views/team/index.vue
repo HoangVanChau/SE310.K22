@@ -201,7 +201,6 @@ export default {
       },
       sortOptions: [{ label: 'Date Ascending', key: '+createdDate' }, { label: 'Date Descending', key: '-createdDate' }],
       temp: {
-        id: undefined,
         teamName: '',
         leaderId: '',
         teamId: ''
@@ -234,11 +233,12 @@ export default {
     ...mapGetters([
       'curUser',
       'userPermission',
-      'users'
     ])
   },
   created() {
     this.getList()
+    this.getLeaders()
+    this.getEmployees()
   },
   methods: {
     onClose() {
@@ -349,18 +349,13 @@ export default {
     },
     fetchDataExcUser(team) {
       const teamId = team.teamId
-      const users = this.users
       this.$store.dispatch('GetTeamByID', teamId).then(res => {
         if (res) {
           this.selectedTeam = res;
-          this.$store.dispatch('GetUserNotInTeam', { users, teamId }).then(res => {
-            if (res) {
-              this.userNotInTeam = res.filter(item => item.role === 'Employee')
-            }
-          })
+          this.getEmployees()
         }
       }).catch(e => {
-
+        console.log(e);
       })
     },
     handleAddUser(row) {
@@ -397,13 +392,23 @@ export default {
         }
         this.total = items.length;
       });
+      // this.$store.dispatch('GetLeaderFree').then(items => {
+      //   this.lstLeader = items;
+      // })
+      // this.$store.dispatch('GetEmployeeFree').then(items => {
+      //   this.employees = items
+      // })
+      this.listLoading = false;
+    },
+    getLeaders() {
       this.$store.dispatch('GetLeaderFree').then(items => {
         this.lstLeader = items;
       })
+    },
+    getEmployees() {
       this.$store.dispatch('GetEmployeeFree').then(items => {
         this.employees = items
       })
-      this.listLoading = false;
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -445,9 +450,9 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
+        teamId: '',
         teamName: '',
-        leader: '',
+        leaderId: '',
       }
     },
     handleCreate() {
@@ -510,8 +515,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['id', 'teamName', 'createdDate', 'lastModifyDate', 'leader']
-        const filterVal = ['id', 'teamName', 'createdDate', 'lastModifyDate', 'leader']
+        const tHeader = ['Id', 'Team Name', 'Created Date', 'LastModified Date', 'leader Id']
+        const filterVal = ['teamId', 'teamName', 'createdDate', 'lastModifyDate', 'leaderId']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,

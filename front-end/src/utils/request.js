@@ -2,7 +2,8 @@ import axios from 'axios';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
 import { environment } from '../environment/environment';
-import { Message, MessageBox } from 'element-ui';
+import { MessageBox } from 'element-ui';
+import { Notification } from 'element-ui';
 // import { removeToken } from './auth';
 // create an axios instance
 const service = axios.create({
@@ -44,7 +45,7 @@ service.interceptors.response.use(
     const res = response;
 
     if (res.status !== 200) {
-      Message({
+      Notification({
         message: res.message,
         type: 'error',
         duration: 5 * 1000
@@ -100,11 +101,17 @@ service.interceptors.response.use(
         ? error.response.data.message
         : error.response.statusText;
 
-      Message({
+      Notification({
         message: message,
         type: 'error',
         duration: 5 * 1000
       });
+      // this.$notify({
+      //   title: 'error',
+      //   message: message,
+      //   type: 'error',
+      //   duration: 5 * 1000
+      // })
     }
     // return Promise.reject(error);
   }

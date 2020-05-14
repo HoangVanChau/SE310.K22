@@ -69,7 +69,10 @@ export default {
     theme: 'Giao diện',
     clipboardDemo: 'Clipboard',
     i18n: 'Quốc tế hóa',
-    externalLink: 'Liên kết ngoài'
+    externalLink: 'Liên kết ngoài',
+    timeKeeping: 'Chấm công',
+    position: 'Vị trí',
+    contact: 'Hợp đồng'
   },
   navbar: {
     logOut: 'Đăng xuất',
@@ -154,7 +157,8 @@ export default {
     ward: 'Thị trấn/Phường',
     oldpassword: 'Mật khẩu cũ',
     newpassword: 'Mật khẩu mới',
-    verifypassword: 'Xác nhận mật khẩu'
+    verifypassword: 'Xác nhận mật khẩu',
+    save: 'Lưu'
   },
   errorLog: {
     tips: 'Vui lòng nhấp vào biểu tượng lỗi nhỏ ở góc trên bên phải',
@@ -190,5 +194,14 @@ export default {
     deleteMes: 'Bạn có chắc chắn muốn xóa hay không?',
     ok: 'Xác nhận',
     cancel: 'Hủy bỏ'
+  },
+  position: {
+    positionName: 'Tên vị trí',
+    createdDate: 'Ngày tạo',
+    baseMonthSalary: 'Lương tháng cơ bản',
+    baseHourSalary: 'Lương giờ cơ bản',
+    baseOtSalaryPerHour: 'Lương giờ làm thêm giờ',
+    baseDateOff: 'Ngày phép cơ bản',
+    baseLateMoney: 'Ngày trễ lương',
   }
 };

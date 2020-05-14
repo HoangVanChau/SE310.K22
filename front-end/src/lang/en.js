@@ -69,7 +69,10 @@ export default {
     theme: 'Theme',
     clipboardDemo: 'Clipboard',
     i18n: 'I18n',
-    externalLink: 'External Link'
+    externalLink: 'External Link',
+    timeKeeping: 'Time Keeping',
+    position: 'Position',
+    contact: 'Contact'
   },
   navbar: {
     logOut: 'Log Out',
@@ -156,7 +159,8 @@ export default {
     ward: 'Ward',
     oldpassword: 'Old Password',
     newpassword: 'New Password',
-    verifypassword: 'Verify Password'
+    verifypassword: 'Verify Password',
+    save: 'Save'
   },
   errorLog: {
     tips: 'Please click the bug icon in the upper right corner',
@@ -192,5 +196,14 @@ export default {
     deleteMes: 'Do you want to delete this record??',
     ok: 'Confirm',
     cancel: 'Cancel'
+  },
+  position: {
+    positionName: 'Position Name',
+    createdDate: 'Created Date',
+    baseMonthSalary: 'Base Month Salary',
+    baseHourSalary: 'Base Hour Salary',
+    baseOtSalaryPerHour: 'Base of salary hours',
+    baseDateOff: 'Base date off',
+    baseLateMoney: 'Base Late Money',
   }
 };
