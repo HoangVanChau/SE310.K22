@@ -205,5 +205,6 @@ export default {
     baseOtSalaryPerHour: 'Base of salary hours',
     baseDateOff: 'Base date off',
     baseLateMoney: 'Base Late Money',
+    description: 'Description'
   }
 };

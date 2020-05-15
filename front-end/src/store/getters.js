@@ -23,5 +23,6 @@ const getters = {
   wards: state => state.address.wards,
   file: state => state.image.file,
   imageId: state => state.image.imageId,
+  positions: state => state.position.positions,
 };
 export default getters;

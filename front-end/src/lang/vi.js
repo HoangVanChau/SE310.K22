@@ -203,5 +203,6 @@ export default {
     baseOtSalaryPerHour: 'Lương giờ làm thêm giờ',
     baseDateOff: 'Ngày phép cơ bản',
     baseLateMoney: 'Ngày trễ lương',
+    description: 'Mô tả'
   }
 };

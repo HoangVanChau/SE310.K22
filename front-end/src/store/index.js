@@ -9,6 +9,7 @@ import team from './modules/team';
 import role from './modules/role';
 import address from './modules/address';
 import image from './modules/upload';
+import position from './modules/position';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -23,7 +24,8 @@ const store = new Vuex.Store({
     team,
     role,
     address,
-    image
+    image,
+    position
   },
   getters
 });

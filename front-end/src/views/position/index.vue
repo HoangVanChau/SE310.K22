@@ -2,9 +2,9 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input :placeholder="$t('table.teamName')" v-model="listQuery.teamName" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.sort" style="width: 160px" class="filter-item" @change="handleFilter">
+      <!-- <el-select v-model="listQuery.sort" style="width: 160px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key"/>
-      </el-select>
+      </el-select> -->
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">{{ $t('table.search') }}</el-button>
       <el-button v-show="userPermission" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">{{ $t('table.add') }}</el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">{{ $t('table.export') }}</el-button>
@@ -26,9 +26,9 @@
           <div>{{ scope.row.positionName }}</div>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('position.createdDate')" align="center" sortable prop="createdDate">
+      <el-table-column :label="$t('position.baseDateOff')" align="center" prop="baseDateOff">
         <template slot-scope="scope" >
-          <div>{{ scope.row.createdDate | parseTime('{d}-{m}-{y}') }}</div>
+          <div>{{ scope.row.baseDateOff }}</div>
         </template>
       </el-table-column>
       <el-table-column :label="$t('position.baseMonthSalary')" align="center">
@@ -59,20 +59,23 @@
         <el-form-item :label="$t('position.positionName')" prop="positionName">
           <el-input v-model="temp.positionName"/>
         </el-form-item>
+        <el-form-item :label="$t('position.description')" prop="description">
+          <el-input v-model="temp.description"/>
+        </el-form-item>
         <el-form-item :label="$t('position.baseMonthSalary')" prop="baseMonthSalary">
           <el-input-number v-model="temp.baseMonthSalary"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseHourSalary')" prop="baseHourSalary">
-          <el-input-number v-model="temp.baseHourSalary" :min="0" step="100"/>
+          <el-input-number v-model="temp.baseHourSalary" :min="0" :step="100"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseOtSalaryPerHour')" prop="baseOtSalaryPerHour">
-          <el-input-number v-model="temp.baseOtSalaryPerHour" :min="0" step="100"/>
+          <el-input-number v-model="temp.baseOtSalaryPerHour" :min="0" :step="100"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseDateOff')" prop="baseDateOff">
-          <el-input-number v-model="temp.baseDateOff" :min="0" step="100"/>
+          <el-input-number v-model="temp.baseDateOff" :min="0" :step="100"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseLateMoney')" prop="baseLateMoney">
-          <el-input-number v-model="temp.baseLateMoney" :min="0" step="100"/>
+          <el-input-number v-model="temp.baseLateMoney" :min="0" :step="100"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -82,14 +85,14 @@
       </div>
     </el-dialog>
 
-    <confirm-dialog :confirm="confirm" :data="temp.teamId" :call-back="handleDelete" :on-close="()=>confirm = false"/>
+    <confirm-dialog :confirm="confirm" :data="temp.positionId" :call-back="handleDelete" :on-close="()=>confirm = false"/>
 
   </div>
 </template>
 
 <script>
 import waves from '@/directive/waves' // 水波纹指令
-import { parseTime } from '@/utils'
+import { parseTime, compareValues } from '@/utils'
 import { mapGetters } from 'vuex'
 import ConfirmDialog from '@/components/ConfirmDialog'
 
@@ -125,7 +128,7 @@ export default {
       },
       sortOptions: [{ label: 'Date Ascending', key: '+createdDate' }, { label: 'Date Descending', key: '-createdDate' }],
       temp: {
-        id: undefined,
+        positionId: undefined,
         positionName: '',
         description: '',
         baseMonthSalary: 0,
@@ -142,10 +145,15 @@ export default {
         create: 'Create',
       },
       rules: {
-        leaderId: [{ required: true, message: 'leader is required', trigger: 'change' }],
-        teamName: [{ required: true, message: 'Team Name is required', trigger: 'blur' }]
+        positionName: [{ required: true, message: 'Position Name is required', trigger: 'blur' }],
+        baseMonthSalary: [{ required: true, message: 'Base Month Salary is required', trigger: 'blur' }],
+        baseHourSalary: [{ required: true, message: 'Base Hour Salary is required', trigger: 'blur' }],
+        baseOtSalaryPerHour: [{ required: true, message: 'Base OT Salary per hour is required', trigger: 'blur' }],
+        baseDateOff: [{ required: true, message: 'Base Date off is required', trigger: 'blur' }],
+        baseLateMoney: [{ required: true, message: 'Base Late Money is required', trigger: 'blur' }],
       },
       downloadLoading: false,
+      confirm: false
     }
   },
   computed: {
@@ -159,7 +167,19 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = false
+      this.$store.dispatch('GetAllPosition').then(res => {
+        if (res) {
+          this.list = res.sort(compareValues(this.listQuery.sort));
+          this.listLoading = false;
+        }
+      }).catch(e => {
+        this.$notify({
+          title: 'Error',
+          message: 'getList ' + JSON.stringify(e),
+          type: 'error',
+          duration: 2000
+        })
+      })
     },
     handleFilter() {
       this.listQuery.page = 1
@@ -201,7 +221,7 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined,
+        positionId: undefined,
         positionName: '',
         description: '',
         baseMonthSalary: 0,
@@ -220,20 +240,20 @@ export default {
       })
     },
     createData() {
-      // this.$refs['dataForm'].validate((valid) => {
-      //   if (valid) {
-      //     this.$store.dispatch('CreateTeam', this.temp).then(res => {
-      //       this.dialogFormVisible = false
-      //       this.$notify({
-      //         title: 'Success',
-      //         message: 'Create successfully',
-      //         type: 'success',
-      //         duration: 2000
-      //       })
-      //       this.getList()
-      //     });
-      //   }
-      // })
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('CreatePosition', this.temp).then(res => {
+            this.dialogFormVisible = false
+            this.$notify({
+              title: 'Success',
+              message: 'Create successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          });
+        }
+      })
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
@@ -244,29 +264,22 @@ export default {
       })
     },
     updateData() {
-      // this.$refs['dataForm'].validate((valid) => {
-      //   if (valid) {
-      //     const tempData = {
-      //       teamName: this.temp.teamName,
-      //       leaderId: this.temp.leaderId,
-      //       teamAvatarImageId: null
-      //     }
-      //     console.log(this.temp);
-
-      //     this.$store.dispatch('UpdateTeam', { teamId: this.temp.teamId, newTeam: tempData }).then(res => {
-      //       if (res) {
-      //         this.dialogFormVisible = false
-      //         this.$notify({
-      //           title: 'Success',
-      //           message: 'Update successfully',
-      //           type: 'success',
-      //           duration: 2000
-      //         })
-      //         this.getList()
-      //       }
-      //     });
-      //   }
-      // })
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.$store.dispatch('UpdatePosition', { positionId: this.temp.positionId, newPosition: this.temp }).then(res => {
+            if (res) {
+              this.dialogFormVisible = false
+              this.$notify({
+                title: 'Success',
+                message: 'Update successfully',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            }
+          });
+        }
+      })
     },
     handleDownload() {
       this.downloadLoading = true
