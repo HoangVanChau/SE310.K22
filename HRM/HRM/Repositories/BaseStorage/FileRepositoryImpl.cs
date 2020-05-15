@@ -18,7 +18,7 @@ namespace HRM.Repositories.BaseStorage
 
         public abstract String GetCollectionName();
         
-        public async Task<ObjectId> SaveFile(T storageFile)
+        public async Task<string> SaveFile(T storageFile)
         {
             await _collection.InsertOneAsync(storageFile);
             return storageFile.Id;
@@ -26,8 +26,7 @@ namespace HRM.Repositories.BaseStorage
 
         public async Task<T> FindFileById(string id)
         {
-            var objectId = ObjectId.Parse(id);
-            return await _collection.Find(x => x.Id.Equals(objectId)).FirstOrDefaultAsync();
+            return await _collection.Find(x => x.Id.Equals(id)).FirstOrDefaultAsync();
         }
     }
 }

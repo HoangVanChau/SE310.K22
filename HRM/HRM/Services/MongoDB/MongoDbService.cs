@@ -43,8 +43,7 @@ namespace HRM.Services.MongoDB
         {
             //count user for employee Id increase
             var counterCollection = GetDb().GetCollection<Counter>(Collections.CounterCollection);
-            var userCollection = GetDb().GetCollection<User>(Collections.UserCollection);
-            
+
             if (counterCollection.CountDocuments(x => x.Name.Equals(Collections.UserCollection)) == 0)
             {
                 await counterCollection.InsertOneAsync(new Counter
@@ -55,6 +54,7 @@ namespace HRM.Services.MongoDB
             }
             
             //index for user collection
+            var userCollection = GetDb().GetCollection<User>(Collections.UserCollection);
             var options = new CreateIndexOptions { Unique = true };
             var listUserIndex = new List<IndexKeysDefinition<User>>()
             {
@@ -70,6 +70,19 @@ namespace HRM.Services.MongoDB
                 listUserIndexModel.Add(new CreateIndexModel<User>(definition, options));
             });
             await userCollection.Indexes.CreateManyAsync(listUserIndexModel);
+            
+            //index for attendance collection 
+            var attendanceCollection = GetDb().GetCollection<Attendance>(Collections.AttendanceCollection);
+            var listAttendanceIndex = new List<IndexKeysDefinition<Attendance>>
+            {
+                new IndexKeysDefinitionBuilder<Attendance>().Ascending(x => x.Unique),
+            };
+            var listAttendanceIndexModel = new List<CreateIndexModel<Attendance>>();
+            listAttendanceIndex.ForEach(definition =>
+            {
+                listAttendanceIndexModel.Add(new CreateIndexModel<Attendance>(definition, options));
+            });
+            await attendanceCollection.Indexes.CreateManyAsync(listAttendanceIndexModel);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace HRM.Repositories.Base
             return await Collection.Find(x => true).ToListAsync();
         }
 
-        public async Task<ObjectId> InsertOne(T document)
+        public async Task<string> InsertOne(T document)
         {
             var now = DateTime.Now;
             document.CreatedDate = now;
@@ -38,19 +38,24 @@ namespace HRM.Repositories.Base
         public async Task<bool> UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
             var finalDefinition = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
-            var task = await Collection.UpdateOneAsync(x => x.Id.Equals(ObjectId.Parse(id)), finalDefinition);
+            var task = await Collection.UpdateOneAsync(x => x.Id.Equals(id), finalDefinition);
             return task.ModifiedCount.Equals(1);
         }
 
         public async Task<bool> DeleteOneById(String id)
         {
-            var task = await Collection.DeleteOneAsync(x => x.Id.Equals(ObjectId.Parse(id)));
+            var task = await Collection.DeleteOneAsync(x => x.Id.Equals(id));
             return task.DeletedCount.Equals(1);
         }
 
         public async Task<T> FindFirstById(string id)
         {
-            return await Collection.Find(x => x.Id.Equals(ObjectId.Parse(id))).FirstOrDefaultAsync();
+            return await Collection.Find(x => x.Id.Equals(id)).FirstOrDefaultAsync();
+        }
+
+        public Task<ReplaceOneResult> ReplaceOneById(string id, T newDocument)
+        {
+            return Collection.ReplaceOneAsync(x => x.Id.Equals(id), newDocument);
         }
     }
 }

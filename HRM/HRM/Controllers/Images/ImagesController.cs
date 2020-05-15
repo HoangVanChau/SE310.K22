@@ -7,7 +7,6 @@ using HRM.Models.Responses.Bases;
 using HRM.Repositories.Image;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace HRM.Controllers.Images
 {
@@ -48,7 +47,7 @@ namespace HRM.Controllers.Images
 
         private async Task<string> WriteFileToMongoDb(IFormFile file)
         {
-            ObjectId fileName;
+            string fileName;
             await using (var ms = new MemoryStream())
             {
                 file.CopyTo(ms);
@@ -62,7 +61,7 @@ namespace HRM.Controllers.Images
                 fileName = await _imageRepository.SaveFile(imageFile);
             }
 
-            return fileName.ToString();
+            return fileName;
         }
     }
 }

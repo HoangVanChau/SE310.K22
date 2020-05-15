@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -9,6 +10,7 @@ namespace HRM.Models.Cores
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
         public ObjectId BsonId { get; set; }
         [BsonElement("id")]
         public string Id { get; set; }
@@ -25,6 +27,7 @@ namespace HRM.Models.Cores
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
         public ObjectId BsonId { get; set; }
         [BsonElement("id")]
         public string Id { get; set; }
@@ -41,6 +44,7 @@ namespace HRM.Models.Cores
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [JsonIgnore]
         public ObjectId BsonId { get; set; }
         [BsonElement("id")]
         public string Id { get; set; }

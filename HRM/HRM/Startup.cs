@@ -1,6 +1,9 @@
 using System;
+using System.ComponentModel;
 using System.Text;
+using HRM.Extensions.JsonConverters;
 using HRM.Helpers;
+using HRM.Repositories.Attendance;
 using HRM.Repositories.AuthRepository;
 using HRM.Repositories.Contract;
 using HRM.Repositories.Counter;
@@ -8,7 +11,6 @@ using HRM.Repositories.Image;
 using HRM.Repositories.Position;
 using HRM.Repositories.Team;
 using HRM.Repositories.User;
-using HRM.Repositories.Utils;
 using HRM.Repositories.Utils.Address;
 using HRM.Repositories.Utils.CompanyInfo;
 using HRM.Services.Auth;
@@ -31,14 +33,19 @@ namespace HRM
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddControllers();
-            
+            services.AddControllers().AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.Converters.Add(new TimespanConverter());
+                    opts.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
+                }
+            );
+
             //Config ....
             services.Configure<MongoDbSetting>(options =>
             {
@@ -102,6 +109,7 @@ namespace HRM
             services.AddSingleton<ICompanyInfoRepository, CompanyInfoRepositoryImpl>();
             services.AddSingleton<IPositionRepository, PositionRepositoryImpl>();
             services.AddSingleton<IContractRepository, ContractRepositoryImpl>();
+            services.AddSingleton<IAttendanceRepository, AttendanceRepoImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

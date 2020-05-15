@@ -10,9 +10,10 @@ namespace HRM.Repositories.Base
     public interface IBaseRepository<T> where T: BaseModel
     {
         Task<List<T>> GetAllDocument();
-        Task<ObjectId> InsertOne(T document);
+        Task<string> InsertOne(T document);
         Task<bool> UpdateOneById(String id, UpdateDefinition<T> updateDefinition);
         Task<bool> DeleteOneById(String id);
         Task<T> FindFirstById(String id);
+        Task<ReplaceOneResult> ReplaceOneById(String id, T newDocument);
     }
 }

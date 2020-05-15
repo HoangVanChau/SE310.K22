@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using HRM.Models.Bases;
@@ -18,6 +19,7 @@ namespace HRM.Helpers
             return e switch
             {
                 MongoWriteException exception => HandleMongoWriteException(exception),
+                MongoBulkWriteException exception => HandleMongoBulkWriteException(exception),
                 _ => new BadRequestResponse(new ErrorData
                 {
                     Message = e.Message
@@ -40,7 +42,28 @@ namespace HRM.Helpers
                 })
             };
         }
-
+        private static JsonResult HandleMongoBulkWriteException(MongoBulkWriteException e)
+        {
+            var message = "";
+            var data = new List<Hashtable>();
+            foreach (var bulkWriteError in e.WriteErrors)
+            {
+                if (bulkWriteError.Category == ServerErrorCategory.DuplicateKey)
+                {
+                    message = "Trùng lặp trường!";
+                    data.Add(GetDuplicateField(bulkWriteError.Message));
+                }
+                else
+                {
+                    message = "Lỗi không rõ khi đọc ghi cơ sở dữ liệu!";
+                }
+            }
+            return new BadRequestResponse(new ErrorData
+            {
+                Message = message,
+                Data = data
+            });
+        }
         private static Hashtable GetDuplicateField(string errorMessage)
         {
             var fieldName = Regex.Match(errorMessage, @"index: (.+?)_1")

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Models.Cores;
@@ -9,7 +8,6 @@ using HRM.Repositories.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using Newtonsoft.Json;
 
 namespace HRM.Controllers.Roles
 {
