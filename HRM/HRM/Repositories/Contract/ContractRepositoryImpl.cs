@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HRM.Models;
 using HRM.Repositories.Base;
 using HRM.Repositories.Position;
 using HRM.Repositories.Team;
@@ -81,9 +82,33 @@ namespace HRM.Repositories.Contract
             return result;
         }
 
-        public Task<List<Models.Cores.Contract>> QueryContracts(FilterDefinition<Models.Cores.Contract> filterDefinition)
+        public Task<List<Models.Cores.Contract>> QueryContracts(FilterDefinition<Models.Cores.Contract> filterDefinition, PagingParams pagingParams = null)
         {
-            var result = Collection.Find(filterDefinition).ToListAsync();
+            var pineLine = Collection.Aggregate()
+                .Match(filterDefinition)
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: c => c.UserId,
+                    foreignField: u => u.UserId,
+                    @as: (Models.Cores.Contract c) => c.User
+                ).Lookup(
+                    foreignCollection: _teamCollection,
+                    localField: c => c.TeamId,
+                    foreignField: u => u.TeamId,
+                    @as: (Models.Cores.Contract c) => c.Team
+                ).Lookup(
+                    foreignCollection: _positionCollection,
+                    localField: c => c.PositionId,
+                    foreignField: u => u.PositionId,
+                    @as: (Models.Cores.Contract c) => c.Position
+                );
+            
+            if (pagingParams?.Page != null)
+            {
+                pineLine = pineLine.Skip((pagingParams.Page - 1) * Constants.Paging.PageLimit ?? 0).Limit(Constants.Paging.PageLimit);
+            }
+
+            var result = pineLine.ToListAsync();
             return result;
         }
     }

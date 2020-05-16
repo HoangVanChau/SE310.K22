@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Helpers;
+using HRM.Models;
 using HRM.Models.Cores;
 using HRM.Models.Responses.Bases;
 using HRM.Repositories.Contract;
@@ -35,9 +36,9 @@ namespace HRM.Controllers.Contracts
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> GetPositions()
+        public async Task<JsonResult> GetPositions([FromQuery] PagingParams pagingParams)
         {
-            var result = await _contractRepo.GetAllDocument();
+            var result = await _contractRepo.QueryContracts(FilterDefinition<Contract>.Empty, pagingParams);
             return new OkResponse(result);
         }
 

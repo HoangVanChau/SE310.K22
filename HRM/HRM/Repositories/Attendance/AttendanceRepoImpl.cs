@@ -30,7 +30,7 @@ namespace HRM.Repositories.Attendance
             var query = Collection.Find(customFilter);
             if (pagingParams?.Page != null)
             {
-                query.Limit(Constants.Paging.PageLimit).Skip(pagingParams.Page * Constants.Paging.PageLimit);
+                query.Limit(Constants.Paging.PageLimit).Skip((pagingParams.Page - 1) * Constants.Paging.PageLimit);
             }
             return query.ToListAsync();
         }

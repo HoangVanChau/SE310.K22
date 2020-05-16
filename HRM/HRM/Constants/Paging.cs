@@ -2,6 +2,6 @@ namespace HRM.Constants
 {
     public static class Paging
     {
-        public const int PageLimit = 20;
+        public const int PageLimit = 10;
     }
 }
