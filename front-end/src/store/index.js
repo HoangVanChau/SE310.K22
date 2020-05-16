@@ -10,6 +10,7 @@ import role from './modules/role';
 import address from './modules/address';
 import image from './modules/upload';
 import position from './modules/position';
+import contract from './modules/contract';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -25,7 +26,8 @@ const store = new Vuex.Store({
     role,
     address,
     image,
-    position
+    position,
+    contract
   },
   getters
 });

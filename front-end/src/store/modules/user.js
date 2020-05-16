@@ -165,7 +165,6 @@ const user = {
     },
     GetAllUser({ commit, dispatch }, query) {
       return new Promise(resolve => {
-        console.log('query :>> ', query);
         getAllUsers(query).then(res => {
           commit('SET_USERS', res);
           resolve(res);
@@ -190,7 +189,7 @@ const user = {
         const query = {
           name: null,
           role: 'Manager',
-          available: 'true'
+          available: 'false'
         };
         getAllUsers(query).then(res => {
           commit('SET_LEADERS', res);

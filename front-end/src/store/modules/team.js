@@ -38,14 +38,20 @@ const team = {
       });
     },
     UpdateTeam({ commit, dispatch }, data) {
-      return new Promise(resolve => {
+      return new Promise((resolve, reject) => {
         updateTeam(data.teamId, data.newTeam)
           .then(res => {
             commit('SET_TEAM', res);
-            changeLeader(data.teamId, data.newTeam.leaderId).then(res => {
-              dispatch('GetAllTeam');
+            if (data.newTeam.leaderId) {
+              changeLeader(data.teamId, data.newTeam.leaderId)
+                .then(res => {
+                  dispatch('GetAllTeam');
+                  resolve(res);
+                })
+                .catch(e => reject());
+            } else {
               resolve(res);
-            });
+            }
           })
           .catch(err => console.log(err));
       });

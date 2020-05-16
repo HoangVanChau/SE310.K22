@@ -38,7 +38,6 @@ const position = {
       return new Promise(resolve => {
         createPosition(dataParam)
           .then(res => {
-            console.log('createPosition', res);
             resolve(res);
           })
           .catch(e => console.log('createPosition :>> ', e));

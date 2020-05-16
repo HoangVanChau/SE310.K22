@@ -41,11 +41,15 @@
           <div>{{ scope.row.baseHourSalary }}</div>
         </template>
       </el-table-column>
-      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width" >
+      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" class-name="small-padding fixed-width" >
         <template slot-scope="scope">
-          <el-button type="primary" size="medium" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button v-if="scope.row.status!='deleted'" size="medium" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <el-button type="primary" size="medium" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
+          <el-button
+            v-if="scope.row.status!='deleted'"
+            size="medium"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleModifyStatus(scope.row,'deleted')"/>
         </template>
       </el-table-column>
     </el-table>
@@ -63,7 +67,7 @@
           <el-input v-model="temp.description"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseMonthSalary')" prop="baseMonthSalary">
-          <el-input-number v-model="temp.baseMonthSalary"/>
+          <el-input-number v-model="temp.baseMonthSalary" :min="0" :step="100"/>
         </el-form-item>
         <el-form-item :label="$t('position.baseHourSalary')" prop="baseHourSalary">
           <el-input-number v-model="temp.baseHourSalary" :min="0" :step="100"/>
@@ -245,8 +249,8 @@ export default {
           this.$store.dispatch('CreatePosition', this.temp).then(res => {
             this.dialogFormVisible = false
             this.$notify({
-              title: 'Success',
-              message: 'Create successfully',
+              title: 'Thành công',
+              message: 'Tạo thành công',
               type: 'success',
               duration: 2000
             })
@@ -270,8 +274,8 @@ export default {
             if (res) {
               this.dialogFormVisible = false
               this.$notify({
-                title: 'Success',
-                message: 'Update successfully',
+                title: 'Thành công',
+                message: 'Sửa thành công',
                 type: 'success',
                 duration: 2000
               })

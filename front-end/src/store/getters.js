@@ -24,5 +24,7 @@ const getters = {
   file: state => state.image.file,
   imageId: state => state.image.imageId,
   positions: state => state.position.positions,
+  contracts: state => state.contract.contracts,
+  contactFields: state => state.contract.fields,
 };
 export default getters;

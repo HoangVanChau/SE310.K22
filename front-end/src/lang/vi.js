@@ -5,8 +5,8 @@ export default {
     Employee: 'Nhân viên',
     lstDepartment: 'Danh sách phòng ban',
     Department: 'Phòng ban',
-    lstTeam: 'Danh sách nhóm',
-    Team: 'Nhóm',
+    lstTeam: 'Danh sách đội',
+    Team: 'Đội',
     profile: 'Hồ sơ',
     dashboard: 'Dashboard',
     introduction: 'Giới thiệu',
@@ -72,7 +72,7 @@ export default {
     externalLink: 'Liên kết ngoài',
     timeKeeping: 'Chấm công',
     position: 'Vị trí',
-    contact: 'Hợp đồng'
+    contract: 'Hợp đồng'
   },
   navbar: {
     logOut: 'Đăng xuất',
@@ -124,7 +124,7 @@ export default {
     dragTips1: 'Thứ tự mặc định',
     dragTips2: 'Đặt hàng sau khi kéo',
     title: 'Tiêu đề',
-    teamName: 'Tên nhóm',
+    teamName: 'Tên đội',
     createdDate: 'Ngày tạo',
     remark: 'Nhận xét',
     search: 'Tìm kiếm',
@@ -204,5 +204,19 @@ export default {
     baseDateOff: 'Ngày phép cơ bản',
     baseLateMoney: 'Ngày trễ lương',
     description: 'Mô tả'
+  },
+  contract: {
+    contractName: 'Tên Hợp đồng',
+    active: 'Có hiệu lực',
+    monthlyNetSalary: 'Lương NET tháng',
+    hourlyNetSalary: 'Lương NET giờ',
+    officialEmployee: 'Nhân viên chính thức',
+    extraBonus: 'Lương thưởng',
+    startDate: 'Ngày bắt đầu',
+    endDate: 'Ngày kết thúc',
+    disableDate: 'Ngày chấm dứt',
+    user: 'Nhân viên',
+    position: 'Vị trí',
+    team: 'Đội',
   }
 };

@@ -56,11 +56,15 @@
           <span>{{ scope.row.role }}</span>
         </template>
       </el-table-column>
-      <el-table-column :label="$t('table.actions')" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" class-name="small-padding fixed-width" >
         <template slot-scope="scope">
-          <el-button type="primary" size="medium" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button v-if="scope.row.status!='deleted'" size="medium" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <el-button type="primary" size="medium" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
+          <el-button
+            v-if="scope.row.status!='deleted'"
+            size="medium"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleModifyStatus(scope.row,'deleted')"/>
         </template>
       </el-table-column>
     </el-table>
@@ -89,7 +93,6 @@
             :placeholder="$t('i18nView.datePlaceholder')"
             type="date"
             format="MM/dd/yyyy"
-            value-format="MM/dd/yyyy"
             style="width: 100%"/>
         </el-form-item>
       </el-form>
@@ -135,6 +138,7 @@
 import waves from '@/directive/waves' // 水波纹指令
 import { parseTime, compareValues } from '@/utils'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Employee',
@@ -202,6 +206,12 @@ export default {
       confirm: false,
       openChangeRole: false
     }
+  },
+  computed: {
+    ...mapGetters([
+      'curUser',
+      'userPermission',
+    ])
   },
   created() {
     this.getList()

@@ -206,5 +206,19 @@ export default {
     baseDateOff: 'Base date off',
     baseLateMoney: 'Base Late Money',
     description: 'Description'
+  },
+  contract: {
+    contractName: 'Contact',
+    active: 'Active',
+    monthlyNetSalary: 'Monthly NET Salary',
+    hourlyNetSalary: 'Hour NET Salary',
+    officialEmployee: 'Official Employee',
+    extraBonus: 'Extra Bonus',
+    startDate: 'Start Date',
+    endDate: 'End Date',
+    disableDate: 'Disable Date',
+    user: 'Employee',
+    position: 'Position',
+    team: 'Team',
   }
 };

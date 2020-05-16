@@ -50,11 +50,15 @@
           <!-- <div>{{ scope.row.teamName }}</div> -->
         </template>
       </el-table-column>
-      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" width="250" class-name="small-padding fixed-width" >
+      <el-table-column v-if="userPermission" :label="$t('table.actions')" align="center" class-name="small-padding fixed-width" >
         <template slot-scope="scope">
-          <el-button type="primary" size="medium" @click="handleUpdate(scope.row)">{{ $t('table.edit') }}</el-button>
-          <el-button v-if="scope.row.status!='deleted'" size="medium" type="danger" @click="handleModifyStatus(scope.row,'deleted')">{{ $t('table.delete') }}
-          </el-button>
+          <el-button type="primary" size="medium" icon="el-icon-edit" @click="handleUpdate(scope.row)"/>
+          <el-button
+            v-if="scope.row.status!='deleted'"
+            size="medium"
+            type="danger"
+            icon="el-icon-delete"
+            @click="handleModifyStatus(scope.row,'deleted')"/>
         </template>
       </el-table-column>
     </el-table>
@@ -66,9 +70,14 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 70%; margin-left:50px;">
         <el-form-item :label="$t('table.leader')" prop="leaderId">
-          <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%">
-            <el-option v-for="item in lstLeader" :key="item.userId" :label="item.fullName" :value="item.userId"/>
-          </el-select>
+          <template v-if="lstLeader.length > 0">
+            <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%">
+              <el-option v-for="item in lstLeader" :key="item.userId" :label="item.fullName" :value="item.userId"/>
+            </el-select>
+          </template>
+          <template v-else>
+            Không còn leader trống
+          </template>
         </el-form-item>
         <el-form-item :label="$t('table.teamName')" prop="teamName">
           <el-input v-model="temp.teamName"/>
@@ -492,10 +501,9 @@ export default {
         if (valid) {
           const tempData = {
             teamName: this.temp.teamName,
-            leaderId: this.temp.leaderId,
+            leaderId: this.lstLeader.length > 0 ? this.temp.leaderId : null,
             teamAvatarImageId: null
           }
-          console.log(this.temp);
 
           this.$store.dispatch('UpdateTeam', { teamId: this.temp.teamId, newTeam: tempData }).then(res => {
             if (res) {

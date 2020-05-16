@@ -2,11 +2,11 @@
 
 import Layout from '@/views/layout/Layout';
 
-const contactRouter = {
-  path: '/contact',
+const contractRouter = {
+  path: '/contract',
   component: Layout,
-  redirect: '/contact/list',
-  name: 'contact',
+  redirect: '/contract/list',
+  name: 'contract',
   meta: {
     // title: 'position',
     icon: 'example'
@@ -14,13 +14,13 @@ const contactRouter = {
   children: [
     {
       path: 'list',
-      component: () => import('@/views/contact/index'),
-      name: 'Contact',
+      component: () => import('@/views/contract/index'),
+      name: 'Contract',
       meta: {
-        title: 'contact',
+        title: 'contract',
         roles: ['SuperAdmin', 'HR'] // or you can only set roles in sub nav
       }
     }
   ]
 };
-export default contactRouter;
+export default contractRouter;
