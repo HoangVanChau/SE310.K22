@@ -98,8 +98,8 @@ namespace HRM.Controllers.Contracts
 
             var filterAlreadyExistInActiveContract = Builders<Contract>.Filter.Where(
                 x => x.UserId == targetUser.UserId && x.Active == true);
-            var checkExist = await _contractRepo.QueryContracts(filterAlreadyExistInActiveContract);
-            if (checkExist.Count > 0)
+            var checkExist = await _contractRepo.QueryContract(filterAlreadyExistInActiveContract);
+            if (checkExist != null)
             {
                 return new BadRequestResponse(new ErrorData
                 {
