@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HRM.Repositories.Base;
+using HRM.Repositories.Position;
+using HRM.Repositories.Team;
+using HRM.Repositories.User;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
 
@@ -9,9 +12,14 @@ namespace HRM.Repositories.Contract
 {
     public class ContractRepositoryImpl : BaseRepositoryImpl<Models.Cores.Contract>, IContractRepository
     {
+        private readonly IMongoCollection<Models.Cores.Team> _teamCollection;
+        private readonly IMongoCollection<Models.Cores.User> _userCollection;
+        private readonly IMongoCollection<Models.Cores.Position> _positionCollection;
         public ContractRepositoryImpl(MongoDbService service) : base(service)
         {
-            
+            _teamCollection = service.GetDb().GetCollection<Models.Cores.Team>(Constants.Collections.TeamCollection);
+            _userCollection = service.GetDb().GetCollection<Models.Cores.User>(Constants.Collections.UserCollection);
+            _positionCollection = service.GetDb().GetCollection<Models.Cores.Position>(Constants.Collections.PositionCollection);
         }
 
         public override string GetCollectionName()
@@ -21,7 +29,26 @@ namespace HRM.Repositories.Contract
 
         public Task<Models.Cores.Contract> GetByContractId(string id)
         {
-            return Collection.Find(x => x.ContractId.Equals(id)).FirstOrDefaultAsync();
+            var result = Collection.Aggregate()
+                .Match(x => x.ContractId.Equals(id))
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: c => c.UserId,
+                    foreignField: u => u.UserId,
+                    @as: (Models.Cores.Contract c) => c.User
+                ).Lookup(
+                    foreignCollection: _teamCollection,
+                    localField: c => c.TeamId,
+                    foreignField: u => u.TeamId,
+                    @as: (Models.Cores.Contract c) => c.Team
+                ).Lookup(
+                    foreignCollection: _positionCollection,
+                    localField: c => c.PositionId,
+                    foreignField: u => u.PositionId,
+                    @as: (Models.Cores.Contract c) => c.Position
+                )
+                .FirstOrDefaultAsync();
+            return result;
         }
 
         public async Task<bool> UpdateByContractId(string id, UpdateDefinition<Models.Cores.Contract> updateDefinition)
@@ -33,7 +60,24 @@ namespace HRM.Repositories.Contract
 
         public Task<Models.Cores.Contract> QueryContract(FilterDefinition<Models.Cores.Contract> filterDefinition)
         {
-            var result = Collection.Find(filterDefinition).FirstOrDefaultAsync();
+            var result = Collection.Aggregate()
+                .Match(filterDefinition)
+                .Lookup(
+                    foreignCollection: _userCollection,
+                    localField: c => c.UserId,
+                    foreignField: u => u.UserId,
+                    @as: (Models.Cores.Contract c) => c.User
+                ).Lookup(
+                    foreignCollection: _teamCollection,
+                    localField: c => c.TeamId,
+                    foreignField: u => u.TeamId,
+                    @as: (Models.Cores.Contract c) => c.Team
+                ).Lookup(
+                    foreignCollection: _positionCollection,
+                    localField: c => c.PositionId,
+                    foreignField: u => u.PositionId,
+                    @as: (Models.Cores.Contract c) => c.Position
+                ).FirstOrDefaultAsync();
             return result;
         }
 

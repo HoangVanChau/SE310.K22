@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using HRM.Models.Bases;
 using MongoDB.Bson.Serialization.Attributes;
@@ -28,8 +29,8 @@ namespace HRM.Models.Cores
         public DateTime EndDate { get; set; }
         public DateTime? DisableDate { get; set; }
         
-        public User? User { get; set; }
-        public Position? Position { get; set; }
-        public Team? Team { get; set; }
+        public List<User>? User { get; set; }
+        public List<Position>? Position { get; set; }
+        public List<Team>? Team { get; set; }
     }
 }

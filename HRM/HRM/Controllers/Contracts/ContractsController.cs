@@ -112,7 +112,10 @@ namespace HRM.Controllers.Contracts
             try
             {
                 await _contractRepo.InsertOne(newContract);
-                return new OkResponse(newContract);
+                var insertedContract =
+                    await _contractRepo.QueryContract(Builders<Contract>.Filter.Eq(c => c.ContractId,
+                        newContract.ContractId));
+                return new OkResponse(insertedContract);
             }
             catch (Exception e)
             {
