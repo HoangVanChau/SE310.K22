@@ -7,9 +7,11 @@ using HRM.Constants;
 using HRM.Extensions;
 using HRM.Helpers;
 using HRM.Models.Cores;
+using HRM.Models.QueryParams;
 using HRM.Models.Requests;
 using HRM.Models.Responses.Bases;
 using HRM.Repositories.Counter;
+using HRM.Repositories.DateOff;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -25,12 +27,14 @@ namespace HRM.Controllers.Users
         private readonly IUserRepository _userRepo;
         private readonly ICounterRepository _counterRepo;
         private readonly IAuthService _authService;
+        private readonly IDateOffRepository _dateOffRepo;
 
-        public UsersController(IUserRepository userRepo, IAuthService authService, ICounterRepository counterRepo)
+        public UsersController(IUserRepository userRepo, IAuthService authService, ICounterRepository counterRepo, IDateOffRepository dateOffRepo)
         {
             _userRepo = userRepo;
             _authService = authService;
             _counterRepo = counterRepo;
+            _dateOffRepo = dateOffRepo;
         }
         
         [HttpPost]
@@ -280,6 +284,33 @@ namespace HRM.Controllers.Users
                 });
             }
         }
-        
+
+        [AllowAllSystemUser]
+        [HttpGet]
+        [Route("dateOffs")]
+        public async Task<JsonResult> GetCurrentDateOffs([FromQuery] DateOffQuery queryParams)
+        {
+            var currentUserId = User.Identity.GetId();
+            var queryGtDate = queryParams?.FromDate != null
+                ? Builders<DateOff>.Filter.Gte(x => x.Date, queryParams.FromDate)
+                : FilterDefinition<DateOff>.Empty;
+            
+            var queryLtDate = queryParams?.ToDate != null
+                ? Builders<DateOff>.Filter.Lte(x => x.Date, queryParams.ToDate)
+                : FilterDefinition<DateOff>.Empty;
+            
+            var queryUserId = queryParams?.UserId != null
+                ? Builders<DateOff>.Filter.Eq(x => x.UserId, currentUserId)
+                : FilterDefinition<DateOff>.Empty;
+            
+            var queryStatus = queryParams?.Status != null
+                ? Builders<DateOff>.Filter.Eq(x => x.Status.Value, queryParams.Status)
+                : FilterDefinition<DateOff>.Empty;
+
+            var totalFilter = queryGtDate & queryLtDate & queryUserId & queryStatus;
+            
+            var listDateOff = await _dateOffRepo.QueryDateOffs(totalFilter);
+            return new OkResponse(listDateOff);
+        }
     }
 }

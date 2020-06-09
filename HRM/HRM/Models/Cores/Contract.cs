@@ -28,7 +28,9 @@ namespace HRM.Models.Cores
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime EndDate { get; set; }
         public DateTime? DisableDate { get; set; }
-        
+        public int BaseDateOff { get; set; } = 12;
+        public int ExtraDateOff { get; set; }
+
         public List<User>? User { get; set; }
         public List<Position>? Position { get; set; }
         public List<Team>? Team { get; set; }

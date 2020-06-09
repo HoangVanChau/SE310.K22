@@ -7,6 +7,7 @@ using HRM.Repositories.Attendance;
 using HRM.Repositories.AuthRepository;
 using HRM.Repositories.Contract;
 using HRM.Repositories.Counter;
+using HRM.Repositories.DateOff;
 using HRM.Repositories.Image;
 using HRM.Repositories.Position;
 using HRM.Repositories.Team;
@@ -110,6 +111,7 @@ namespace HRM
             services.AddSingleton<IPositionRepository, PositionRepositoryImpl>();
             services.AddSingleton<IContractRepository, ContractRepositoryImpl>();
             services.AddSingleton<IAttendanceRepository, AttendanceRepoImpl>();
+            services.AddSingleton<IDateOffRepository, DateOffRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -34,7 +34,7 @@ namespace HRM.Controllers.Attendances
             var queryGtDate = queryParams?.FromDate != null
                 ? Builders<Attendance>.Filter.Gte(x => x.Unique.Date, queryParams.FromDate)
                 : FilterDefinition<Attendance>.Empty;
-            var queryLtDate = queryParams?.FromDate != null
+            var queryLtDate = queryParams?.ToDate != null
                 ? Builders<Attendance>.Filter.Lte(x => x.Unique.Date, queryParams.ToDate)
                 : FilterDefinition<Attendance>.Empty;
             var queryEmployeeId = queryParams?.EmployeeId != null
