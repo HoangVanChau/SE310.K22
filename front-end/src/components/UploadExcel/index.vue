@@ -21,14 +21,16 @@ export default {
       loading: false,
       excelData: {
         header: null,
-        results: null
+        results: null,
+        file: null
       }
     }
   },
   methods: {
-    generateData({ header, results }) {
+    generateData({ header, results, file }) {
       this.excelData.header = header
       this.excelData.results = results
+      this.excelData.file = file
       this.onSuccess && this.onSuccess(this.excelData)
     },
     handleDrop(e) {
@@ -88,7 +90,7 @@ export default {
           const worksheet = workbook.Sheets[firstSheetName]
           const header = this.getHeaderRow(worksheet)
           const results = XLSX.utils.sheet_to_json(worksheet)
-          this.generateData({ header, results })
+          this.generateData({ header, results, file: rawFile })
           this.loading = false
           resolve()
         }
@@ -108,6 +110,7 @@ export default {
       const range = XLSX.utils.decode_range(sheet['!ref'])
       let C
       const R = range.s.r
+
       /* start in the first row */
       for (C = range.s.c; C <= range.e.c; ++C) { /* walk every column in the range */
         const cell = sheet[XLSX.utils.encode_cell({ c: C, r: R })]

@@ -4,6 +4,12 @@
       <el-form ref="infoForm" :rules="rules" :model="curUser" class="form border-top-width">
         <div class="col-xs-6">
           <el-form-item prop="fullName">
+            <span slot="label" class="fs" >{{ $t('table.id') }}</span>
+            <el-input v-model="curUser.employeeId" disabled/>
+          </el-form-item>
+        </div>
+        <div class="col-xs-6">
+          <el-form-item prop="fullName">
             <span slot="label" class="fs" >{{ $t('table.fullName') }}</span>
             <el-input v-model="curUser.fullName"/>
           </el-form-item>
@@ -30,7 +36,7 @@
         <div class="col-xs-6">
           <el-form-item prop="userName">
             <span slot="label" class="fs">{{ $t('table.userName') }}</span>
-            <el-input v-model="curUser.userName"/>
+            <el-input v-model="curUser.userName" disabled/>
           </el-form-item>
         </div>
         <div class="col-xs-6">
@@ -137,11 +143,14 @@
 
       <hr>
     </div>
+    <attendance-tab-pane v-if="type=='attendance'"/>
   </div>
 </template>
 
 <script>
+import attendanceTabPane from './attendanceTabPane.vue';
 export default {
+  components: { attendanceTabPane },
   filters: {
     statusFilter(status) {
       const statusMap = {

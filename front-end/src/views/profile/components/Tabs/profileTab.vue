@@ -20,8 +20,9 @@ export default {
   data() {
     return {
       tabMapOptions: [
-        { label: 'Home', key: 'home' },
-        { label: 'Auth', key: 'auth' },
+        { label: 'Thông tin', key: 'home' },
+        { label: 'Mật khẩu', key: 'auth' },
+        { label: 'Điểm danh', key: 'attendance' },
       ],
       activeName: 'home',
       createdTimes: 0

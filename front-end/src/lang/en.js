@@ -1,5 +1,8 @@
 export default {
   route: {
+    dateOff: 'Date Off',
+    submitDateOff: 'Submit',
+    approveDateOff: 'Approve',
     role: 'Role',
     lstUser: 'List Employee',
     Employee: 'Employee',
@@ -72,7 +75,7 @@ export default {
     externalLink: 'External Link',
     timeKeeping: 'Time Keeping',
     position: 'Position',
-    contact: 'Contact'
+    contract: 'Contract'
   },
   navbar: {
     logOut: 'Log Out',
@@ -220,5 +223,10 @@ export default {
     user: 'Employee',
     position: 'Position',
     team: 'Team',
+  },
+  dateOff: {
+    reason: 'Please choose reason',
+    startOff: 'Start date off',
+    endOff: 'End date off'
   }
 };

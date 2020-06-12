@@ -1,5 +1,8 @@
 export default {
   route: {
+    dateOff: 'Ngày nghỉ',
+    submitDateOff: 'Xin nghỉ',
+    approveDateOff: 'Xác nhận nghỉ',
     role: 'Chức vụ',
     lstUser: 'Danh sách nhân viên',
     Employee: 'Nhân viên',
@@ -218,5 +221,10 @@ export default {
     user: 'Nhân viên',
     position: 'Vị trí',
     team: 'Đội',
+  },
+  dateOff: {
+    reason: 'Chọn lí do',
+    startOff: 'Ngày bắt đầu nghỉ',
+    endOff: 'Ngày kết thúc nghỉ',
   }
 };

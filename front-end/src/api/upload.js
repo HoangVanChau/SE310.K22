@@ -6,7 +6,7 @@ export function upload(file, name = 'file') {
   formData.append(name, file);
   const config = {
     headers: {
-      'content-type': 'multipart/form-data'
+      'content-type': 'multipart/form-data',
     }
   };
   return axios.post(`${environment.basePath}/api/images`, formData, config);

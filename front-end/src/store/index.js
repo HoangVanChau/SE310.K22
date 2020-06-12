@@ -11,6 +11,7 @@ import address from './modules/address';
 import image from './modules/upload';
 import position from './modules/position';
 import contract from './modules/contract';
+import attendance from './modules/attendance';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -27,7 +28,8 @@ const store = new Vuex.Store({
     address,
     image,
     position,
-    contract
+    contract,
+    attendance
   },
   getters
 });

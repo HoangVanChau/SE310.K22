@@ -21,11 +21,11 @@
       stripe
       highlight-current-row
       style="width: 100%;">
-      <!-- <el-table-column :label="$t('table.id')" :sort-method="handleFilter" align="center" hidden="hidden" prop="userId" >
-        <template slot-scope="scope" style="visible: hidden">
-          <span>{{ scope.row.userId }}</span>
+      <el-table-column :label="$t('table.id')" :sort-method="handleFilter" align="center" hidden prop="userId" >
+        <template slot-scope="scope">
+          <span>{{ scope.row.employeeId }}</span>
         </template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column :label="$t('table.fullName')" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.fullName }}</span>
@@ -289,8 +289,8 @@ export default {
             if (res) {
               this.dialogFormVisible = false
               this.$notify({
-                title: 'Success',
-                message: 'Create successfully',
+                title: 'Thành công',
+                message: 'Tạo thành công',
                 type: 'success',
                 duration: 2000
               })
@@ -316,8 +316,8 @@ export default {
             if (res) {
               this.dialogFormVisible = false
               this.$notify({
-                title: 'Success',
-                message: 'Update successfully',
+                title: 'Thành công',
+                message: 'Cập nhật thành công',
                 type: 'success',
                 duration: 2000
               })
@@ -333,8 +333,8 @@ export default {
           this.dialogFormVisible = false
           this.confirm = false
           this.$notify({
-            title: 'Success',
-            message: 'Delete successfully',
+            title: 'Thành công',
+            message: 'Xóa thành công',
             type: 'success',
             duration: 2000
           })
@@ -342,8 +342,8 @@ export default {
         this.getList()
       }).catch(e => {
         this.$notify({
-          title: 'Error',
-          message: 'Delete unsuccessfully ' + JSON.stringify(e),
+          title: 'Lỗi',
+          message: 'Xóa không thành công ' + JSON.stringify(e),
           type: 'error',
           duration: 2000
         })
@@ -381,8 +381,8 @@ export default {
         if (res) {
           this.openChangeRole = false
           this.$notify({
-            title: 'Success',
-            message: 'Change Role successfully',
+            title: 'Thành công',
+            message: 'Thay đổi quyền thành công',
             type: 'success',
             duration: 2000
           })
@@ -390,8 +390,8 @@ export default {
         }
       }).catch(e => {
         this.$notify({
-          title: 'Error',
-          message: 'Change Role unsuccessfully ' + JSON.stringify(e),
+          title: 'Lỗi',
+          message: 'Thay đổi quyền không thành công ' + JSON.stringify(e),
           type: 'error',
           duration: 2000
         })

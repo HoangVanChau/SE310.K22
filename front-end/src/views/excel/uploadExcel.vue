@@ -7,7 +7,7 @@
       </el-table>
       <div slot="footer" class="dialog-footer">
         <el-button @click="preview = false">{{ $t('table.cancel') }}</el-button>
-        <el-button type="primary">{{ $t('table.save') }}</el-button>
+        <el-button type="primary" @click="save">{{ $t('table.save') }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -23,7 +23,8 @@ export default {
     return {
       tableData: [],
       tableHeader: [],
-      preview: false
+      preview: false,
+      file: {}
     }
   },
   methods: {
@@ -35,15 +36,30 @@ export default {
       }
 
       this.$notify({
-        message: 'Please do not upload files larger than 1m in size.',
+        message: 'PUpload file dưới 1mb.',
         type: 'warning'
       })
       return false
     },
-    handleSuccess({ results, header }) {
+    handleSuccess({ results, header, file }) {
       this.tableData = results
       this.tableHeader = header
+      this.file = file
       this.preview = true
+    },
+    save() {
+      console.log('this.file :>> ', this.file);
+      this.$store.dispatch('ImportAndInsert', this.file).then(res => {
+        if (res) {
+          this.preview = false;
+          this.$notify({
+            title: 'Thành công',
+            message: 'Tạo thành công',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
     }
   }
 }

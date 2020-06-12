@@ -9,7 +9,7 @@ import { Notification } from 'element-ui';
 const service = axios.create({
   baseURL: environment.basePath, // api base_url
   headers: {
-    'Content-Type': 'application/json;charset=UTF-8',
+    'Content-Type': 'application/json;charset=UTF-8;multipart/form-data',
     'Access-Control-Allow-Origin': '*',
     Accept: '*/*'
   },
@@ -21,7 +21,6 @@ service.interceptors.request.use(
   config => {
     if (store.getters.token) {
       config.headers['Authorization'] = `Bearer ${getToken()}`;
-      config.headers['Content-Type'] = `application/json`;
     }
     return config;
   },
