@@ -67,6 +67,20 @@ namespace HRM.Repositories.User
                 _ => Builders<Models.Cores.User>.Filter.Where(x => true)
             };
 
+            if (role == Roles.Manager)
+            {
+                return Collection.Aggregate()
+                    .Match(userFilter)
+                    .Lookup(
+                        foreignCollection: _teamCollection,
+                        foreignField: t => t.LeaderId,
+                        localField: u => u.UserId,
+                        @as: (Models.Cores.User u) => u.Teams
+                    )
+                    .Match(teamFilter)
+                    .ToListAsync();
+            }
+
             return Collection.Aggregate()
                 .Match(userFilter)
                 .Lookup(
