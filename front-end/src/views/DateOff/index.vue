@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form :model="dateOff" :rules="dateOffRules" label-position="top">
       <el-form-item prop="reason">
-        <el-input v-model="dateOff.reason" name="reason" placeholder="Lí do"/>
+        <el-input v-model="dateOff.reason" name="reason" placeholder="Lí do" style="width: 50%"/>
       </el-form-item>
       <el-form-item prop="date">
         <el-date-picker
@@ -10,13 +10,24 @@
           type="daterange"
           range-separator="To"
           start-placeholder="Ngày bắt đầu"
-          end-placeholder="Ngày Kết thúc"/>
+          end-placeholder="Ngày Kết thúc"
+          style="width: 50%"/>
       </el-form-item>
       <el-form-item prop="startOff">
-        <el-time-picker v-model="dateOff.startOff" type="time" format="hh:mm" placeholder="Giờ bắt đầu"/>
+        <el-time-picker
+          v-model="dateOff.startOff"
+          type="time"
+          format="hh:mm"
+          placeholder="Giờ bắt đầu"
+          style="width: 50%"/>
       </el-form-item>
       <el-form-item prop="endOff">
-        <el-time-picker v-model="dateOff.endOff" type="time" format="hh:mm" placeholder="Giờ Kết thúc"/>
+        <el-time-picker
+          v-model="dateOff.endOff"
+          type="time"
+          format="hh:mm"
+          placeholder="Giờ Kết thúc"
+          style="width: 50%"/>
       </el-form-item>
 
     </el-form>

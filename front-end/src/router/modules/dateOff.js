@@ -7,6 +7,7 @@ const dateOffRouter = {
   component: Layout,
   redirect: '/off/submit',
   name: 'Date Off',
+  roles: ['SuperAdmin', 'Manager'],
   meta: {
     title: 'dateOff',
     icon: 'clipboard'

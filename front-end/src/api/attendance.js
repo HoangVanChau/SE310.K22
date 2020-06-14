@@ -65,20 +65,23 @@ import { environment } from '../environment/environment';
 import { Notification } from 'element-ui';
 import { getToken } from '@/utils/auth';
 export function importAndInsert(file) {
-  const formData = new FormData();
-  formData.append('file', file);
+  const data = new FormData();
+  data.append('file', file);
   const config = {
     headers: {
       'content-type': 'multipart/form-data',
-      Authorization: `Bearer ${getToken()}`
+      Authorization: `Bearer ${getToken()}`,
+      // 'Access-Control-Allow-Origin': '*',
+      Accept: '*/*'
     }
   };
   return axios
-    .post(`${environment.basePath}/api/attendances/excels`, formData, config)
+    .post(`${environment.basePath}/api/attendances/excels`, data, config)
     .catch(error => {
       const message = error.response.data
         ? error.response.data.message
         : error.response.statusText;
+      console.log(error);
 
       Notification({
         message: message,

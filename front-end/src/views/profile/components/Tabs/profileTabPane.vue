@@ -22,7 +22,6 @@
               :placeholder="$t('i18nView.datePlaceholder')"
               type="date"
               format="MM/dd/yyyy"
-              value-format="MM/dd/yyyy"
               style="width: 100%"/>
           </el-form-item>
         </div>
@@ -234,11 +233,11 @@ export default {
       this.curUser.address.ward = this.ward
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
-          const updatedUser = {
-            file: this.$store.getters.file,
+          var updatedUser = {
+            file: this.$store.getters.file || null,
             data: this.curUser
           }
-          console.log('updatedUser :>> ', updatedUser);
+
           this.$store.dispatch('UpdateCurUser', updatedUser).then(res => {
             if (res) {
               this.$notify({
@@ -247,6 +246,7 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.$store.dispatch('ResetFile');
             }
           }).catch(e => {
             this.$notify({

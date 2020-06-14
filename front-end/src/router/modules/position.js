@@ -9,7 +9,8 @@ const positionRouter = {
   name: 'position',
   meta: {
     // title: 'position',
-    icon: 'lock'
+    icon: 'lock',
+    roles: ['SuperAdmin', 'HR']
   },
   children: [
     {
@@ -18,7 +19,6 @@ const positionRouter = {
       name: 'Position',
       meta: {
         title: 'position',
-        roles: ['SuperAdmin', 'HR']
       }
     }
   ]

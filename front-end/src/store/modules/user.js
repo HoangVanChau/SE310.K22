@@ -86,27 +86,25 @@ const user = {
       });
     },
     UpdateCurUser({ commit, dispatch }, updatedUser) {
-      return new Promise(resolve => {
-        if (updatedUser.file === null) {
+      return new Promise((resolve, reject) => {
+        console.log('updatedUser.file', updatedUser.file);
+
+        if (updatedUser.file) {
           dispatch('UploadImage', updatedUser.file).then(imageId => {
             updatedUser.data.avatarImageId = imageId;
             console.log('updatedUser.data :>> ', updatedUser.data);
-            updateCurUser(updatedUser.data)
-              .then(user => {
-                commit('SET_USER', user);
-                commit('SET_ROLES', [user.role]);
-                resolve(user);
-              })
-              .catch(e => resolve(e));
-          });
-        } else {
-          updateCurUser(updatedUser.data)
-            .then(user => {
+            updateCurUser(updatedUser.data).then(user => {
               commit('SET_USER', user);
               commit('SET_ROLES', [user.role]);
               resolve(user);
-            })
-            .catch(e => resolve(e));
+            });
+          });
+        } else if (updatedUser.file === null) {
+          updateCurUser(updatedUser.data).then(user => {
+            commit('SET_USER', user);
+            commit('SET_ROLES', [user.role]);
+            resolve(user);
+          });
         }
       });
     },
@@ -189,7 +187,7 @@ const user = {
         const query = {
           name: null,
           role: 'Manager',
-          available: 'false'
+          available: 'true'
         };
         getAllUsers(query).then(res => {
           commit('SET_LEADERS', res);

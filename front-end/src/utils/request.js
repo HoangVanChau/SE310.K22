@@ -100,8 +100,24 @@ service.interceptors.response.use(
         ? error.response.data.message
         : error.response.statusText;
 
+      const dataError = error.response.data.data
+        ? `${
+          JSON.stringify(error.response.data.data)
+            .split(',')[0]
+            .split(':')[1]
+        } ${JSON.stringify(error.response.data.data)
+          .split(',')[1]
+          .split(':')[1]
+          .slice(
+            0,
+            JSON.stringify(error.response.data.data)
+              .split(',')[1]
+              .split(':')[1].length - 1
+          )}`
+        : '';
+
       Notification({
-        message: message,
+        message: `${message} ${dataError}`,
         type: 'error',
         duration: 5 * 1000
       });

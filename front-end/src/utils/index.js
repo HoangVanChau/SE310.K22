@@ -323,3 +323,12 @@ export function compareValues(keySearch) {
     return order === 'desc' ? comparison * -1 : comparison;
   };
 }
+export function joinObj(a, attr) {
+  var out = [];
+
+  for (var i = 0; i < a.length; i++) {
+    out.push(a[i][attr]);
+  }
+
+  return out.join(', ');
+}

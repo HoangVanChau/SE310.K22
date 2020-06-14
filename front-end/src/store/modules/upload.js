@@ -4,7 +4,7 @@ import { upload } from '../../api/upload';
 const image = {
   state: {
     imageId: '',
-    file: {}
+    file: null
   },
   mutations: {
     SET_IMAGE_ID: (state, imageId) => {
@@ -30,6 +30,12 @@ const image = {
       return new Promise(resolve => {
         commit('SET_FILE', file);
         resolve(true);
+      });
+    },
+    ResetFile({ commit, dispatch }) {
+      return new Promise(resolve => {
+        commit('SET_IMAGE_ID', '');
+        commit('SET_FILE', null);
       });
     }
   }

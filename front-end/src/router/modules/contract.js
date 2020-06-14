@@ -9,7 +9,8 @@ const contractRouter = {
   name: 'contract',
   meta: {
     // title: 'position',
-    icon: 'example'
+    icon: 'example',
+    roles: ['SuperAdmin', 'HR']
   },
   children: [
     {
@@ -18,7 +19,6 @@ const contractRouter = {
       name: 'Contract',
       meta: {
         title: 'contract',
-        roles: ['SuperAdmin', 'HR'] // or you can only set roles in sub nav
       }
     }
   ]
