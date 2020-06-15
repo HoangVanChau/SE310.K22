@@ -39,7 +39,16 @@ namespace HRM
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyHeader();
+                        builder.AllowAnyMethod();
+                    });
+            });
             services.AddControllers().AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.Converters.Add(new TimespanConverter());
@@ -124,10 +133,7 @@ namespace HRM
             
             app.UseRouting();
             
-            app.UseCors(x => x
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
