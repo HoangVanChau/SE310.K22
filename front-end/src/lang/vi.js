@@ -224,7 +224,11 @@ export default {
   },
   dateOff: {
     reason: 'Chọn lí do',
-    startOff: 'Ngày bắt đầu nghỉ',
-    endOff: 'Ngày kết thúc nghỉ',
+    startOff: 'Giờ bắt đầu nghỉ',
+    endOff: 'Giờ kết thúc nghỉ',
+    name: 'Tên',
+    date: 'Ngày nghỉ',
+    rea: 'Lí do',
+    approved: 'Xác nhận'
   }
 };

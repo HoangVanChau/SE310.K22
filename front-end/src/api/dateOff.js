@@ -2,11 +2,11 @@ import request from '@/utils/request';
 
 export function getAllDateOffByUser(dataParam) {
   const params = {
-    status: dataParam.status,
-    userId: dataParam.userId,
-    teamId: dataParam.teamId,
-    fromDate: dataParam.fromDate,
-    toDate: dataParam.toDate
+    status: dataParam.status || null,
+    userId: dataParam.userId || null,
+    teamId: dataParam.teamId || null,
+    fromDate: dataParam.fromDate || null,
+    toDate: dataParam.toDate || null
   };
   return request({
     url: '/api/dateoffs',
@@ -22,10 +22,10 @@ export function getDateOffById(id) {
 }
 export function requestDateOff(dataParam) {
   const data = {
-    StartOff: dataParam.startOff,
-    EndOff: dataParam.endOff,
-    Date: dataParam.date,
-    Reason: dataParam.reason
+    StartOff: dataParam.startOff || null,
+    EndOff: dataParam.endOff || null,
+    Date: dataParam.date || null,
+    Reason: dataParam.reason || null
   };
   return request({
     url: '/api/dateoffs',
@@ -41,8 +41,8 @@ export function cancelDateOff(id) {
 }
 export function approveDateOff(id, dataParam) {
   const data = {
-    IsApprove: dataParam.isApprove,
-    RejectReason: dataParam.rejectReason || '',
+    IsApprove: dataParam.isApprove || false,
+    // RejectReason: dataParam.rejectReason || ''
   };
   return request({
     url: `/api/dateoffs/${id}`,

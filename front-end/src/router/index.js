@@ -11,7 +11,7 @@ import Layout from '@/views/layout/Layout';
 // import chartsRouter from './modules/charts';
 import userRouter from './modules/user';
 import teamRouter from './modules/team';
-import departmentRouter from './modules/department';
+// import departmentRouter from './modules/department';
 import positionRouter from './modules/position';
 import contractRouter from './modules/contract';
 import dateOffRouter from './modules/dateOff';
@@ -180,7 +180,7 @@ export const asyncRouterMap = [
   // nestedRouter,
   userRouter,
   teamRouter,
-  departmentRouter,
+  // departmentRouter,
   positionRouter,
   contractRouter,
   dateOffRouter,

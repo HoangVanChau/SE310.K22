@@ -2,7 +2,8 @@ import {
   getAllContract,
   getContract,
   createContract,
-  updateContract
+  updateContract,
+  deleteContract
 } from '../../api/contract';
 
 const contact = {
@@ -39,6 +40,15 @@ const contact = {
     GetContract({ commit, dispatch }, contactId) {
       return new Promise(resolve => {
         getContract(contactId)
+          .then(res => {
+            resolve(res);
+          })
+          .catch(e => console.log('getContract :>> ', e));
+      });
+    },
+    DeleteContract({ commit, dispatch }, contactId) {
+      return new Promise(resolve => {
+        deleteContract(contactId)
           .then(res => {
             resolve(res);
           })

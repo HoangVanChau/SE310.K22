@@ -37,6 +37,7 @@ export default {
         leaderId: [{ required: true, message: 'leader is required', trigger: 'change' }],
         teamName: [{ required: true, message: 'Team Name is required', trigger: 'blur' }]
       },
+      lstLeader: []
     }
   },
   created() {

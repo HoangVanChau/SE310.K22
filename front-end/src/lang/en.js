@@ -227,6 +227,10 @@ export default {
   dateOff: {
     reason: 'Please choose reason',
     startOff: 'Start date off',
-    endOff: 'End date off'
+    endOff: 'End date off',
+    name: 'Name',
+    date: 'Date',
+    rea: 'Reason',
+    approved: 'Approved'
   }
 };

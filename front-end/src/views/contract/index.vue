@@ -354,26 +354,26 @@ export default {
       this.temp = Object.assign({}, row)
     },
     handleDelete() {
-      // this.$store.dispatch('DeleteTeam', this.temp.teamId).then(res => {
-      //   if (res) {
-      //     this.dialogFormVisible = false
-      //     this.confirm = false
-      //     this.$notify({
-      //       title: 'Success',
-      //       message: 'Delete successfully',
-      //       type: 'success',
-      //       duration: 2000
-      //     })
-      //   }
-      //   this.getList()
-      // }).catch(e => {
-      //   this.$notify({
-      //     title: 'Error',
-      //     message: 'Delete unsuccessfully ' + JSON.stringify(e),
-      //     type: 'error',
-      //     duration: 2000
-      //   })
-      // });
+      this.$store.dispatch('DeleteContract', this.temp.contractId).then(res => {
+        if (res) {
+          this.dialogFormVisible = false
+          this.confirm = false
+          this.$notify({
+            title: 'Success',
+            message: 'Delete successfully',
+            type: 'success',
+            duration: 2000
+          })
+        }
+        this.getList()
+      }).catch(e => {
+        this.$notify({
+          title: 'Error',
+          message: 'Delete unsuccessfully ' + JSON.stringify(e),
+          type: 'error',
+          duration: 2000
+        })
+      });
     },
     resetTemp() {
       this.temp = {
@@ -405,13 +405,15 @@ export default {
         if (valid) {
           this.$store.dispatch('CreateContract', this.temp).then(res => {
             this.dialogFormVisible = false
-            this.$notify({
-              title: 'Thành công',
-              message: 'Tạo thành công',
-              type: 'success',
-              duration: 2000
-            })
-            this.getList()
+            if (res) {
+              this.$notify({
+                title: 'Thành công',
+                message: 'Tạo thành công',
+                type: 'success',
+                duration: 2000
+              })
+              this.getList()
+            }
           });
         }
       })

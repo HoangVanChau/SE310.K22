@@ -9,11 +9,14 @@ import { Notification } from 'element-ui';
 const service = axios.create({
   baseURL: environment.basePath, // api base_url
   headers: {
-    'Content-Type': 'application/json;charset=UTF-8;multipart/form-data',
-    'Access-Control-Allow-Origin': '*',
+    'Content-Type': 'application/json;charset=UTF-8',
     Accept: '*/*'
   },
-  timeout: 1000
+  timeout: 1000,
+  proxy: {
+    host: '34.80.19.146',
+    port: 5001
+  }
 });
 
 // request interceptor
@@ -21,6 +24,7 @@ service.interceptors.request.use(
   config => {
     if (store.getters.token) {
       config.headers['Authorization'] = `Bearer ${getToken()}`;
+      config.headers['Access-Control-Allow-Origin'] = `*`;
     }
     return config;
   },

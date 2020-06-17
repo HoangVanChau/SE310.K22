@@ -71,7 +71,7 @@
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="150px" style="width: 70%; margin-left:50px;">
         <el-form-item :label="$t('table.leader')" prop="leaderId">
           <template v-if="lstLeader.length > 0">
-            <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%">
+            <el-select v-model="temp.leaderId" class="filter-item" placeholder="Please select" style="width: 100%" clearable>
               <el-option v-for="item in lstLeader" :key="item.userId" :label="item.fullName" :value="item.userId"/>
             </el-select>
           </template>
@@ -164,7 +164,7 @@
       </div>
     </el-dialog>
 
-    <confirm-dialog :confirm="confirm" :data="temp.teamId" :call-back="handleDelete" :on-close="()=>confirm = false"/>
+    <confirm-dialog :confirm="confirm" :data="temp.teamName" :call-back="handleDelete" :on-close="()=>confirm = false"/>
 
   </div>
 </template>
@@ -448,6 +448,8 @@ export default {
           })
         }
         this.getList()
+        this.getLeaders()
+        this.getEmployees()
       }).catch(e => {
         this.$notify({
           title: 'Error',
@@ -484,12 +486,15 @@ export default {
               duration: 2000
             })
             this.getList()
+            this.getLeaders()
+            this.getEmployees()
           });
         }
       })
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      this.temp.leaderId = null
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -515,6 +520,8 @@ export default {
                 duration: 2000
               })
               this.getList()
+              this.getLeaders()
+              this.getEmployees()
             }
           });
         }
