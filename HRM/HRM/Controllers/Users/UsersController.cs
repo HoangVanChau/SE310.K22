@@ -12,6 +12,7 @@ using HRM.Models.Requests;
 using HRM.Models.Responses.Bases;
 using HRM.Repositories.Counter;
 using HRM.Repositories.DateOff;
+using HRM.Repositories.Payroll;
 using HRM.Repositories.User;
 using HRM.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -28,13 +29,15 @@ namespace HRM.Controllers.Users
         private readonly ICounterRepository _counterRepo;
         private readonly IAuthService _authService;
         private readonly IDateOffRepository _dateOffRepo;
+        private readonly IPayrollRepository _payrollRepo;
 
-        public UsersController(IUserRepository userRepo, IAuthService authService, ICounterRepository counterRepo, IDateOffRepository dateOffRepo)
+        public UsersController(IUserRepository userRepo, IAuthService authService, ICounterRepository counterRepo, IDateOffRepository dateOffRepo, IPayrollRepository payrollRepo)
         {
             _userRepo = userRepo;
             _authService = authService;
             _counterRepo = counterRepo;
             _dateOffRepo = dateOffRepo;
+            _payrollRepo = payrollRepo;
         }
         
         [HttpPost]
@@ -65,6 +68,8 @@ namespace HRM.Controllers.Users
             {
                 return ExceptionHelper.HandleError(e);
             }
+
+            newUser.HashPassword = null;
 
             var responseData = new Dictionary<String, Object>
             {
@@ -184,6 +189,11 @@ namespace HRM.Controllers.Users
             {
                 updateDefine = updateDefine.Set(u => u.AvatarImageId, updateData.AvatarImageId);
             }
+            
+            if (updateData.YearRemainDayOffs != null)
+            {
+                updateDefine = updateDefine.Set(u => u.YearRemainDayOffs, updateData.YearRemainDayOffs);
+            }
 
             try
             {
@@ -298,10 +308,8 @@ namespace HRM.Controllers.Users
             var queryLtDate = queryParams?.ToDate != null
                 ? Builders<DateOff>.Filter.Lte(x => x.Date, queryParams.ToDate)
                 : FilterDefinition<DateOff>.Empty;
-            
-            var queryUserId = queryParams?.UserId != null
-                ? Builders<DateOff>.Filter.Eq(x => x.UserId, currentUserId)
-                : FilterDefinition<DateOff>.Empty;
+
+            var queryUserId = Builders<DateOff>.Filter.Eq(x => x.UserId, currentUserId);
             
             var queryStatus = queryParams?.Status != null
                 ? Builders<DateOff>.Filter.Eq(x => x.Status.Value, queryParams.Status)
@@ -311,6 +319,18 @@ namespace HRM.Controllers.Users
             
             var listDateOff = await _dateOffRepo.QueryDateOffs(totalFilter);
             return new OkResponse(listDateOff);
+        }
+        
+        [AllowAllSystemUser]
+        [HttpGet]
+        [Route("payrolls")]
+        public async Task<JsonResult> GetPayroll()
+        {
+            var currentUserId = User.Identity.GetId();
+            var queryUserId = Builders<Payroll>.Filter.Eq(x => x.UserId, currentUserId);
+            
+            var listPayroll = await _payrollRepo.QueryMany(queryUserId);
+            return new OkResponse(listPayroll);
         }
     }
 }

@@ -1,14 +1,15 @@
 using System;
-using System.ComponentModel;
 using System.Text;
 using HRM.Extensions.JsonConverters;
 using HRM.Helpers;
+using HRM.Repositories;
 using HRM.Repositories.Attendance;
 using HRM.Repositories.AuthRepository;
 using HRM.Repositories.Contract;
 using HRM.Repositories.Counter;
 using HRM.Repositories.DateOff;
 using HRM.Repositories.Image;
+using HRM.Repositories.Payroll;
 using HRM.Repositories.Position;
 using HRM.Repositories.Team;
 using HRM.Repositories.User;
@@ -121,6 +122,8 @@ namespace HRM
             services.AddSingleton<IContractRepository, ContractRepositoryImpl>();
             services.AddSingleton<IAttendanceRepository, AttendanceRepoImpl>();
             services.AddSingleton<IDateOffRepository, DateOffRepositoryImpl>();
+            services.AddSingleton<IPayrollRepository, PayrollRepositoryImpl>();
+            services.AddSingleton<IHolidayRepository, HolidayRepositoryImpl>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

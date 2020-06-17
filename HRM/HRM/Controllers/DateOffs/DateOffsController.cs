@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
+using HRM.Helpers;
 using HRM.Models.Cores;
 using HRM.Models.QueryParams;
 using HRM.Models.Responses.Bases;
@@ -38,6 +40,8 @@ namespace HRM.Controllers.DateOffs
                 data.TeamId = currentTeam.TeamId;
                 //Auto approve for manager request off
                 data.Status = Constants.DateOffStatus.Approve;
+                await _userRepo.UpdateRemainDateOff(currentUserId,
+                    -SalaryHelper.CountSessionHourInWorkingTime(data.StartOff, data.EndOff)/WorkingTime.DailyWorkingHours);
             }
             else
             {
@@ -159,7 +163,7 @@ namespace HRM.Controllers.DateOffs
                     Message = "Chỉ có leader mới có quyền approve phép!"
                 });
             }
-            var updateDefine = Builders<DateOff>.Update.Set(x => x.IsApprove, bodyParams.IsApprove);
+            var updateDefine = Builders<DateOff>.Update.Set(x => x.LastModifyDate, DateTime.Now);
             if (bodyParams.IsApprove == false)
             {
                 updateDefine = updateDefine.Set(x => x.Status, DateOffStatus.Reject);
@@ -170,6 +174,8 @@ namespace HRM.Controllers.DateOffs
                 updateDefine = updateDefine.Set(x => x.Status, DateOffStatus.Approve);
             }
             await _dateOffRepo.UpdateOneById(dateOffId, updateDefine);
+            await _userRepo.UpdateRemainDateOff(dateOffData.UserId,
+                -SalaryHelper.CountSessionHourInWorkingTime(dateOffData.StartOff, dateOffData.EndOff)/WorkingTime.DailyWorkingHours);
             return new OkResponse(new
             {
                 Message = "Thay đổi thành công!"

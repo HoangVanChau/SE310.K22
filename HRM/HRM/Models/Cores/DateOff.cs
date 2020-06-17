@@ -19,6 +19,7 @@ namespace HRM.Models.Cores
         [Required]
         public String Reason { get; set; }
         public Status Status { get; set; }
+        public bool IsUnpaidOff { get; set; }
         [BsonIgnore] public bool IsApprove { get; set; }
         public String RejectReason { get; set; }
         public string UserId { get; set; } 

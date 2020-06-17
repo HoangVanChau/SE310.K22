@@ -12,5 +12,6 @@ namespace HRM.Models.Requests
         public String FullName { get; set; }
         public Address Address { get; set; }
         public String AvatarImageId { get; set; }
+        public Double? YearRemainDayOffs { get; set; }
     }
 }

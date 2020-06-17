@@ -113,6 +113,9 @@ namespace HRM.Controllers.Contracts
             try
             {
                 await _contractRepo.InsertOne(newContract);
+                await _userRepo.UpdateUserByUserId(targetUser.UserId,
+                    Builders<User>.Update.Set(x => x.YearRemainDayOffs,
+                        newContract.BaseDateOff + newContract.ExtraDateOff));
                 var insertedContract =
                     await _contractRepo.QueryContract(Builders<Contract>.Filter.Eq(c => c.ContractId,
                         newContract.ContractId));

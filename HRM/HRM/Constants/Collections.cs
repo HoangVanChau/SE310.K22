@@ -10,6 +10,8 @@ namespace HRM.Constants
         public static string ContractCollection = "Contract";
         public static string AttendanceCollection = "Attendance";
         public static string DateOffCollection = "DateOff";
+        public static string PayrollCollection = "Payroll";
+        public static string HolidayCollection = "Holiday";
 
         public static string CompanyInfoCollection = "CompanyInfo";
     }

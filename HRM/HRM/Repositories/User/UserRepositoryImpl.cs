@@ -92,5 +92,12 @@ namespace HRM.Repositories.User
                 .Match(teamFilter)
                 .ToListAsync();
         }
+
+        public async Task<bool> UpdateRemainDateOff(string userId, double change)
+        {
+            var updateDefine = Builders<Models.Cores.User>.Update.Inc(x => x.YearRemainDayOffs, change);
+            var result = await Collection.UpdateOneAsync(x => x.UserId == userId, updateDefine);
+            return result.ModifiedCount == 1;
+        }
     }
 }

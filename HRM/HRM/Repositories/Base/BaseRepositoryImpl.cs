@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using HRM.Models.Bases;
 using HRM.Services.MongoDB;
@@ -35,6 +36,19 @@ namespace HRM.Repositories.Base
             return document.Id;
         }
 
+        public async Task<List<string>> InsertMany(List<T> documents)
+        {
+            var now = DateTime.Now;
+            foreach (var document in documents)
+            {
+                document.CreatedDate = now;
+                document.ModifyDate = new List<DateTime>{now};
+            }
+
+            await Collection.InsertManyAsync(documents);
+            return documents.Select(x => x.Id).ToList();
+        }
+
         public async Task<bool> UpdateOneById(string id, UpdateDefinition<T> updateDefinition)
         {
             var finalDefinition = updateDefinition.Push(e => e.ModifyDate, DateTime.Now);
@@ -56,6 +70,16 @@ namespace HRM.Repositories.Base
         public Task<ReplaceOneResult> ReplaceOneById(string id, T newDocument)
         {
             return Collection.ReplaceOneAsync(x => x.Id.Equals(id), newDocument);
+        }
+
+        public Task<T> QueryOne(FilterDefinition<T> filter)
+        {
+            return Collection.Aggregate().Match(filter).FirstOrDefaultAsync();
+        }
+
+        public Task<List<T>> QueryMany(FilterDefinition<T> filter)
+        {
+            return Collection.Aggregate().Match(filter).ToListAsync();
         }
     }
 }

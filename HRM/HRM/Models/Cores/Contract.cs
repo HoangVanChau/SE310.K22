@@ -19,10 +19,14 @@ namespace HRM.Models.Cores
         [Required]
         public bool? Active { get; set; }
         public string PositionId { get; set; }
-        public double? MonthlyNetSalary { get; set; }
-        public double? HourlyNetSalary { get; set; }
+        
+        public int? MonthlyNetSalary { get; set; }
+        public MonthlyBonus? MonthlyBonus { get; set; }
+        public int? HourlyNetSalary { get; set; }
         public bool? OfficialEmployee { get; set; }
         public ExtraBonus? ExtraBonus { get; set; }
+        public int? DependentPerson { get; set; } = 0;
+        
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime StartDate { get; set; }
         [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
