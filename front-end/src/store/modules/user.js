@@ -211,9 +211,11 @@ const user = {
         });
       });
     },
-    DeleteUser({ commit, dispatch }, userId) {
+    DeleteUser({ commit, state }, userId) {
       return new Promise(resolve => {
         deleteUser(userId).then(res => {
+          const users = state.users.filter(item => item.userId !== userId);
+          commit('SET_USERS', users);
           resolve(res);
         });
       });

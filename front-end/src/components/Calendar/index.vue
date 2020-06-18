@@ -87,7 +87,17 @@ export default {
           const value = this.changeFormat(date)
           this.data.push({ title: 'Có mặt', date: value });
         });
+        this.getHoliday();
         console.log('this.data', this.data);
+      })
+    },
+    getHoliday() {
+      this.$store.dispatch('GetAllHoliday').then(res => {
+        res.forEach(item => {
+          const date = new Date(item.date)
+          const value = this.changeFormat(date)
+          this.data.push({ title: item.description, date: value })
+        })
       })
     }
   }

@@ -1,5 +1,6 @@
 export default {
   route: {
+    holiday: 'Ngày lễ',
     dateOff: 'Ngày nghỉ',
     submitDateOff: 'Xin nghỉ',
     approveDateOff: 'Xác nhận nghỉ',
@@ -220,7 +221,7 @@ export default {
     disableDate: 'Ngày chấm dứt',
     user: 'Nhân viên',
     position: 'Vị trí',
-    team: 'Đội',
+    team: 'Đội'
   },
   dateOff: {
     reason: 'Chọn lí do',
@@ -230,5 +231,9 @@ export default {
     date: 'Ngày nghỉ',
     rea: 'Lí do',
     approved: 'Xác nhận'
+  },
+  holiday: {
+    date: 'Ngày',
+    description: 'Chi tiết'
   }
 };

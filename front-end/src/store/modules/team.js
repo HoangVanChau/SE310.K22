@@ -67,9 +67,11 @@ const team = {
           .catch(err => console.log(err));
       });
     },
-    DeleteTeam({ commit, dispatch }, teamId) {
+    DeleteTeam({ commit, state }, teamId) {
       return new Promise(resolve => {
         deleteTeam(teamId).then(res => {
+          const teams = state.teams.filter(item => item.teamId !== teamId);
+          commit('SET_TEAMS', teams);
           resolve(res);
         });
       }).catch(err => console.log(err));

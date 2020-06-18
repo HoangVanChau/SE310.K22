@@ -187,21 +187,17 @@ export default {
         verifypassword: '',
       },
       rules: {
-        fullName: [{ required: true, message: 'Full name is required', trigger: 'change' }],
+        fullName: [{ required: true, message: 'Tên bắt buộc', trigger: 'change' }],
         userName: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
         email: [{ required: true, message: 'Email is required', trigger: 'blur' }],
-        phoneNumber: [{ required: true, message: 'Phone Number is required', trigger: 'blur' }],
-        dateOfBirth: [{ required: true, message: 'Date of birth is required', trigger: 'blur' }],
-        oldpassword: [{ required: true, message: 'Old password is required', trigger: 'blur' }],
-        verifypassword: [{ required: true, message: 'Verify password is required', trigger: 'blur' }],
-        newpassword: [{ required: true, message: 'New password is required', trigger: 'blur' }]
-        // validator: (rule, value, callback) => {
-        //   if (value !== this.tempPass.verifypassword) {
-        //     callback(new Error('Two inputs don\'t match!'))
-        //   } else {
-        //     callback()
-        //   }
-        // } }]
+        phoneNumber: [{ required: true, message: 'Số điện thoại bắt buộc', trigger: 'blur' }],
+        dateOfBirth: [{ required: true, message: 'Ngày sinh bắt buộc', trigger: 'blur' }],
+        oldpassword: [{ required: true, message: 'Mật khẩu cũ bắt buộc', trigger: 'blur' }],
+        verifypassword: [{ required: true, message: 'Xác nhận mật khẩu bắt buộc', trigger: 'blur' }],
+        newpassword: [{ required: true, message: 'Mật khẩu mới bắt buộc', trigger: 'blur' }],
+        province: [{ required: true, message: 'Tỉnh/Thành phố bắt buộc', trigger: 'blur' }],
+        district: [{ required: true, message: 'Huyện/Quận bắt buộc', trigger: 'blur' }],
+        ward: [{ required: true, message: 'Phường/xã bắt buộc', trigger: 'blur' }],
       },
       lstAddress: {
         provinces: [],

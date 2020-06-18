@@ -7,7 +7,6 @@ const dateOffRouter = {
   component: Layout,
   redirect: '/off/submit',
   name: 'Date Off',
-  roles: ['SuperAdmin', 'Manager'],
   meta: {
     title: 'dateOff',
     icon: 'clipboard'
@@ -28,7 +27,7 @@ const dateOffRouter = {
       name: 'Submit',
       meta: {
         title: 'submitDateOff',
-        roles: ['SuperAdmin', 'Employee', 'Manager'] // or you can only set roles in sub nav
+        // roles: ['SuperAdmin', 'Employee', 'Manager', 'Hr'] // or you can only set roles in sub nav
       }
     }
   ]

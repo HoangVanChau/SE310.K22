@@ -15,6 +15,7 @@ import teamRouter from './modules/team';
 import positionRouter from './modules/position';
 import contractRouter from './modules/contract';
 import dateOffRouter from './modules/dateOff';
+import holidayRouter from './modules/holiday';
 // import nestedRouter from './modules/nested';
 
 /** note: Submenu only appear when children.length>=1
@@ -184,6 +185,7 @@ export const asyncRouterMap = [
   positionRouter,
   contractRouter,
   dateOffRouter,
+  holidayRouter,
   // {
   //   path: '/example',
   //   component: Layout,

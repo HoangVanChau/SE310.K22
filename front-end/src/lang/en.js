@@ -1,5 +1,6 @@
 export default {
   route: {
+    holiday: 'Holiday',
     dateOff: 'Date Off',
     submitDateOff: 'Submit',
     approveDateOff: 'Approve',
@@ -222,7 +223,7 @@ export default {
     disableDate: 'Disable Date',
     user: 'Employee',
     position: 'Position',
-    team: 'Team',
+    team: 'Team'
   },
   dateOff: {
     reason: 'Please choose reason',
@@ -232,5 +233,9 @@ export default {
     date: 'Date',
     rea: 'Reason',
     approved: 'Approved'
+  },
+  holiday: {
+    date: 'Date',
+    description: 'Description'
   }
 };
