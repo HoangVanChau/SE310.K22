@@ -1,5 +1,6 @@
 export default {
   route: {
+    payRoll: 'Payroll',
     holiday: 'Holiday',
     dateOff: 'Date Off',
     submitDateOff: 'Submit',
@@ -237,5 +238,21 @@ export default {
   holiday: {
     date: 'Date',
     description: 'Description'
+  },
+  payRoll: {
+    user: 'User',
+    month: 'Month',
+    year: 'Year',
+    baseSalary: 'Base Salary',
+    bonus: 'Bonus',
+    social: 'Social Insurance',
+    total: 'Total Salary',
+    personal: 'Personal Income Tax',
+    totalHours: 'Total Working Hours',
+    unPaid: 'Unpaid Leave Hours',
+    paid: 'Paid Leave Hours',
+    totalPaid: 'Total paid leave',
+    final: 'Final Receive Salary',
+    totalExpectWorkingHours: 'Total Expect Working Hours'
   }
 };

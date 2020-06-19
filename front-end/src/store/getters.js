@@ -26,5 +26,7 @@ const getters = {
   positions: state => state.position.positions,
   contracts: state => state.contract.contracts,
   contactFields: state => state.contract.fields,
+  curPayRoll: state => state.payRoll.curPayRoll,
+  payRolls: state => state.payRoll.payRolls,
 };
 export default getters;

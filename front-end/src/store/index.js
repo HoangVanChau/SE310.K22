@@ -14,6 +14,7 @@ import contract from './modules/contract';
 import attendance from './modules/attendance';
 import dateOff from './modules/dateOff';
 import holiday from './modules/holiday';
+import payRoll from './modules/payRoll';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -33,7 +34,8 @@ const store = new Vuex.Store({
     contract,
     attendance,
     dateOff,
-    holiday
+    holiday,
+    payRoll
   },
   getters
 });

@@ -1,5 +1,6 @@
 export default {
   route: {
+    payRoll: 'Bảng lương',
     holiday: 'Ngày lễ',
     dateOff: 'Ngày nghỉ',
     submitDateOff: 'Xin nghỉ',
@@ -235,5 +236,21 @@ export default {
   holiday: {
     date: 'Ngày',
     description: 'Chi tiết'
+  },
+  payRoll: {
+    user: 'Nhân viên',
+    month: 'Tháng',
+    year: 'Năm',
+    baseSalary: 'Lương cơ bản',
+    bonus: 'Lương thưởng',
+    social: 'Bảo hiểm xã hội',
+    total: 'Tổng lương',
+    personal: 'Thuế thu nhập cá nhân',
+    totalHours: 'Tổng giờ làm việc',
+    unPaid: 'Giờ nghỉ không lương',
+    paid: 'Giờ nghỉ có phép',
+    totalPaid: 'Tổng giờ nghỉ có phép',
+    final: 'Lương nhận được',
+    totalExpectWorkingHours: 'Tổng giờ làm dự kiến'
   }
 };
