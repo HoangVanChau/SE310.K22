@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HRM.Models.QueryParams;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
 using MongoDB.Driver;
@@ -113,9 +114,16 @@ namespace HRM.Repositories.Team
             return team.Members;
         }
 
-        public Task<List<Models.Cores.Team>> GetAllTeams()
+        public Task<List<Models.Cores.Team>> GetAllTeams(TeamQuery query)
         {
+            var filterUser = query.UserId != null 
+                ? Builders<Models.Cores.Team>.Filter.Or(
+                    Builders<Models.Cores.Team>.Filter.Eq(x => x.LeaderId, query.UserId),
+                    Builders<Models.Cores.Team>.Filter.Where(x => x.MembersId.Contains(query.UserId)
+                    ))
+                : FilterDefinition<Models.Cores.Team>.Empty;
             return Collection.Aggregate()
+                .Match(filterUser)
                 .Lookup(
                     foreignCollection: _userCollection,
                     localField: l => l.LeaderId,

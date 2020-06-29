@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
 using HRM.Models.Cores;
+using HRM.Models.QueryParams;
 using HRM.Models.Responses.Bases;
 using HRM.Repositories.Team;
 using HRM.Repositories.User;
@@ -28,9 +29,9 @@ namespace HRM.Controllers.Teams
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> GetTeams()
+        public async Task<JsonResult> GetTeams([FromQuery] TeamQuery query)
         {
-            return new OkResponse(await _teamRepo.GetAllTeams());
+            return new OkResponse(await _teamRepo.GetAllTeams(query));
         }
         
         [HttpPost]
