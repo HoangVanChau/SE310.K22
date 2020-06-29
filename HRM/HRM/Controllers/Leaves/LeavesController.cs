@@ -13,15 +13,15 @@ using HRM.Repositories.User;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
-namespace HRM.Controllers.DateOffs
+namespace HRM.Controllers.Leaves
 {
     [Route("api/[controller]")]
-    public class DateOffsController : ControllerBase
+    public class LeavesController : ControllerBase
     {
         private readonly IDateOffRepository _dateOffRepo;
         private readonly ITeamRepository _teamRepo;
         private readonly IUserRepository _userRepo;
-        public DateOffsController(IDateOffRepository dateOffRepo, ITeamRepository teamRepo, IUserRepository userRepo)
+        public LeavesController(IDateOffRepository dateOffRepo, ITeamRepository teamRepo, IUserRepository userRepo)
         {
             _dateOffRepo = dateOffRepo;
             _teamRepo = teamRepo;
