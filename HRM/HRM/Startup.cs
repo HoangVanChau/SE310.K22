@@ -146,7 +146,7 @@ namespace HRM
                 context.Response.Headers.Add("Access-Control-Allow-Headers", "content-type,accept,authorization");
                 context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-                context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE");
+                context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE,PATCH");
                 await next.Invoke();
             });
 
