@@ -27,9 +27,7 @@ namespace HRM.Models.Cores
         public ExtraBonus? ExtraBonus { get; set; }
         public int? DependentPerson { get; set; } = 0;
         
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime StartDate { get; set; }
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime EndDate { get; set; }
         public DateTime? DisableDate { get; set; }
         public int BaseDateOff { get; set; } = 12;

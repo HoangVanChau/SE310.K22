@@ -13,13 +13,10 @@ namespace HRM.Models.Bases
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonIgnoreIfDefault]
         public string Id { get; set; }
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [JsonIgnore]
         public DateTime CreatedDate { get; set; }
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [JsonIgnore]
         public DateTime LastModifyDate { get; set; }
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         [JsonIgnore]
         public List<DateTime> ModifyDate { get; set; } 
     }

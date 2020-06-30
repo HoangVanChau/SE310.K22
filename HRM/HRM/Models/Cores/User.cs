@@ -18,7 +18,6 @@ namespace HRM.Models.Cores
         public String PhoneNumber { get; set; }
         public Address Address { get; set; }
         
-        [BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime DateOfBirth { get; set; }
         public String Role { get; set; }
         public double YearRemainDayOffs { get; set; }

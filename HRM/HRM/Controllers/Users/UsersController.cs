@@ -57,7 +57,7 @@ namespace HRM.Controllers.Users
                 Role = Constants.Roles.Member,
                 PhoneNumber = registerData.PhoneNumber,
                 UserName = registerData.UserName,
-                DateOfBirth = DateTime.ParseExact(registerData.DateOfBirth, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                DateOfBirth = registerData.DateOfBirth
             };
 
             try
