@@ -4,6 +4,7 @@ using HRM.Constants;
 using HRM.Helpers;
 using HRM.Models;
 using HRM.Models.Cores;
+using HRM.Models.QueryParams;
 using HRM.Models.Responses.Bases;
 using HRM.Repositories.Contract;
 using HRM.Repositories.Position;
@@ -36,9 +37,9 @@ namespace HRM.Controllers.Contracts
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> GetPositions([FromQuery] PagingParams pagingParams)
+        public async Task<JsonResult> GetContracts([FromQuery] PagingParams pagingParams, [FromQuery] ContractQuery query)
         {
-            var result = await _contractRepo.QueryContracts(FilterDefinition<Contract>.Empty, pagingParams);
+            var result = await _contractRepo.QueryContracts(FilterDefinition<Contract>.Empty, pagingParams, query);
             return new OkResponse(result);
         }
 

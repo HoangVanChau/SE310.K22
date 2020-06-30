@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HRM.Models;
+using HRM.Models.QueryParams;
 using HRM.Repositories.Base;
 using HRM.Repositories.Position;
 using HRM.Repositories.Team;
@@ -82,10 +83,18 @@ namespace HRM.Repositories.Contract
             return result;
         }
 
-        public Task<List<Models.Cores.Contract>> QueryContracts(FilterDefinition<Models.Cores.Contract> filterDefinition, PagingParams pagingParams = null)
+        public Task<List<Models.Cores.Contract>> QueryContracts(FilterDefinition<Models.Cores.Contract> filterDefinition, PagingParams pagingParams = null, ContractQuery query = null)
         {
+            var filterUser = query.UserId != null 
+                ? Builders<Models.Cores.Contract>.Filter.Eq(x => x.UserId, query.UserId)
+                : FilterDefinition<Models.Cores.Contract>.Empty;
+            
+            var filterActive = query.Active != null 
+                ? Builders<Models.Cores.Contract>.Filter.Eq(x => x.Active, query.Active)
+                : FilterDefinition<Models.Cores.Contract>.Empty;
+            
             var pineLine = Collection.Aggregate()
-                .Match(filterDefinition)
+                .Match(filterDefinition & filterUser & filterActive)
                 .Lookup(
                     foreignCollection: _userCollection,
                     localField: c => c.UserId,
