@@ -9,7 +9,7 @@ namespace HRM.Extensions.JsonConverters
         public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var value=reader.GetString();
-            return TimeSpan.Parse(value);
+            return TimeSpan.TryParse(value, out var result) ? result : TimeSpan.Zero;
         }
 
         public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)

@@ -13,7 +13,12 @@ namespace HRM.Extensions.JsonConverters
             {
                 return null;
             }
-            return DateTime.Parse(value);
+
+            if (DateTime.TryParse(value, out var result))
+            {
+                return result;
+            }
+            return null;
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime? value, JsonSerializerOptions options)

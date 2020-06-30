@@ -32,11 +32,25 @@ namespace HRM.Controllers.Leaves
         [HttpPost]
         public async Task<JsonResult> RequestDateOff([FromBody] DateOff data)
         {
+            if (data == null || data?.StartOff == TimeSpan.Zero || data?.EndOff == TimeSpan.Zero)
+            {
+                return new BadRequestResponse(new
+                {
+                    Message = "Dữ liệu gửi lên không đúng!"
+                });
+            }
             var currentUserId = User.Identity.GetId();
             var userData = await _userRepo.FindUserByUserId(currentUserId);
             if (userData.Role == Constants.Roles.Manager)
             {
                 var currentTeam = await _teamRepo.FindLeaderExistInAnyTeam(currentUserId);
+                if (currentTeam == null)
+                {
+                    return new BadRequestResponse(new
+                    {
+                        Message = "Hiện tại bạn đang không nằm trong team nào cả để xin nghỉ!"
+                    });
+                }
                 data.TeamId = currentTeam.TeamId;
                 //Auto approve for manager request off
                 data.Status = Constants.DateOffStatus.Approve;
@@ -46,7 +60,14 @@ namespace HRM.Controllers.Leaves
             else
             {
                 var currentTeam = _teamRepo.FindUserExistInAnyTeam(currentUserId);
-                data.TeamId = currentTeam.FirstOrDefault()?.TeamId;
+                if (currentTeam?.Count == 0)
+                {
+                    return new BadRequestResponse(new
+                    {
+                        Message = "Bạn không nằm trong team nào cả để xin nghỉ!"
+                    });
+                }
+                data.TeamId = currentTeam?.FirstOrDefault()?.TeamId;
                 data.Status = DateOffStatus.PendingApprove;
             }
             data.UserId = currentUserId;
@@ -180,18 +201,6 @@ namespace HRM.Controllers.Leaves
             {
                 Message = "Thay đổi thành công!"
             });
-        }
-        
-        [RoleWithSuperAdmin(Constants.Roles.Manager)]
-        [HttpGet]
-        [Route("team/{teamId}")]
-        public async Task<JsonResult> GetDateOffsOfTeam(string teamId)
-        {
-            var currentLeaderId = User.Identity.GetId();
-            var currentTeam = await _teamRepo.FindLeaderExistInAnyTeam(currentLeaderId);
-            var filter = Builders<DateOff>.Filter.Where(x => currentTeam.MembersId.Contains(x.UserId));
-            var listDateOff = await _dateOffRepo.QueryDateOffs(filter);
-            return new OkResponse(listDateOff);
         }
     }
 }
