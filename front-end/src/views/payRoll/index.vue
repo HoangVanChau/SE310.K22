@@ -132,7 +132,9 @@ export default {
   name: 'PayRoll',
   data() {
     return {
-      data: null
+      data: {
+
+      }
     }
   },
   computed: {

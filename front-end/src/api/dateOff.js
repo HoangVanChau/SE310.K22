@@ -9,14 +9,14 @@ export function getAllDateOffByUser(dataParam) {
     toDate: dataParam.toDate || null
   };
   return request({
-    url: '/api/dateoffs',
+    url: '/api/leaves',
     method: 'get',
     params
   });
 }
 export function getDateOffById(id) {
   return request({
-    url: `/api/dateoffs/${id}`,
+    url: `/api/leaves/${id}`,
     method: 'get'
   });
 }
@@ -25,17 +25,18 @@ export function requestDateOff(dataParam) {
     StartOff: dataParam.startOff || null,
     EndOff: dataParam.endOff || null,
     Date: dataParam.date || null,
-    Reason: dataParam.reason || null
+    Reason: dataParam.reason || null,
+    IsUnpaidOff: dataParam.isUnpaidOff || false,
   };
   return request({
-    url: '/api/dateoffs',
+    url: '/api/leaves',
     method: 'post',
     data
   });
 }
 export function cancelDateOff(id) {
   return request({
-    url: `/api/dateoffs/${id}`,
+    url: `/api/leaves/${id}`,
     method: 'delete'
   });
 }
@@ -45,7 +46,7 @@ export function approveDateOff(id, dataParam) {
     // RejectReason: dataParam.rejectReason || ''
   };
   return request({
-    url: `/api/dateoffs/${id}`,
+    url: `/api/leaves/${id}`,
     method: 'put',
     data
   });

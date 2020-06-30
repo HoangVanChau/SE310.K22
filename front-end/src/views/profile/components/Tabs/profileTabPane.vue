@@ -9,9 +9,9 @@
           </el-form-item>
         </div>
         <div class="col-xs-6">
-          <el-form-item prop="fullName">
+          <el-form-item prop="fullName" >
             <span slot="label" class="fs" >{{ $t('table.fullName') }}</span>
-            <el-input v-model="curUser.fullName"/>
+            <el-input v-model="curUser.fullName" @blur="()=>{disabled = false}"/>
           </el-form-item>
         </div>
         <div class="col-xs-6">
@@ -22,14 +22,17 @@
               :placeholder="$t('i18nView.datePlaceholder')"
               type="date"
               format="MM/dd/yyyy"
-              style="width: 100%"/>
+              style="width: 100%"
+              @blur="()=>{disabled = false}"/>
           </el-form-item>
         </div>
 
         <div class="col-xs-6">
           <el-form-item prop="phoneNumber">
             <span slot="label" class="fs">{{ $t('table.phoneNumber') }}</span>
-            <el-input v-model="curUser.phoneNumber"/>
+            <el-input
+              v-model="curUser.phoneNumber"
+              @blur="()=>{disabled = false}"/>
           </el-form-item>
         </div>
         <div class="col-xs-6">
@@ -41,13 +44,13 @@
         <div class="col-xs-6">
           <el-form-item prop="email">
             <span slot="label" class="fs">{{ $t('table.email') }}</span>
-            <el-input v-model="curUser.email"/>
+            <el-input v-model="curUser.email" @blur="()=>{disabled = false}"/>
           </el-form-item>
         </div>
         <div class="col-xs-6">
           <el-form-item prop="address">
             <span slot="label" class="fs">{{ $t('table.address') }}</span>
-            <el-input v-model="detailAddress"/>
+            <el-input v-model="detailAddress" @blur="()=>{disabled = false}"/>
           </el-form-item>
         </div>
         <div class="col-xs-6">
@@ -60,6 +63,7 @@
               placeholder="Please Input"
               style="width: 100%"
               @select="handleSelectProvince"
+              @blur="()=>{disabled = false}"
             />
           </el-form-item>
         </div>
@@ -73,6 +77,7 @@
               placeholder="Please Input"
               style="width: 100%"
               @select="handleSelectDistrict"
+              @blur="()=>{disabled = false}"
             />
           </el-form-item>
         </div>
@@ -86,13 +91,14 @@
               placeholder="Please Input"
               style="width: 100%"
               @select="handleSelectWard"
+              @blur="()=>{disabled = false}"
             />
           </el-form-item>
         </div>
         <div class="col-xs-6">
           <br>
           <br>
-          <button class="btn btn-lg btn-success mr-5" @click.prevent="saveHomeTab">
+          <button :disabled="disabled" class="btn btn-lg btn-success mr-5" @click.prevent="saveHomeTab">
             <i class="glyphicon glyphicon-ok-sign">
               Save
             </i>
@@ -175,12 +181,13 @@ export default {
         type: this.type,
         sort: '+id'
       },
+      disabled: true,
       loading: false,
       curUser: this.$store.getters.curUser,
-      detailAddress: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.detailAddress : '',
-      province: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.province : {},
-      district: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.district : {},
-      ward: this.$store.getters.curUser.address ? this.$store.getters.curUser.address.ward : {},
+      detailAddress: this.$store.getters.curUser.address.detailAddress || '',
+      province: this.$store.getters.curUser.address.province || {},
+      district: this.$store.getters.curUser.address.district || {},
+      ward: this.$store.getters.curUser.address.ward || {},
       tempPass: {
         oldpassword: '',
         newpassword: '',
@@ -188,16 +195,16 @@ export default {
       },
       rules: {
         fullName: [{ required: true, message: 'Tên bắt buộc', trigger: 'change' }],
-        userName: [{ required: true, message: 'User Name is required', trigger: 'blur' }],
+        userName: [{ required: true, message: 'Tên đăng nhập bắt buộc', trigger: 'blur' }],
         email: [{ required: true, message: 'Email is required', trigger: 'blur' }],
         phoneNumber: [{ required: true, message: 'Số điện thoại bắt buộc', trigger: 'blur' }],
         dateOfBirth: [{ required: true, message: 'Ngày sinh bắt buộc', trigger: 'blur' }],
         oldpassword: [{ required: true, message: 'Mật khẩu cũ bắt buộc', trigger: 'blur' }],
         verifypassword: [{ required: true, message: 'Xác nhận mật khẩu bắt buộc', trigger: 'blur' }],
         newpassword: [{ required: true, message: 'Mật khẩu mới bắt buộc', trigger: 'blur' }],
-        province: [{ required: true, message: 'Tỉnh/Thành phố bắt buộc', trigger: 'blur' }],
-        district: [{ required: true, message: 'Huyện/Quận bắt buộc', trigger: 'blur' }],
-        ward: [{ required: true, message: 'Phường/xã bắt buộc', trigger: 'blur' }],
+        // province: [{ required: true, message: 'Tỉnh/Thành phố bắt buộc', trigger: 'change' }],
+        // district: [{ required: true, message: 'Huyện/Quận bắt buộc', trigger: 'change' }],
+        // ward: [{ required: true, message: 'Phường/xã bắt buộc', trigger: 'change' }],
       },
       lstAddress: {
         provinces: [],
@@ -222,13 +229,12 @@ export default {
       })
     },
     saveHomeTab() {
-      this.curUser.address = { }
-      this.curUser.address.detailAddress = this.detailAddress
-      this.curUser.address.province = this.province
-      this.curUser.address.district = this.district
-      this.curUser.address.ward = this.ward
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
+          this.curUser.address.detailAddress = this.detailAddress
+          this.curUser.address.province = this.province
+          this.curUser.address.district = this.district
+          this.curUser.address.ward = this.ward
           var updatedUser = {
             file: this.$store.getters.file || null,
             data: this.curUser

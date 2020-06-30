@@ -7,7 +7,8 @@ export function getAllUsers(query) {
     params: {
       q: query.name || null,
       role: query.role || null,
-      available: query.available || null
+      available: query.available || null,
+      contractable: query.contractable || null
     }
   });
 }

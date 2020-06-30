@@ -10,7 +10,7 @@ const contractRouter = {
   meta: {
     // title: 'position',
     icon: 'example',
-    roles: ['SuperAdmin', 'HR']
+    roles: ['SuperAdmin', 'Hr']
   },
   children: [
     {

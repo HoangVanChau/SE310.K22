@@ -174,7 +174,8 @@ const user = {
         const query = {
           name: null,
           role: 'Employee',
-          available: 'true'
+          available: 'true',
+          contractable: null // thực tế là true vì nhân viên đã kí hợp đồng
         };
         getAllUsers(query).then(res => {
           commit('SET_EMPLOYEES', res);
@@ -187,7 +188,8 @@ const user = {
         const query = {
           name: null,
           role: 'Manager',
-          available: 'true'
+          available: 'true',
+          contractable: null // thực tế là true vì nhân viên đã kí hợp đồng
         };
         getAllUsers(query).then(res => {
           commit('SET_LEADERS', res);

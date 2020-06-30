@@ -18,7 +18,7 @@
         type="time"
         format="hh:mm"
         placeholder="Giờ bắt đầu"
-        value-format="hh:mm"
+        value-format="hh:mm:ss"
         style="width: 50%"/>
     </el-form-item>
     <el-form-item prop="endOff">
@@ -28,7 +28,7 @@
         type="time"
         format="hh:mm"
         placeholder="Giờ Kết thúc"
-        value-format="hh:mm"
+        value-format="hh:mm:ss"
         style="width: 50%"/>
     </el-form-item>
     <el-form-item>
@@ -86,12 +86,14 @@ export default {
   created() {
     this.$nextTick(() => {
       this.$refs['dateOffForm'].clearValidate()
+      this.reset()
     })
   },
   methods: {
     submitDateOff() {
       this.$refs['dateOffForm'].validate((valid) => {
         if (valid) {
+          console.log(this.dateOff);
           this.$store.dispatch('SubmitDateOff', this.dateOff).then(res => {
             this.dialogFormVisible = false
             this.$notify({
@@ -110,7 +112,8 @@ export default {
         reason: '',
         startOff: null,
         endOff: null,
-        date: null
+        date: null,
+        isUnpaidOff: null
       }
     }
   }

@@ -79,7 +79,7 @@
           <el-input v-model="temp.fullName"/>
         </el-form-item>
         <el-form-item :label="$t('login.username')" prop="userName">
-          <el-input v-model="temp.userName"/>
+          <el-input :disabled="dialogStatus == 'update'" v-model="temp.userName"/>
         </el-form-item>
         <el-form-item :label="'Email'" prop="email">
           <el-input v-model="temp.email"/>

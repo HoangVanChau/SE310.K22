@@ -10,7 +10,7 @@ const positionRouter = {
   meta: {
     // title: 'position',
     icon: 'lock',
-    roles: ['SuperAdmin', 'HR']
+    roles: ['SuperAdmin', 'Hr']
   },
   children: [
     {
