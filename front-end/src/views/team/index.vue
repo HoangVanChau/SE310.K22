@@ -118,7 +118,7 @@
               <li
                 v-for="user in employees"
                 :key="user.userId"
-                :class="{'active': selectedMemberId.includes(user.userId), 'disabled': dialogStatus == 'removeUser'}"
+                :class="{'active': selectedMemberId.includes(user.userId), 'disabled': dialogStatus == 'removeUser', 'none': dialogStatus == 'removeUser'}"
                 class="list-group-item"
                 @click="onSelectedMemberId(user,'add')">
                 {{ user.fullName }}
@@ -150,7 +150,7 @@
               <li
                 v-for="member in selectedTeam.members"
                 :key="member.userId"
-                :class="{'active': selectedMemberIdDeleted.includes(member.userId), 'disabled': dialogStatus == 'addUser'}"
+                :class="{'active': selectedMemberIdDeleted.includes(member.userId), 'disabled': dialogStatus == 'addUser','none': dialogStatus == 'addUser'}"
                 class="list-group-item"
                 @click="onSelectedMemberId(member,'remove')">
                 {{ member.fullName }}
@@ -575,5 +575,8 @@ export default {
     background-color: #C9FFE5;
     border-color: #C9FFE5;
     color: black;
+  }
+  .none{
+    pointer-events: none;
   }
 </style>

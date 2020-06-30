@@ -231,7 +231,8 @@ export default {
     name: 'Tên',
     date: 'Ngày nghỉ',
     rea: 'Lí do',
-    approved: 'Xác nhận'
+    approved: 'Xác nhận',
+    status: 'Trạng thái'
   },
   holiday: {
     date: 'Ngày',

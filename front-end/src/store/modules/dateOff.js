@@ -1,7 +1,8 @@
 import {
   getAllDateOffByUser,
   requestDateOff,
-  approveDateOff
+  approveDateOff,
+  cancelDateOff
 } from '../../api/dateOff';
 
 const contact = {
@@ -48,13 +49,20 @@ const contact = {
         });
       });
     },
-    ApproveDateOff({ commit }, params) {
+    ApproveOrRejectDateOff({ commit }, params) {
       return new Promise(resolve => {
         approveDateOff(params.id, params.dataParam).then(result => {
           resolve(result);
         });
       });
-    }
+    },
+    CancelDateOff({ commit }, params) {
+      return new Promise(resolve => {
+        cancelDateOff(params.id).then(res => {
+          resolve(res);
+        });
+      });
+    },
   }
 };
 export default contact;

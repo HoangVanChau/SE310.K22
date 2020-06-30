@@ -34,14 +34,14 @@
         <div>{{ scope.row.reason }}</div>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('dateOff.approved')" align="center">
+    <el-table-column :label="$t('dateOff.status')" align="center">
       <template slot-scope="scope">
-        <el-checkbox readonly>{{ scope.row.isApprove }}</el-checkbox>
+        <div>{{ scope.row.status.label }}</div>
       </template>
     </el-table-column>
     <el-table-column :label="$t('table.actions')" align="center" class-name="small-padding fixed-width" >
       <template slot-scope="scope">
-        <el-button type="primary" size="medium" icon="el-icon-detail" @click="handleApprove(scope.row)"/>
+        <el-button type="danger" size="medium" icon="el-icon-delete" @click="handlerCancel(scope.row)"/>
       </template>
     </el-table-column>
   </el-table>
@@ -73,8 +73,8 @@ export default {
       this.listLoading = true;
       const params = {
         status: null,
-        userId: this.curUser,
-        teamId: null,
+        userId: this.curUser.userId,
+        teamId: this.curUser.teams || null,
         fromDate: null,
         toDate: null
       };
@@ -85,12 +85,12 @@ export default {
         }
       })
     },
-    handleApprove(row) {
+    handlerCancel(row) {
       const params = {
         id: row.id,
         dataParam: row.isApprove
       };
-      this.$store.dispatch('ApproveDateOff', params).then(res => {
+      this.$store.dispatch('CancelDateOff', params).then(res => {
         if (res) {
           console.log(res);
         }

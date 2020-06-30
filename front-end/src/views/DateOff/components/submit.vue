@@ -9,6 +9,7 @@
         :picker-options="datePickerOptions"
         type="date"
         placeholder="Ngày nghỉ"
+        value-format="yyyy-MM-dd"
         style="width: 50%"/>
     </el-form-item>
     <el-form-item prop="startOff">
@@ -103,6 +104,7 @@ export default {
               duration: 2000
             })
             this.reset();
+            this.$refs['dateOffForm'].clearValidate();
           });
         }
       })

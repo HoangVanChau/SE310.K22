@@ -108,7 +108,7 @@ export default {
         id: row.id,
         dataParam: row.isApprove
       };
-      this.$store.dispatch('ApproveDateOff', params).then(res => {
+      this.$store.dispatch('ApproveOrRejectDateOff', params).then(res => {
         if (res) {
           console.log(res);
         }

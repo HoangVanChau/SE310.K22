@@ -233,7 +233,8 @@ export default {
     name: 'Name',
     date: 'Date',
     rea: 'Reason',
-    approved: 'Approved'
+    approved: 'Approved',
+    status: 'Status'
   },
   holiday: {
     date: 'Date',
