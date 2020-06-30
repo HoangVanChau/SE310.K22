@@ -30,6 +30,8 @@ namespace HRM
 {
     public class Startup
     {
+        readonly string myAllowAllOrigins = "_myAllowAllOrigins";
+        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -42,14 +44,15 @@ namespace HRM
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin();
-                        builder.AllowAnyHeader();
-                        builder.AllowAnyMethod();
+                options.AddPolicy(name: myAllowAllOrigins,
+                    builder => { 
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod(); 
                     });
             });
+            
             services.AddControllers().AddJsonOptions(opts =>
                 {
                     opts.JsonSerializerOptions.Converters.Add(new TimespanConverter());
@@ -135,8 +138,17 @@ namespace HRM
             }
             
             app.UseRouting();
+            app.UseCors(myAllowAllOrigins);
             
-            app.UseCors();
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers.Add("X-Developed-By", "metajet98");
+                context.Response.Headers.Add("Access-Control-Allow-Headers", "content-type,accept,authorization");
+                context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+                context.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,OPTIONS,PUT,DELETE");
+                await next.Invoke();
+            });
 
             app.UseAuthentication();
             app.UseAuthorization();
