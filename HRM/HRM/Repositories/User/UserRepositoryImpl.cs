@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Extensions;
 using HRM.Models.Cores;
+using HRM.Models.QueryParams;
 using HRM.Repositories.Base;
 using HRM.Services.MongoDB;
+using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 
@@ -15,9 +17,12 @@ namespace HRM.Repositories.User
     public class UserRepositoryImpl: BaseRepositoryImpl<Models.Cores.User>, IUserRepository
     {
         private readonly IMongoCollection<Models.Cores.Team> _teamCollection;
+        private readonly IMongoCollection<Models.Cores.Contract> _contractCollection;
         public UserRepositoryImpl(MongoDbService service) : base(service)
         {
             _teamCollection = service.GetDb().GetCollection<Models.Cores.Team>(Constants.Collections.TeamCollection);
+            _contractCollection =
+                service.GetDb().GetCollection<Models.Cores.Contract>(Constants.Collections.ContractCollection);
         }
 
         public override string GetCollectionName()
@@ -54,42 +59,66 @@ namespace HRM.Repositories.User
             return result.DeletedCount == 1;
         }    
 
-        public Task<List<Models.Cores.User>> Query(string q, string available, string role)
+        public Task<List<Models.Cores.User>> Query(UserQuery query)
         {
-            var userFilter = Builders<Models.Cores.User>.Filter.Where(x =>
-                (role == null || x.Role.Equals(role)) &&
-                (q == null || x.FullName.ToLower().Contains((q ?? "").ToLower())));
+            var filterQ = query?.Q != null
+                ? Builders<Models.Cores.User>.Filter.Where(x => x.FullName.ToLower().Contains(query.Q.ToLower()))
+                : FilterDefinition<Models.Cores.User>.Empty;
+            var filterRole = query?.Role != null
+                ? Builders<Models.Cores.User>.Filter.Eq(x => x.Role, query.Role)
+                : FilterDefinition<Models.Cores.User>.Empty;
 
-            var teamFilter = available switch
+            var teamFilter = query?.Available switch
             {
-                "true" => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count == 0),
-                "false" => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count > 0),
+                true => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count == 0),
+                false => Builders<Models.Cores.User>.Filter.Where(x => x.Teams.Count > 0),
+                _ => Builders<Models.Cores.User>.Filter.Where(x => true)
+            };
+            
+            var contractFilter = query?.Contractable switch
+            {
+                true => Builders<Models.Cores.User>.Filter.Where(x => x.Contracts.Count == 0),
+                false => Builders<Models.Cores.User>.Filter.Where(x => x.Contracts.Count > 0),
                 _ => Builders<Models.Cores.User>.Filter.Where(x => true)
             };
 
-            if (role == Roles.Manager)
+            if (query?.Role == Roles.Manager)
             {
                 return Collection.Aggregate()
-                    .Match(userFilter)
+                    .Match(filterQ & filterRole)
                     .Lookup(
                         foreignCollection: _teamCollection,
                         foreignField: t => t.LeaderId,
                         localField: u => u.UserId,
                         @as: (Models.Cores.User u) => u.Teams
                     )
+                    .Lookup(
+                        foreignCollection: _contractCollection,
+                        foreignField: t => t.UserId,
+                        localField: u => u.UserId,
+                        @as: (Models.Cores.User u) => u.Contracts
+                    )
                     .Match(teamFilter)
+                    .Match(contractFilter)
                     .ToListAsync();
             }
 
             return Collection.Aggregate()
-                .Match(userFilter)
+                .Match(filterQ & filterRole)
                 .Lookup(
                     foreignCollection: _teamCollection,
                     foreignField: t => t.MembersId,
                     localField: u => u.UserId,
                     @as: (Models.Cores.User u) => u.Teams
                     )
+                .Lookup(
+                    foreignCollection: _contractCollection,
+                    foreignField: t => t.UserId,
+                    localField: u => u.UserId,
+                    @as: (Models.Cores.User u) => u.Contracts
+                )
                 .Match(teamFilter)
+                .Match(contractFilter)
                 .ToListAsync();
         }
 

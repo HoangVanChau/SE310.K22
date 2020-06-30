@@ -219,9 +219,9 @@ namespace HRM.Controllers.Users
 
         [HttpGet]
         [AllowAllSystemUser]
-        public async Task<JsonResult> GetUsers(string role, string available, string q)
+        public async Task<JsonResult> GetUsers([FromQuery] UserQuery query)
         {
-            var result = await _userRepo.Query(q, available, role);
+            var result = await _userRepo.Query(query);
             return new OkResponse(result);
         }
         

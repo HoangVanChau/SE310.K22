@@ -25,5 +25,6 @@ namespace HRM.Models.Cores
         
         //temp field
         public List<Team> Teams { get; set; }
+        public List<Contract> Contracts { get; set; }
     }
 }
