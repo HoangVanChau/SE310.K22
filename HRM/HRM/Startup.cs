@@ -15,6 +15,7 @@ using HRM.Repositories.Team;
 using HRM.Repositories.User;
 using HRM.Repositories.Utils.Address;
 using HRM.Repositories.Utils.CompanyInfo;
+using HRM.Schedulers;
 using HRM.Services.Auth;
 using HRM.Services.MongoDB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -127,6 +128,8 @@ namespace HRM
             services.AddSingleton<IDateOffRepository, DateOffRepositoryImpl>();
             services.AddSingleton<IPayrollRepository, PayrollRepositoryImpl>();
             services.AddSingleton<IHolidayRepository, HolidayRepositoryImpl>();
+            
+            services.AddTransient<CalculatePayrollTask, CalculatePayrollTask>();
         }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

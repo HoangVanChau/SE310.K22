@@ -56,6 +56,12 @@ namespace HRM.Repositories.Base
             return task.ModifiedCount.Equals(1);
         }
 
+        public async Task<bool> UpdateMany(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
+        {
+            var task = await Collection.UpdateManyAsync(filterDefinition, updateDefinition);
+            return task.IsAcknowledged;
+        }
+
         public async Task<bool> DeleteOneById(String id)
         {
             var task = await Collection.DeleteOneAsync(x => x.Id.Equals(id));

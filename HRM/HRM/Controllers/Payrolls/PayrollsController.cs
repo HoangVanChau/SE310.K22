@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using HRM.Constants;
 using HRM.Helpers;
@@ -11,8 +10,10 @@ using HRM.Repositories.Contract;
 using HRM.Repositories.DateOff;
 using HRM.Repositories.Payroll;
 using HRM.Repositories.User;
+using HRM.Schedulers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 namespace HRM.Controllers.Payrolls
@@ -26,7 +27,10 @@ namespace HRM.Controllers.Payrolls
         private readonly IUserRepository _userRepo;
         private readonly IPayrollRepository _payrollRepo;
         private readonly IHolidayRepository _holidayRepo;
-        public PayrollsController(IUserRepository userRepo, IContractRepository contractRepo, IDateOffRepository dateOffRepo, IAttendanceRepository attendanceRepo, IPayrollRepository payrollRepo, IHolidayRepository holidayRepo)
+
+        private readonly IServiceProvider _provider;
+        public PayrollsController(IUserRepository userRepo, IContractRepository contractRepo, IDateOffRepository dateOffRepo, IAttendanceRepository attendanceRepo, 
+            IPayrollRepository payrollRepo, IHolidayRepository holidayRepo, IServiceProvider provider)
         {
             _userRepo = userRepo;
             _attendanceRepo = attendanceRepo;
@@ -34,6 +38,8 @@ namespace HRM.Controllers.Payrolls
             _dateOffRepo = dateOffRepo;
             _payrollRepo = payrollRepo;
             _holidayRepo = holidayRepo;
+
+            _provider = provider;
         }
         
         [HttpGet]
@@ -96,6 +102,83 @@ namespace HRM.Controllers.Payrolls
 
             var payroll = SalaryHelper.CalculateSalary(month, year,holidays, attendances, dateOffs, contract);
             return payroll;
+        }
+
+        [HttpPatch]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
+        [Route("{payRollId}")]
+        public async Task<JsonResult> ConfirmPayroll(string payRollId, [FromBody] Payroll data)
+        {
+            var payRoll = await _payrollRepo.QueryPayroll(Builders<Payroll>.Filter.Eq(x => x.Id, payRollId));
+            if (payRoll == null)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Không tìm thấy bảng lương!"
+                });
+            }
+
+            var updateDefine = Builders<Payroll>.Update.Set(x => x.IsApprove, data.IsApprove);
+            var result = await _payrollRepo.UpdateOneById(payRollId, updateDefine);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Thay đổi thành công!"
+                });
+            }
+
+            return new BadRequestResponse(new ErrorData
+            {
+                Message = "Thay đổi thất bại!"
+            });
+        }
+        
+        [HttpPatch]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
+        public async Task<JsonResult> ConfirmPayrolls([FromBody] Payroll data)
+        {
+            if (data?.IsApprove == null || data.Month == 0 || data.Year == 0)
+            {
+                return new BadRequestResponse(new ErrorData
+                {
+                    Message = "Params không hợp lệ!"
+                });
+            }
+
+            var filter = Builders<Payroll>.Filter
+                .Or(
+                    Builders<Payroll>.Filter.Eq(x => x.Month, data.Month),
+                    Builders<Payroll>.Filter.Eq(x => x.Year, data.Year)
+                    );
+            var updateDefine = Builders<Payroll>.Update.Set(x => x.IsApprove, data.IsApprove);
+            var result = await _payrollRepo.UpdateMany(filter, updateDefine);
+            if (result)
+            {
+                return new OkResponse(new
+                {
+                    Message = "Thay đổi thành công!"
+                });
+            }
+
+            return new BadRequestResponse(new ErrorData
+            {
+                Message = "Thay đổi thất bại!"
+            });
+        }
+        
+        [HttpPost]
+        [RoleWithSuperAdmin(Constants.Roles.Hr)]
+        [Route("execute")]
+        public JsonResult Execute()
+        {
+            var task =
+                ActivatorUtilities.CreateInstance(_provider, typeof(CalculatePayrollTask)) as CalculatePayrollTask;
+            task?.Invoke();
+            return new OkResponse(new
+            {
+                Message = "Calculating"
+            });
         }
     }
 }

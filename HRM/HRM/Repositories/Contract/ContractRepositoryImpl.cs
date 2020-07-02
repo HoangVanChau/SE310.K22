@@ -85,11 +85,11 @@ namespace HRM.Repositories.Contract
 
         public Task<List<Models.Cores.Contract>> QueryContracts(FilterDefinition<Models.Cores.Contract> filterDefinition, PagingParams pagingParams = null, ContractQuery query = null)
         {
-            var filterUser = query.UserId != null 
+            var filterUser = query?.UserId != null 
                 ? Builders<Models.Cores.Contract>.Filter.Eq(x => x.UserId, query.UserId)
                 : FilterDefinition<Models.Cores.Contract>.Empty;
             
-            var filterActive = query.Active != null 
+            var filterActive = query?.Active != null 
                 ? Builders<Models.Cores.Contract>.Filter.Eq(x => x.Active, query.Active)
                 : FilterDefinition<Models.Cores.Contract>.Empty;
             

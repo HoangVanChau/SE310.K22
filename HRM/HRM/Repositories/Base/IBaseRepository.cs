@@ -13,6 +13,7 @@ namespace HRM.Repositories.Base
         Task<string> InsertOne(T document);
         Task<List<String>> InsertMany(List<T> documents);
         Task<bool> UpdateOneById(String id, UpdateDefinition<T> updateDefinition);
+        Task<bool> UpdateMany(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition);
         Task<bool> DeleteOneById(String id);
         Task<T> FindFirstById(String id);
         Task<ReplaceOneResult> ReplaceOneById(String id, T newDocument);

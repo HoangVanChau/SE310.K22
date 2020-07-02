@@ -6,6 +6,7 @@ namespace HRM.Models.Cores
     [BsonIgnoreExtraElements]
     public class Payroll : BaseModel
     {
+        public bool IsApprove { get; set; } = false;
         public string UserId { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
