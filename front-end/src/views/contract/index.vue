@@ -132,6 +132,7 @@
                 :disabled="dialogStatus=='update'"
                 type="datetime"
                 format="MM/dd/yyyy"
+                value-format="yyyy-MM-dd"
                 style="width: 100%"/>
             </el-form-item>
           </el-col>
@@ -142,6 +143,7 @@
                 :placeholder="$t('i18nView.datePlaceholder')"
                 type="datetime"
                 format="MM/dd/yyyy"
+                value-format="yyyy-MM-dd"
                 style="width: 100%"/>
             </el-form-item>
           </el-col>
@@ -154,6 +156,7 @@
                 :placeholder="$t('i18nView.datePlaceholder')"
                 type="datetime"
                 format="MM/dd/yyyy"
+                value-format=""
                 style="width: 100%"/>
             </el-form-item>
           </el-col>
@@ -177,14 +180,14 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item :label="$t('contract.officialEmployee')" prop="officialEmployee">
-              <el-checkbox v-model="temp.officialEmployee"/>
-            </el-form-item>
-          </el-col>
-          <el-col v-if="dialogStatus=='update'" :span="12">
-            <el-form-item :label="$t('contract.active')" prop="active">
               <el-checkbox v-model="temp.active"/>
             </el-form-item>
           </el-col>
+          <!-- <el-col v-if="dialogStatus=='update'" :span="12">
+            <el-form-item :label="$t('contract.active')" prop="active">
+              <el-checkbox v-model="temp.active"/>
+            </el-form-item>
+          </el-col> -->
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -289,8 +292,10 @@ export default {
   methods: {
     getList() {
       this.$store.dispatch('GetAllContract').then(res => {
+        console.log(res);
         if (res) {
           this.list = res.data.sort(compareValues(this.listQuery.sort))
+          this.listLoading = false;
         }
       }).then(() => {
         this.getListTeam()
@@ -309,9 +314,10 @@ export default {
             duration: 2000
           })
         })
+      this.listLoading = false
     },
     getListTeam() {
-      this.$store.dispatch('GetAllTeam').then(res => {
+      this.$store.dispatch('GetAllTeam', this.temp.userId).then(res => {
         if (res) {
           this.lstTeam = res;
         }
@@ -320,7 +326,7 @@ export default {
       })
     },
     getListUser() {
-      this.$store.dispatch('GetAllUser', { q: null, role: null, available: null }).then(res => {
+      this.$store.dispatch('GetAllUser', { q: null, role: 'Employee', available: 'false' }).then(res => {
         if (res) {
           this.lstUser = res;
         }

@@ -26,9 +26,9 @@ const team = {
     }
   },
   actions: {
-    GetAllTeam({ commit }) {
+    GetAllTeam({ commit }, userId) {
       return new Promise(resolve => {
-        getAllTeam()
+        getAllTeam(userId)
           .then(response => {
             const items = response;
             commit('SET_TEAMS', items);

@@ -93,6 +93,7 @@ export default {
       this.$store.dispatch('CancelDateOff', params).then(res => {
         if (res) {
           console.log(res);
+          this.getListDateOffByCurUser();
         }
       })
     }

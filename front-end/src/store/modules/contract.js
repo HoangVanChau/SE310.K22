@@ -26,6 +26,10 @@ const contact = {
           .then(res => {
             commit('SET_CONTRACTS', res);
             const item = res[0];
+            if (!item) {
+              resolve(null);
+              return;
+            }
             var fields = Object.keys(item);
             commit('SET_FIELDS', fields);
             var returned = {

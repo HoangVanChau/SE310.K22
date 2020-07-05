@@ -1,9 +1,13 @@
 import request from '@/utils/request';
 
-export function getAllTeam() {
+export function getAllTeam(userId) {
+  const params = {
+    userId: userId
+  };
   return request({
     url: '/api/teams',
-    method: 'get'
+    method: 'get',
+    params
   });
 }
 export function getTeam(teamId) {
